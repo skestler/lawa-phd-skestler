@@ -1,0 +1,15 @@
+FLENS_HOME=$HOME/Programming/Lawa/workspace/Lawa_v3/FLENS-lite
+LAWA_HOME=$HOME/Programming/Lawa/workspace/Lawa_v3/LAWA-lite
+BOOST_HOME=$HOME/Programming/Boost/boost_1_40_0
+GMPFRXX_HOME=/Users/sebastian/Programming/gmpfrxx
+MPREC_INC_HOME=/opt/local/include
+MPREC_LIB_HOME=/opt/local/lib
+GSL_INC_HOME=/opt/local/include
+GSL_LIB_HOME=/opt/local/lib
+
+DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$FLENS_HOME:$LAWA_HOME:$BOOST_HOME:$GMPFRXX_HOME
+
+export FLENS_HOME LAWA_HOME BOOST_HOME GSL_INC_HOME GSL_LIB_HOME GMPFRXX_HOME MPREC_LIB_HOME MPREC_INC_HOME DYLD_LIBRARY_PATH
+
+export DOCTOOL=${HOME}/Programming/Lawa/workspace/Lawa_v3/LawaDocTool
+export PATH=$PATH:${DOCTOOL}/Executables
