@@ -1,0 +1,37 @@
+==TITLE:LAWA: statstics==
+These are some questions we actually ask ourself from time to time ...
+
+==SUBSECTION:How Many Files Does LAWA Have?==
+Including documentation:
+==exec:==
+cd ${DOCSRC_DIR}
+printf "Number of files: "
+find . | egrep "\.(h|cc|tcc|doc)$" | wc -l
+====
+Only headers and implementation:
+==exec:==
+cd ${DOCSRC_DIR}
+printf "Number of files: "
+find . | egrep "\.(h|cc|tcc)$" | wc -l
+====
+
+
+==SUBSECTION:How Many Lines of Code Does LAWA Have?==
+==exec:==
+cd ${DOCSRC_DIR}
+printf "Lines of code: "
+for i in `find . | egrep "\.(h|cc|tcc)$"`; do cat $i; done | wc -l
+====
+and without out the lines for the license and some of the comments:
+==exec:==
+cd ${DOCSRC_DIR}
+printf "Lines of code: "
+for i in `find . | egrep "\.(h|cc|tcc)$"`; do cat $i | egrep -v "^.\*"; done | wc -l
+====
+
+==SUBSECTION:How Many Lines of Documentation Does LAWA Have?==
+==exec:==
+cd ${DOCSRC_DIR}
+printf "Lines of documentation: "
+for i in `find . -name "*.doc"`; do cat $i; done | wc -l
+====

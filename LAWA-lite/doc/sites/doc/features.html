@@ -1,0 +1,246 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../index.html">home</a></li>
+<li><a href="../doc/license.html">license</a></li>
+<li><a href="../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../doc/features.html">lawa features</a></li>
+<li><a href="../doc/highperformance.html">high performance</a></li>
+<li><a href="../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../doc/download.html">download</a></li>
+<li><a href="../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+
+
+<h3 class="doc">
+A (coarse) feature matrix of LAWA</h3>
+
+<p >
+     In principle LAWAcan be divided in two main building blocks. General Wavelet  Basis Constructions for different domains and adaptive wavelet algorithms.</p>
+
+<h3 class="doc">
+Wavelets / Basis Constructions</h3>
+
+<p >
+     LAWA is organized with respect to several rather orthogonal criteria. These are mostly reflected by different template parameters. We show a summary of  all currently available realizations of wavelet bases and some outlook.</p><p >
+     First we take a look at the realizations of biorthogonal wavelet constructions  available. The whole library is centered around biorthogonal wavelets; this is  indeed the main focus.</p><table class="default tabular">
+    <tr class="default tabular row">
+        <td class="default tabular row_0 col_0 evenRow evenCol" >
+            <p >
+                 <i>domain</i>                      </p>        </td>
+        <td class="default tabular row_0 col_1 evenRow oddCol" >
+            <p >
+                 <i>construction</i>                      </p>        </td>
+        <td class="default tabular row_0 col_2 evenRow evenCol" >
+            <p >
+                 <i>status</i>                                   </p>        </td>
+    </tr>
+    <tr class="default tabular row">
+        <td class="default tabular row_1 col_0 oddRow evenCol" >
+            <p >
+                 R                               </p>        </td>
+        <td class="default tabular row_1 col_1 oddRow oddCol" >
+            <p >
+                 CDF                                 </p>        </td>
+        <td class="default tabular row_1 col_2 oddRow evenCol" >
+            <p >
+                 final                                      </p>        </td>
+    </tr>
+    <tr class="default tabular row">
+        <td class="default tabular row_2 col_0 evenRow evenCol" >
+            <p >
+                 Periodic                        </p>        </td>
+        <td class="default tabular row_2 col_1 evenRow oddCol" >
+            <p >
+                 CDF                                 </p>        </td>
+        <td class="default tabular row_2 col_2 evenRow evenCol" >
+            <p >
+                 final                                      </p>        </td>
+    </tr>
+    <tr class="default tabular row">
+        <td class="default tabular row_3 col_0 oddRow evenCol" >
+            <p >
+                 Interval                        </p>        </td>
+        <td class="default tabular row_3 col_1 oddRow oddCol" >
+            <p >
+                 DKU, Primbs, Dijkema                </p>        </td>
+        <td class="default tabular row_3 col_2 oddRow evenCol" >
+            <p >
+                 some minor polishing necessary             </p>        </td>
+    </tr>
+    <tr class="default tabular row">
+        <td class="default tabular row_4 col_0 evenRow evenCol" >
+            <p >
+                 \([0,1]^n\)                       </p>        </td>
+        <td class="default tabular row_4 col_1 evenRow oddCol" >
+            <p >
+                 based on interval bases             </p>        </td>
+        <td class="default tabular row_4 col_2 evenRow evenCol" >
+            <p >
+                 working                                    </p>        </td>
+    </tr>
+    <tr class="default tabular row">
+        <td class="default tabular row_5 col_0 oddRow evenCol" >
+            <p >
+                 more general domain             </p>        </td>
+        <td class="default tabular row_5 col_1 oddRow oddCol" >
+            <p >
+                 based on interval bases             </p>        </td>
+        <td class="default tabular row_5 col_2 oddRow evenCol" >
+            <p >
+                 to be done yet (middle p.)                 </p>        </td>
+    </tr>
+</table>
+<p >
+     For all these biorthogonal wavelet constructions we realized both the primal and the corresponding duals for the B-splines and the wavelets.</p><p >
+     LAWA provides different kinds of wavelets:</p><table class="default tabular">
+    <tr class="default tabular row">
+        <td class="default tabular row_0 col_0 evenRow evenCol" >
+            <p >
+                 <i>kind of wavelets</i>              </p>        </td>
+        <td class="default tabular row_0 col_1 evenRow oddCol" >
+            <p >
+                 <i>domain</i>                            </p>        </td>
+        <td class="default tabular row_0 col_2 evenRow evenCol" >
+            <p >
+                 <i>construction</i>                 </p>        </td>
+        <td class="default tabular row_0 col_3 evenRow oddCol" >
+            <p >
+                 <i>status</i>                             </p>        </td>
+    </tr>
+    <tr class="default tabular row">
+        <td class="default tabular row_1 col_0 oddRow evenCol" >
+            <p >
+                 orthogonal                      </p>        </td>
+        <td class="default tabular row_1 col_1 oddRow oddCol" >
+            <p >
+                 R                                  </p>        </td>
+        <td class="default tabular row_1 col_2 oddRow evenCol" >
+            <p >
+                 Daubechies                     </p>        </td>
+        <td class="default tabular row_1 col_3 oddRow oddCol" >
+            <p >
+                 just coefficients, final             </p>        </td>
+    </tr>
+    <tr class="default tabular row">
+        <td class="default tabular row_2 col_0 evenRow evenCol" >
+            <p >
+                 orthogonal                      </p>        </td>
+        <td class="default tabular row_2 col_1 evenRow oddCol" >
+            <p >
+                 \([0,1]^n\)                          </p>        </td>
+        <td class="default tabular row_2 col_2 evenRow evenCol" >
+            <p >
+                 Multiwavelets                  </p>        </td>
+        <td class="default tabular row_2 col_3 evenRow oddCol" >
+            <p >
+                 polishing to be done                 </p>        </td>
+    </tr>
+    <tr class="default tabular row">
+        <td class="default tabular row_3 col_0 oddRow evenCol" >
+            <p >
+                 biorthogonal                    </p>        </td>
+        <td class="default tabular row_3 col_1 oddRow oddCol" >
+            <p >
+                 see table above                     </p>        </td>
+        <td class="default tabular row_3 col_2 oddRow evenCol" >
+            <p >
+                 see table above                </p>        </td>
+        <td class="default tabular row_3 col_3 oddRow oddCol" >
+            <p >
+                 see table above                      </p>        </td>
+    </tr>
+    <tr class="default tabular row">
+        <td class="default tabular row_4 col_0 evenRow evenCol" >
+            <p >
+                 semiorthogonal                  </p>        </td>
+        <td class="default tabular row_4 col_1 evenRow oddCol" >
+            <p >
+                 Interval                            </p>        </td>
+        <td class="default tabular row_4 col_2 evenRow evenCol" >
+            <p >
+                 BU                             </p>        </td>
+        <td class="default tabular row_4 col_3 evenRow oddCol" >
+            <p >
+                 to be done yet (high p.)             </p>        </td>
+    </tr>
+</table>
+<p >
+     For the n-dimensional cube, and therefor especially also for the interval, homogeneous Dirichlet boundary conditions or no/free boundary conditions have been realized. Other boundary conditions could be easily added. Just a matter of implementation time.</p>
+
+<h3 class="doc">
+Adaptive realizations</h3>
+
+<p >
+     not documented yet ...</p><!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>

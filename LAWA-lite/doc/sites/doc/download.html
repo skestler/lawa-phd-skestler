@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../index.html">home</a></li>
+<li><a href="../doc/license.html">license</a></li>
+<li><a href="../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../doc/features.html">lawa features</a></li>
+<li><a href="../doc/highperformance.html">high performance</a></li>
+<li><a href="../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../doc/download.html">download</a></li>
+<li><a href="../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+
+
+<h3 class="doc">
+Installation of LAWA</h3>
+
+<p >
+     LAWA is distributed as release to be downloaded from the project-site at sourceforge (download lawa).</p><p >
+     LAWA is currently bundled with a slightly modified version of FLENS. In the long term the minor modifications will be integrated into FLENS so that the standard version of FLENS will match the LAWA requirements. For the moment  a suitable FLENS comes directly with LAWA. </p><p >
+     The installation of FLENS and LAWA on a Unix-like system (the only ones we give installation support for) takes the following steps:</p><ul class="itemize">
+    <li>
+        <p >
+             Download and extract the release from the sourceforge <a href="http://sf.net/projects/lawa/files">download site</a>. This will result in two folders in the current directory:        </p>        <div class="code">
+        <div class="code_content"><span class="code_content">
+        <!-- CodeLine     1 -->FLENS-lite<br>
+        <!-- CodeLine     2 -->LAWA-lite<br>
+        </span></div><!--code_content-->
+        </div><!-- code -->
+    </li>
+    <li>
+        <p >
+             You have to set two environment-variables pointing to the two project roots:        </p>        <div class="code">
+        <div class="code_content"><span class="code_content">
+        <!-- CodeLine     1 --><span style="color:#008000">export</span>&nbsp;FLENS_HOME=/path/to/the/flens/installation<br>
+        <!-- CodeLine     2 --><span style="color:#008000">export</span>&nbsp;LAWA_HOME=/path/to/the/lawa/installation<br>
+        </span></div><!--code_content-->
+        </div><!-- code -->
+        <p >
+             Probably you should place these two lines in one of <tt>.bashrc</tt> or <tt>.profile</tt> depending on your system to have the variables set automatically.        </p>    </li>
+    <li>
+        <p >
+             Perhaps you have to/want to change some things in the <tt>config</tt>-file in the main directory of LAWA-lite. Here you can choose different settings for        </p>        <ul class="itemize">
+            <li>
+                <p >
+                     the compiler you want to use                </p>            </li>
+            <li>
+                <p >
+                     additional compiler flags                </p>            </li>
+            <li>
+                <p >
+                     debug mode/release mode/profile mode                </p>            </li>
+        </ul>
+        <p >
+             The <tt>config</tt>-file is the only place where you can/should change such settings.        </p>    </li>
+</ul>
+<!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>

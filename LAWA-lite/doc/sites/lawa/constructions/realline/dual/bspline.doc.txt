@@ -1,0 +1,95 @@
+==title:Dual scaling function associated to a B-spline on the real line==
+
+The class realizing dual scaling function associated to a B-spline on the real line is a specialization of the general {@lawa/bspline}{[BSpline]} class. (If you are wondering about the 'incorrect' naming scheme look at the corresponding note {@lawa/realline/scalingfunction#Note}{here}.)
+
+The signature reads
+==code.cc==
+template <typename T>
+    class Bspline<T,Dual,R,CDF>;
+====
+with [FunctionSide=Dual], [DomainType=R] and [Construction=CDF] as fixed template parameters.
+
+
+[Note]: Since [CDF] is set as default template argument in the root class we can actually ignore it here. Currently [CDF] is also the only construction realized so far for the real line.
+
+
+One particular dual B-spline is (completely) characterized by the following properties:
+==list:begin==
+->[d]:    the order of the corresponding primal B-spline.
+->[d_]:    [d] and [d_] together choose the particular dual of the primal B-spline of order [d].
+->[j]:    the level the B-splines lives on.
+->[k]:    the translation of the B-spline.
+==list:end==
+
+==section: Essential properties==
+
+==subsection: The support==
+For the dual B-spline with parameters d and d_ we have the following support
+==latex==
+$$\supp\ {}_{d,\td}\tilde\varphi = [\ell_1-\td+1,\ell_2+\td-1] =: [\tilde\ell_1,\tilde\ell_2]$$
+====
+where we use the support of the corresponding (primal) B-spline
+==latex==
+$$\supp\ {}_d\varphi = [\ell_1,\ell_2] = [\frac{1}{2}(-d+\mu(d)),\frac{1}{2}(d+\mu(d))].$$
+====
+For the scaled and translated version we yield
+==latex==
+\supp\ {}_{d,\td}\tilde\varphi_{[j,k]} = 2^{-j}[\tilde\ell_1+k,\tilde\ell_2+k].
+====
+
+==section: Essential algorithms==
+
+==subsection: Point evaluation for duals of cardinal B-splines==
+On the dual side point evaluation is slightly more complicated than on the primal side (we no longer have B-splines!).
+
+==section: Constructors==
+The least one has to provide when allocating a dual B-spline object is the order of the B-spline [d] and [d_]. The other parameters [j,k] are assumed to be zero.
+
+==subsection: Constructs dual B-spline (given: d, d_)==
+==coderef==
+BSpline(int _d, int _d_);
+====
+Constructs the dual B-spline [$N_{d,\tilde{d}}$] on level 0 (centralized).
+
+==section: Operators==
+
+==subsection: point evaluation (given: x, level, translation)==
+==coderef==
+T
+operator()(T x, int j, int k) const;
+====
+Evaluates the dual B-spline on level [j] with translation [k] at [x].
+
+==section: Methods==
+
+==subsection: The support of the B-spline (given: level, translation)==
+==coderef==
+Support<T>
+support(int j, int k) const;
+====
+Returns the support of the B-spline on level [j] with translation [k].
+
+
+==section: Public Member Variables==
+==code.cc==
+const int d, d_, mu;
+const DenseVector<Array<T> > a_;
+====
+
+==subsection: the order of the B-spline  (d)==
+==code.cc==
+const int d, d_;
+====
+[d] and [d_] select the dual B-spline. Notice that [d] and [d_] are constant during the lifetime of the object.
+
+==subsection: the "shift from symmetry"  (mu)==
+==code.cc==
+const int mu;
+====
+We use [cardinal centralized B-splines] i.e. they are symmetric around [$x=0$] for even [d] and around [$x=\frac{1}{2}$] for odd [d]. Thus we define [$\mu(d) := d\ \text{mod}\ 2$] and yield [${}_{d,\tilde{d}}\tilde\varphi(x+\mu(d)) = {}_{d,\tilde{d}}\tilde\varphi(-x)$]. We will need this variable [mu] in many cases when we deal with this "shifted symmetry". Since [d] is a constant [mu] is as well.
+
+==subsection: the refinement coefficients of the B-spline  (a_)==
+==code.cc==
+const DenseVector<Array<T> > a_;
+====
+The dual B-spline is a refinable function with finite mask [$\mathbf{\tilde{a}}=(\tilde{a}_k)_{\tilde{\ell}_1\leq k\leq\tilde{\ell}_2} $]. These refinement coefficients [$\tilde{a}_k$] are stored in the vector [a_] with corresponding range [$(\tilde{\ell}_1,\ \tilde{\ell}_2)$]. Notice that [a_] is constant during the lifetime of the object.

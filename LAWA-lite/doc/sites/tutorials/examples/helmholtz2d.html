@@ -1,0 +1,332 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../../index.html">home</a></li>
+<li><a href="../../doc/license.html">license</a></li>
+<li><a href="../../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../../doc/features.html">lawa features</a></li>
+<li><a href="../../doc/highperformance.html">high performance</a></li>
+<li><a href="../../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../../doc/download.html">download</a></li>
+<li><a href="../../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+
+
+<h3 class="doc">
+Tutorial 2: Helmholtz Equation in 2D</h3>
+
+<p >
+     In our second tutorial we consider a two dimensional example, a  <i>Helmholtz Equation in 2D</i>. To be more precise:</p><p >
+     We calculate on the two-dimensional domain [0,1] x [0,1] with </p><ul class="itemize">
+    <li>
+        <p >
+             periodic boundary conditions in the first dimension,        </p>    </li>
+    <li>
+        <p >
+             homogeneous Dirichlet boundary conditions in the second dimension,         </p>    </li>
+</ul>
+<p >
+     i.e. we have</p>\[\begin{cases}\ \    - \Delta u + c\cdot u = f  & \text{ on } (0,1)^2 \\\ \    u(1,y) = u(0,y)     & \text{ for } y \in [0,1] \\\ \    u(x,0) = u(x,1) = 0 & \text{ for } x \in [0,1]\end{cases}         \]<p >
+     Again the solution is obtained using a uniform Wavelet-Galerkin method with a diagonal scaling preconditioner.</p><div class="code">
+<div class="code_title">
+<a class="code" href="../../download/tutorials/examples/helmholtz2d.cpp">
+tutorials/examples/helmholtz2d.cpp
+</a>
+</div><!-- Blub -->
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#8080ff">/*</span><span style="color:#8080ff">&nbsp;HELMHOLTZ PROBLEM 2D</span><br>
+<!-- CodeLine     2 --><span style="color:#8080ff">&nbsp;*</span><br>
+<!-- CodeLine     3 --><span style="color:#8080ff">&nbsp;* This example calculates a Helmholtz problem on the two-dimensional domain [0,1]&nbsp;</span><br>
+<!-- CodeLine     4 --><span style="color:#8080ff">&nbsp;* with periodic boundary conditions in the first dimension and Dirichlet conditions</span><br>
+<!-- CodeLine     5 --><span style="color:#8080ff">&nbsp;* in the second dimension, i.e.</span><br>
+<!-- CodeLine     6 --><span style="color:#8080ff">&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp; - u_xx + c * u = f on (0,1)^2 ,&nbsp;</span><br>
+<!-- CodeLine     7 --><span style="color:#8080ff">&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; u(1,y) = u(0,y)&nbsp;&nbsp;&nbsp;&nbsp; for y in [0,1],</span><br>
+<!-- CodeLine     8 --><span style="color:#8080ff">&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; u(x,0) = u(x,1) = 0 for x in [0,1]</span><br>
+<!-- CodeLine     9 --><span style="color:#8080ff">&nbsp;* The solution is obtained using a uniform Wavelet-Galerkin method with a</span><br>
+<!-- CodeLine    10 --><span style="color:#8080ff">&nbsp;* diagonal scaling preconditioner.</span><br>
+<!-- CodeLine    11 --><span style="color:#8080ff">&nbsp;</span><span style="color:#8080ff">*/</span><br>
+<!-- CodeLine    12 --><br>
+<!-- CodeLine    13 --><span style="color:#8080ff">/// _The complete example code in snippets:_</span><br>
+<!-- CodeLine    14 --><span style="color:#c000c0">#include&nbsp;</span><span style="color:#c00000">&lt;iostream&gt;</span><br>
+<!-- CodeLine    15 --><span style="color:#c000c0">#include&nbsp;</span><span style="color:#c00000">&lt;fstream&gt;</span><br>
+<!-- CodeLine    16 --><span style="color:#c000c0">#include&nbsp;</span><span style="color:#c00000">&lt;lawa/lawa.h&gt;</span><br>
+<!-- CodeLine    17 --><br>
+<!-- CodeLine    18 --><span style="color:#af5f00">using</span>&nbsp;<span style="color:#008000">namespace</span>&nbsp;std;<br>
+<!-- CodeLine    19 --><span style="color:#af5f00">using</span>&nbsp;<span style="color:#008000">namespace</span>&nbsp;lawa;<br>
+<!-- CodeLine    20 --><br>
+<!-- CodeLine    21 --><span style="color:#8080ff">/// Typedefs for Flens data types:</span><br>
+<!-- CodeLine    22 --><span style="color:#008000">typedef</span>&nbsp;<span style="color:#008000">double</span>&nbsp;T;<br>
+<!-- CodeLine    23 --><span style="color:#008000">typedef</span>&nbsp;flens::GeMatrix&lt;flens::FullStorage&lt;T, cxxblas::ColMajor&gt; &gt;&nbsp;&nbsp;FullColMatrixT;<br>
+<!-- CodeLine    24 --><span style="color:#008000">typedef</span>&nbsp;flens::SparseGeMatrix&lt;flens::CRS&lt;T,flens::CRS_General&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;SparseMatrixT;<br>
+<!-- CodeLine    25 --><span style="color:#008000">typedef</span>&nbsp;flens::DiagonalMatrix&lt;T&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DiagonalMatrixT;<br>
+<!-- CodeLine    26 --><span style="color:#008000">typedef</span>&nbsp;flens::DenseVector&lt;flens::Array&lt;T&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT;<br>
+<!-- CodeLine    27 --><br>
+<!-- CodeLine    28 --><span style="color:#8080ff">/// Typedefs for problem components: +</span><br>
+<!-- CodeLine    29 --><span style="color:#8080ff">/// Periodic Basis using CDF construction +</span><br>
+<!-- CodeLine    30 --><span style="color:#8080ff">/// Interval Basis using Dijkema construction +</span><br>
+<!-- CodeLine    31 --><span style="color:#8080ff">/// TensorBasis: uniform (= full) basis</span><br>
+<!-- CodeLine    32 --><span style="color:#008000">typedef</span>&nbsp;Basis&lt;T, Primal, Periodic, CDF&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PrimalBasis_x;<br>
+<!-- CodeLine    33 --><span style="color:#008000">typedef</span>&nbsp;Basis&lt;T, Primal, Interval, Dijkema&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PrimalBasis_y;<br>
+<!-- CodeLine    34 --><span style="color:#008000">typedef</span>&nbsp;TensorBasis2D&lt;Uniform, PrimalBasis_x, PrimalBasis_y&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Basis2D;<br>
+<!-- CodeLine    35 --><span style="color:#8080ff">///&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HelmholtzOperator in 2D, i.e. for $a(v,u) = \int(v_x \cdot u_x) + c \cdot \int(v \cdot u)$</span><br>
+<!-- CodeLine    36 --><span style="color:#008000">typedef</span>&nbsp;HelmholtzOperator2D&lt;T, Basis2D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HelmholtzOp2D;<br>
+<!-- CodeLine    37 --><span style="color:#8080ff">///&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Preconditioner: diagonal scaling with norm of operator</span><br>
+<!-- CodeLine    38 --><span style="color:#008000">typedef</span>&nbsp;DiagonalMatrixPreconditioner2D&lt;T, Basis2D, HelmholtzOp2D&gt;&nbsp;&nbsp; DiagonalPrec;<br>
+<!-- CodeLine    39 --><span style="color:#8080ff">///&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Right Hand Side (RHS): basic 2D class for rhs integrals of the form $\int f \cdot v$,</span><br>
+<!-- CodeLine    40 --><span style="color:#8080ff">///&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with $f(x,y) = f_1(x) \cdot f_2(y)$, i.e. the RHS is separable.</span><br>
+<!-- CodeLine    41 --><span style="color:#008000">typedef</span>&nbsp;SeparableRHS2D&lt;T, Basis2D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RhsIntegral2D;<br>
+<!-- CodeLine    42 --><span style="color:#008000">typedef</span>&nbsp;SumOfTwoRHSIntegrals&lt;T, Index2D, RhsIntegral2D,<br>
+<!-- CodeLine    43 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RhsIntegral2D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SumOf2RHS;<br>
+<!-- CodeLine    44 --><br>
+<!-- CodeLine    45 --><span style="color:#8080ff">/// The constant 'c' in the Helmholtz equation.</span><br>
+<!-- CodeLine    46 --><span style="color:#008000">const</span>&nbsp;<span style="color:#008000">double</span>&nbsp;c =&nbsp;&nbsp;<span style="color:#c00000">2.</span>;<br>
+<!-- CodeLine    47 --><br>
+<!-- CodeLine    48 --><span style="color:#8080ff">/// The solution u is given as $u(x,y) = u_1(x) \cdot u_2(y)$.</span><br>
+<!-- CodeLine    49 --><span style="color:#8080ff">///</span><br>
+<!-- CodeLine    50 --><span style="color:#8080ff">/// ___ LATEX __________________________________________________________________</span><br>
+<!-- CodeLine    51 --><span style="color:#8080ff">/// u_1(x) = \begin{cases}</span><br>
+<!-- CodeLine    52 --><span style="color:#8080ff">///&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.5 x + 0.5,&nbsp;&nbsp;&nbsp;&nbsp;&amp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0 \leq x \leq 0.25 \\</span><br>
+<!-- CodeLine    53 --><span style="color:#8080ff">///&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1.5 x + 1.25,&nbsp;&nbsp; &amp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.25 &lt; x \leq 0.75 \\</span><br>
+<!-- CodeLine    54 --><span style="color:#8080ff">///&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.5(x-1) + 0.5, &amp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.75 &lt; x \leq 1&nbsp;</span><br>
+<!-- CodeLine    55 --><span style="color:#8080ff">///&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\end{cases}\hspace{1.5cm}</span><br>
+<!-- CodeLine    56 --><span style="color:#8080ff">/// u_2(y) = \begin{cases}</span><br>
+<!-- CodeLine    57 --><span style="color:#8080ff">///&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y,&nbsp;&nbsp; &amp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 \leq y \leq 0.5 \\</span><br>
+<!-- CodeLine    58 --><span style="color:#8080ff">///&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1-y,&nbsp;&nbsp; &amp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0.5 &lt; y \leq 1</span><br>
+<!-- CodeLine    59 --><span style="color:#8080ff">///&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\end{cases}</span><br>
+<!-- CodeLine    60 --><span style="color:#8080ff">/// ____________________________________________________________________________</span><br>
+<!-- CodeLine    61 --><br>
+<!-- CodeLine    62 --><span style="color:#8080ff">/// Right Hand Side for Laplace Operator and separable u (as given):</span><br>
+<!-- CodeLine    63 --><span style="color:#8080ff">///</span><br>
+<!-- CodeLine    64 --><span style="color:#8080ff">/// ___ LATEX __________________________________________________________________</span><br>
+<!-- CodeLine    65 --><span style="color:#8080ff">/// -u_{xx}(x,y) - u_{yy}(x,y) + c \cdot u = (-u_{1_{xx}} + 0.5 \cdot c \cdot u_1) \cdot u_2 + u_1 \cdot (-u_{2_{yy}} + 0.5 \cdot c \cdot u_2)</span><br>
+<!-- CodeLine    66 --><span style="color:#8080ff">/// ____________________________________________________________________________</span><br>
+<!-- CodeLine    67 --><span style="color:#8080ff">///&nbsp;&nbsp;which will be represented as `f_rhs_x * u1 + u2 * f_rhs_y`.</span><br>
+<!-- CodeLine    68 -->T u1(T x)<br>
+<!-- CodeLine    69 -->{<br>
+<!-- CodeLine    70 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>(x &lt;=&nbsp;<span style="color:#c00000">0.25</span>){<br>
+<!-- CodeLine    71 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">return</span>&nbsp;<span style="color:#c00000">1.5</span>*x +&nbsp;<span style="color:#c00000">0.5</span>;<br>
+<!-- CodeLine    72 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    73 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>(x &lt;=&nbsp;<span style="color:#c00000">0.75</span>){<br>
+<!-- CodeLine    74 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">return</span>&nbsp;-<span style="color:#c00000">1.5</span>*x +&nbsp;<span style="color:#c00000">1.25</span>;<br>
+<!-- CodeLine    75 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    76 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">return</span>&nbsp;<span style="color:#c00000">1.5</span>*(x-<span style="color:#c00000">1.</span>) +&nbsp;<span style="color:#c00000">0.5</span>;<br>
+<!-- CodeLine    77 -->}<br>
+<!-- CodeLine    78 --><br>
+<!-- CodeLine    79 -->T u2(T y)<br>
+<!-- CodeLine    80 -->{<br>
+<!-- CodeLine    81 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>(y &lt;=&nbsp;<span style="color:#c00000">0.5</span>){<br>
+<!-- CodeLine    82 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">return</span>&nbsp;y;<br>
+<!-- CodeLine    83 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    84 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">return</span>&nbsp;-y +&nbsp;<span style="color:#c00000">1</span>;<br>
+<!-- CodeLine    85 -->}<br>
+<!-- CodeLine    86 --><br>
+<!-- CodeLine    87 -->T f_rhs_x(T x)<br>
+<!-- CodeLine    88 -->{<br>
+<!-- CodeLine    89 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">return</span>&nbsp;<span style="color:#c00000">0.5</span>&nbsp;* c * u1(x);<br>
+<!-- CodeLine    90 -->}<br>
+<!-- CodeLine    91 --><br>
+<!-- CodeLine    92 -->T f_rhs_y(T y)<br>
+<!-- CodeLine    93 -->{<br>
+<!-- CodeLine    94 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">return</span>&nbsp;<span style="color:#c00000">0.5</span>&nbsp;* c * u2(y);<br>
+<!-- CodeLine    95 -->}<br>
+<!-- CodeLine    96 --><br>
+<!-- CodeLine    97 -->T sol(T x, T y)<br>
+<!-- CodeLine    98 -->{<br>
+<!-- CodeLine    99 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">return</span>&nbsp;u1(x) * u2(y);<br>
+<!-- CodeLine   100 -->}<br>
+<!-- CodeLine   101 --><br>
+<!-- CodeLine   102 -->T dx_sol(T x, T y)<br>
+<!-- CodeLine   103 -->{<br>
+<!-- CodeLine   104 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>(x &lt;=&nbsp;<span style="color:#c00000">0.25</span>){<br>
+<!-- CodeLine   105 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">return</span>&nbsp;<span style="color:#c00000">1.5</span>&nbsp;* u2(y);<br>
+<!-- CodeLine   106 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine   107 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>(x &lt;=&nbsp;<span style="color:#c00000">0.75</span>){<br>
+<!-- CodeLine   108 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">return</span>&nbsp;-<span style="color:#c00000">1.5</span>&nbsp;* u2(y);<br>
+<!-- CodeLine   109 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine   110 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">return</span>&nbsp;<span style="color:#c00000">1.5</span>&nbsp;* u2(y);<br>
+<!-- CodeLine   111 -->}<br>
+<!-- CodeLine   112 --><br>
+<!-- CodeLine   113 -->T dy_sol(T x, T y)<br>
+<!-- CodeLine   114 -->{<br>
+<!-- CodeLine   115 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>(y &lt;=&nbsp;<span style="color:#c00000">0.5</span>){<br>
+<!-- CodeLine   116 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">return</span>&nbsp;u1(x);<br>
+<!-- CodeLine   117 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine   118 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">return</span>&nbsp;-u1(x);<br>
+<!-- CodeLine   119 -->}<br>
+<!-- CodeLine   120 --><br>
+<!-- CodeLine   121 --><span style="color:#8080ff">/// again we provide a function that writes the results into a file for later visualization.</span><br>
+<!-- CodeLine   122 -->DenseVectorT<br>
+<!-- CodeLine   123 -->printUandCalcError(<span style="color:#008000">const</span>&nbsp;DenseVectorT u,&nbsp;<span style="color:#008000">const</span>&nbsp;Basis2D&amp; basis,&nbsp;<span style="color:#008000">const</span>&nbsp;<span style="color:#008000">int</span>&nbsp;J_x,&nbsp;<span style="color:#008000">const</span>&nbsp;<span style="color:#008000">int</span>&nbsp;J_y,&nbsp;<br>
+<!-- CodeLine   124 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">const</span>&nbsp;<span style="color:#008000">char</span>* filename,&nbsp;<span style="color:#008000">const</span>&nbsp;<span style="color:#008000">double</span>&nbsp;deltaX=<span style="color:#c00000">0.01</span>,&nbsp;<span style="color:#008000">const</span>&nbsp;<span style="color:#008000">double</span>&nbsp;deltaY=<span style="color:#c00000">0.01</span>)<br>
+<!-- CodeLine   125 -->{&nbsp;&nbsp;&nbsp;<br>
+<!-- CodeLine   126 -->&nbsp;&nbsp;&nbsp;&nbsp;T L2error =&nbsp;<span style="color:#c00000">0.</span>;<br>
+<!-- CodeLine   127 -->&nbsp;&nbsp;&nbsp;&nbsp;T H1error =&nbsp;<span style="color:#c00000">0.</span>;<br>
+<!-- CodeLine   128 -->&nbsp;&nbsp;&nbsp;&nbsp;ofstream file(filename);<br>
+<!-- CodeLine   129 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>(<span style="color:#008000">double</span>&nbsp;x =&nbsp;<span style="color:#c00000">0.</span>; x &lt;=&nbsp;<span style="color:#c00000">1.</span>; x += deltaX){<br>
+<!-- CodeLine   130 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>(<span style="color:#008000">double</span>&nbsp;y =&nbsp;<span style="color:#c00000">0</span>; y &lt;=&nbsp;<span style="color:#c00000">1.</span>; y += deltaY){<br>
+<!-- CodeLine   131 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T u_approx =&nbsp;&nbsp;&nbsp;&nbsp;evaluate(basis, J_x, J_y, u, x, y,&nbsp;<span style="color:#c00000">0</span>,&nbsp;<span style="color:#c00000">0</span>);<br>
+<!-- CodeLine   132 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T dx_u_approx = evaluate(basis, J_x, J_y, u, x, y,&nbsp;<span style="color:#c00000">1</span>,&nbsp;<span style="color:#c00000">0</span>);<br>
+<!-- CodeLine   133 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T dy_u_approx = evaluate(basis, J_x, J_y, u, x, y,&nbsp;<span style="color:#c00000">0</span>,&nbsp;<span style="color:#c00000">1</span>);<br>
+<!-- CodeLine   134 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file &lt;&lt; x &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span>&nbsp;&lt;&lt; y &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span>&nbsp;&lt;&lt; u_approx &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span>&nbsp;&lt;&lt; sol(x,y) &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span>&nbsp;<br>
+<!-- CodeLine   135 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; dx_u_approx &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span>&nbsp;&lt;&lt; dy_u_approx &lt;&lt; endl;<br>
+<!-- CodeLine   136 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T factor = deltaX * deltaY;<br>
+<!-- CodeLine   137 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>((x ==&nbsp;<span style="color:#c00000">0</span>) || (x ==&nbsp;<span style="color:#c00000">1.</span>)){<br>
+<!-- CodeLine   138 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;factor *=&nbsp;<span style="color:#c00000">0.5</span>;<br>
+<!-- CodeLine   139 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine   140 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>((y ==&nbsp;<span style="color:#c00000">0</span>) || (y ==&nbsp;<span style="color:#c00000">1.</span>)){<br>
+<!-- CodeLine   141 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;factor *=&nbsp;<span style="color:#c00000">0.5</span>;<br>
+<!-- CodeLine   142 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine   143 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L2error += factor * (u_approx -&nbsp;&nbsp;sol(x, y)) * (u_approx - sol(x,y));<br>
+<!-- CodeLine   144 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H1error += factor * (dx_u_approx - dx_sol(x,y))*(dx_u_approx - dx_sol(x,y))<br>
+<!-- CodeLine   145 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+&nbsp;&nbsp;factor * (dy_u_approx - dy_sol(x,y))*(dy_u_approx - dy_sol(x,y));<br>
+<!-- CodeLine   146 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine   147 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine   148 -->&nbsp;&nbsp;&nbsp;&nbsp;file.close();<br>
+<!-- CodeLine   149 -->&nbsp;&nbsp;&nbsp;&nbsp;<br>
+<!-- CodeLine   150 -->&nbsp;&nbsp;&nbsp;&nbsp;H1error += L2error;<br>
+<!-- CodeLine   151 -->&nbsp;&nbsp;&nbsp;&nbsp;L2error = sqrt(L2error);<br>
+<!-- CodeLine   152 -->&nbsp;&nbsp;&nbsp;&nbsp;H1error = sqrt(H1error);<br>
+<!-- CodeLine   153 -->&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT error(<span style="color:#c00000">2</span>);<br>
+<!-- CodeLine   154 -->&nbsp;&nbsp;&nbsp;&nbsp;error = L2error, H1error;<br>
+<!-- CodeLine   155 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">return</span>&nbsp;error;<br>
+<!-- CodeLine   156 -->}<br>
+<!-- CodeLine   157 --><br>
+<!-- CodeLine   158 --><span style="color:#8080ff">/// First we check our arguments ...</span><br>
+<!-- CodeLine   159 --><span style="color:#008000">int</span>&nbsp;main (<span style="color:#008000">int</span>&nbsp;argc,&nbsp;<span style="color:#008000">char</span>*argv[])<br>
+<!-- CodeLine   160 -->{<br>
+<!-- CodeLine   161 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">/*</span><span style="color:#8080ff">&nbsp;PARAMETERS:&nbsp;</span><span style="color:#8080ff">*/</span><br>
+<!-- CodeLine   162 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>(argc !=&nbsp;<span style="color:#c00000">7</span>){<br>
+<!-- CodeLine   163 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr &lt;&lt;&nbsp;<span style="color:#c00000">&quot;Usage: &quot;</span>&nbsp;&lt;&lt; argv[<span style="color:#c00000">0</span>] &lt;&lt;&nbsp;<span style="color:#c00000">&quot; d d_ j0_x J_x j0_y J_y&quot;</span>&nbsp;&lt;&lt; endl;<br>
+<!-- CodeLine   164 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(-<span style="color:#c00000">1</span>);<br>
+<!-- CodeLine   165 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine   166 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">/// ... order of wavelets,</span><br>
+<!-- CodeLine   167 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;d = atoi(argv[<span style="color:#c00000">1</span>]);<br>
+<!-- CodeLine   168 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;d_ = atoi(argv[<span style="color:#c00000">2</span>]);<br>
+<!-- CodeLine   169 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">///&nbsp;&nbsp;... minimal levels&nbsp;</span><br>
+<!-- CodeLine   170 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;j0_x = atoi(argv[<span style="color:#c00000">3</span>]);<br>
+<!-- CodeLine   171 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;j0_y = atoi(argv[<span style="color:#c00000">5</span>]);<br>
+<!-- CodeLine   172 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">/// ... maximal levels.</span><br>
+<!-- CodeLine   173 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;J_x = atoi(argv[<span style="color:#c00000">4</span>]);<br>
+<!-- CodeLine   174 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;J_y = atoi(argv[<span style="color:#c00000">6</span>]);<br>
+<!-- CodeLine   175 --><br>
+<!-- CodeLine   176 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">/// Basis initialization, setting Dirichlet boundary conditions in the second dimension</span><br>
+<!-- CodeLine   177 -->&nbsp;&nbsp;&nbsp;&nbsp;PrimalBasis_x b1(d, d_, j0_x);<br>
+<!-- CodeLine   178 -->&nbsp;&nbsp;&nbsp;&nbsp;PrimalBasis_y b2(d, d_, j0_y);<br>
+<!-- CodeLine   179 -->&nbsp;&nbsp;&nbsp;&nbsp;b2.enforceBoundaryCondition&lt;DirichletBC&gt;();<br>
+<!-- CodeLine   180 -->&nbsp;&nbsp;&nbsp;&nbsp;Basis2D basis2d(b1, b2);<br>
+<!-- CodeLine   181 -->&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt;&nbsp;<span style="color:#c00000">&quot;Cardinality of basis: &quot;</span>&nbsp;&lt;&lt; basis2d.dim(J_x, J_y) &lt;&lt; endl;<br>
+<!-- CodeLine   182 --><br>
+<!-- CodeLine   183 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">/// Operator initialization</span><br>
+<!-- CodeLine   184 -->&nbsp;&nbsp;&nbsp;&nbsp;HelmholtzOp2D&nbsp;&nbsp; a(basis2d, c);<br>
+<!-- CodeLine   185 -->&nbsp;&nbsp;&nbsp;&nbsp;DiagonalPrec&nbsp;&nbsp;&nbsp;&nbsp;p(a);<br>
+<!-- CodeLine   186 --><br>
+<!-- CodeLine   187 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">/// Right Hand Side:</span><br>
+<!-- CodeLine   188 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">///&nbsp;&nbsp;&nbsp;&nbsp; Singular Supports in both dimensions</span><br>
+<!-- CodeLine   189 -->&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT sing_support_x(<span style="color:#c00000">4</span>);<br>
+<!-- CodeLine   190 -->&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT sing_support_y(<span style="color:#c00000">3</span>);<br>
+<!-- CodeLine   191 -->&nbsp;&nbsp;&nbsp;&nbsp;sing_support_x =&nbsp;<span style="color:#c00000">0.</span>,&nbsp;<span style="color:#c00000">0.25</span>,&nbsp;<span style="color:#c00000">0.75</span>,&nbsp;<span style="color:#c00000">1.</span>;<br>
+<!-- CodeLine   192 -->&nbsp;&nbsp;&nbsp;&nbsp;sing_support_y =&nbsp;<span style="color:#c00000">0.</span>,&nbsp;<span style="color:#c00000">0.5</span>,&nbsp;<span style="color:#c00000">1.</span>;<br>
+<!-- CodeLine   193 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">///&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Forcing Functions</span><br>
+<!-- CodeLine   194 -->&nbsp;&nbsp;&nbsp;&nbsp;SeparableFunction2D&lt;T&gt; F1(f_rhs_x, sing_support_x, u2, sing_support_y);<br>
+<!-- CodeLine   195 -->&nbsp;&nbsp;&nbsp;&nbsp;SeparableFunction2D&lt;T&gt; F2(u1, sing_support_x, f_rhs_y, sing_support_y);<br>
+<!-- CodeLine   196 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">///&nbsp;&nbsp;&nbsp;&nbsp; Peaks: points and corresponding coefficients</span><br>
+<!-- CodeLine   197 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">///&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (heights of jumps in derivatives)</span><br>
+<!-- CodeLine   198 -->&nbsp;&nbsp;&nbsp;&nbsp;FullColMatrixT deltas_x(<span style="color:#c00000">2</span>,&nbsp;<span style="color:#c00000">2</span>);<br>
+<!-- CodeLine   199 -->&nbsp;&nbsp;&nbsp;&nbsp;FullColMatrixT deltas_y(<span style="color:#c00000">1</span>,&nbsp;<span style="color:#c00000">2</span>);<br>
+<!-- CodeLine   200 -->&nbsp;&nbsp;&nbsp;&nbsp;FullColMatrixT nodeltas;<br>
+<!-- CodeLine   201 -->&nbsp;&nbsp;&nbsp;&nbsp;deltas_x =&nbsp;<span style="color:#c00000">0.25</span>,&nbsp;<span style="color:#c00000">3</span>,<br>
+<!-- CodeLine   202 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c00000">0.75</span>,-<span style="color:#c00000">3</span>;<br>
+<!-- CodeLine   203 -->&nbsp;&nbsp;&nbsp;&nbsp;deltas_y =&nbsp;&nbsp;<span style="color:#c00000">0.5</span>,&nbsp;<span style="color:#c00000">2</span>;<br>
+<!-- CodeLine   204 -->&nbsp;&nbsp;&nbsp;&nbsp;RhsIntegral2D rhs1(basis2d, F1, deltas_x, nodeltas,&nbsp;<span style="color:#c00000">2</span>);<br>
+<!-- CodeLine   205 -->&nbsp;&nbsp;&nbsp;&nbsp;RhsIntegral2D rhs2(basis2d, F2, nodeltas, deltas_y,&nbsp;<span style="color:#c00000">2</span>);<br>
+<!-- CodeLine   206 -->&nbsp;&nbsp;&nbsp;&nbsp;SumOf2RHS F(rhs1, rhs2);<br>
+<!-- CodeLine   207 --><br>
+<!-- CodeLine   208 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">/// Assemble equations system</span><br>
+<!-- CodeLine   209 -->&nbsp;&nbsp;&nbsp;&nbsp;Assembler2D&lt;T, Basis2D&gt; assembler(basis2d);<br>
+<!-- CodeLine   210 -->&nbsp;&nbsp;&nbsp;&nbsp;SparseMatrixT&nbsp;&nbsp; A = assembler.assembleStiffnessMatrix(a, J_x, J_y);<br>
+<!-- CodeLine   211 -->&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT&nbsp;&nbsp;&nbsp;&nbsp;f = assembler.assembleRHS(F, J_x, J_y);<br>
+<!-- CodeLine   212 -->&nbsp;&nbsp;&nbsp;&nbsp;DiagonalMatrixT P = assembler.assemblePreconditioner(p, J_x, J_y);<br>
+<!-- CodeLine   213 --><br>
+<!-- CodeLine   214 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">/// Solve system</span><br>
+<!-- CodeLine   215 -->&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT u(basis2d.dim(J_x, J_y));<br>
+<!-- CodeLine   216 -->&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt; pcg(P, A, u, f) &lt;&lt;&nbsp;<span style="color:#c00000">&quot; pcg iterations&quot;</span>&nbsp;&lt;&lt; endl;<br>
+<!-- CodeLine   217 --><br>
+<!-- CodeLine   218 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">/// Generate output for gnuplot visualization</span><br>
+<!-- CodeLine   219 -->&nbsp;&nbsp;&nbsp;&nbsp;printUandCalcError(u, basis2d, J_x, J_y,&nbsp;<span style="color:#c00000">&quot;u_helmholtz_pi.txt&quot;</span>);<br>
+<!-- CodeLine   220 --><br>
+<!-- CodeLine   221 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">return</span>&nbsp;<span style="color:#c00000">0</span>;<br>
+<!-- CodeLine   222 -->}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>

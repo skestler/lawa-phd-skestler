@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../../../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../../../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../../../index.html">home</a></li>
+<li><a href="../../../doc/license.html">license</a></li>
+<li><a href="../../../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../../../doc/features.html">lawa features</a></li>
+<li><a href="../../../doc/highperformance.html">high performance</a></li>
+<li><a href="../../../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../../../doc/download.html">download</a></li>
+<li><a href="../../../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../../../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../../../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../../../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+<p >
+     ==title: refinement matrices for the interval==</p><p >
+     The class realizing refinement matrices on the interval is</p><p >
+     a specialization of the general {@lawa/refinementmatrix}{[RefinementMatrix]} class. The signature reads</p><p >
+     ==code.cc== template &lt;typename T,</p><p >
+     Construction Cons&gt;</p>
+
+<h2 class="doc">
+    </h2>
+
+<p >
+     ==section: Structure of refinement matrices== Independent of the specific construction at hand all refinement matrices on the interval share some block-band-block structure: ==latex== \begin{equation} \label{DKU2-4.1.23}</p><p >
+     M :=  \def\arraystretch{1.5} \begin{array}{|c|c|c|}</p><p >
+     \hline \raisebox{-2ex}{block} & \multicolumn{2}{c|}{}\\ \cline{2-2} && \\ \cline{1-1} & \vline height 5ex depth 4ex width 0pt \quad</p><p >
+     band\quad & \\</p><p >
+     \cline{3-3} && \\ \cline{2-2} \multicolumn{2}{|c|}{} & \raisebox{2ex}{block} \\ \hline</p><p >
+     \end{array}</p><p >
+     \qquad \in \R^{m \times n}. \end{equation} ==== where block stands for a dense block and band for a vector repeated &#8220;along&#8221 the diagonal.</p><p >
+     ==section: Constructors== ==subsection: Construct an empty Object (default constructor)== ==code.cc== RefinementMatrix(); ==== The default constructor is there only for practical reasons (to be able to use objects of this type as members and initialize later on). ==subsection: Construct from block, band, block and level== ==code.cc== RefinementMatrix(const GeMatrix&lt;FullStorage&lt;T, ColMajor&gt; &gt; &_Left,</p><p >
+     const GeMatrix&lt;FullStorage&lt;T, ColMajor&gt; &gt; &<i>Right, const DenseVector&lt;Array&lt;T&gt; &gt; &</i>band, int _j0);</p><p >
+     ==== Constructs a refinement matrix on level [<i>j0] from its ingredients: upper left block [</i>Left], lower right block [<i>Right] and inner band [</i>band].</p><p >
+     ==section: Operators== ==subsection: Access one column of the matrix== ==code.cc== const typename DenseVector&lt;Array&lt;T&gt; &gt;::ConstView operator()(int j, const Underscore&lt;int&gt; &u, int col) const; ====</p><p >
+     ==section: Member functions== ==subsection: The row range on level j== ==code.cc== Range&lt;int&gt; rows(int j) const; ====</p><p >
+     ==subsection: The column range on level j== ==code.cc== Range&lt;int&gt; cols(int j) const; ====</p><p >
+     ==subsection: The number of rows on level j== ==code.cc== int numRows(int j) const; ====</p><p >
+     ==subsection: The number of columns on level j== ==code.cc== int numCols(int j) const; ====</p><p >
+     ==subsection: the first row index (on level j)== ==code.cc== int firstRow(int j) const; ====</p><p >
+     ==subsection: the last row index on level j== ==code.cc== int lastRow(int j) const; ====</p><p >
+     ==subsection: the first column index (on level j)== ==code.cc== int firstCol(int j) const; ====</p><p >
+     ==subsection: the last column index on level j== ==code.cc== int lastCol(int j) const; ====</p><p >
+     ==section: Public Member Variables== ==code.cc== const GeMatrix&lt;FullStorage&lt;T, ColMajor&gt; &gt; Left, Right; const DenseVector&lt;Array&lt;T&gt; &gt; band; const int j0; ====</p><p >
+     ==subsection: The boundary blocks (Left, Right)== ==code.cc== const GeMatrix&lt;FullStorage&lt;T, ColMajor&gt; &gt; Left, Right; ====</p><p >
+     ==subsection: The inner band (band)== ==code.cc== const DenseVector&lt;Array&lt;T&gt; &gt; band; ==== ==subsection: The initial level (j0)== ==code.cc== const int j0; ====</p><!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,193 @@
+==title:Primal biorthogonal B-spline wavelets on the real line==
+
+The class realizing primal B-spline wavelets on the real line is a specialization of the general {@lawa/wavelet}{[Wavelet]} class. The signature reads
+==code.cc==
+template <typename T,
+    class Wavelet<T,Primal,R,CDF>;
+====
+with [FunctionSide=Primal], [DomainType=R] and [Construction=CDF] as fixed template parameters.
+
+One particular primal B-spline wavelet is (completely) characterized by the following properties:
+==list:begin==
+->[d,d_]:    [d] and [d_] select the corresponding B-Spline and dual scaling function associated to the wavelet.
+->[j]:    the level the wavelet lives on.
+->[k]:    the translation of the wavelet.
+->[deriv]:     the [deriv]th derivative of the wavelet.
+==list:end==
+The primal B-spline wavelet [${}_{d,\td}\psi$] is constructed from the parameters
+[d],[d_] and [deriv]. When we deal with multilevel methods we use scaled ([j])
+and shifted ([k]) versions of [${}_{d,\td}\psi$]. Most often we will use [j] and
+ [k] as kind of iterator, e.g. we iterate over all shifted primal B-spline wavelets
+ [${}_{d,\td}\psi$] on level [j].
+
+==section: Essential properties==
+
+==subsection: The refinement coefficients==
+The refinement coefficients are determined by the refinement coefficients of the
+dual scaling function in the following way
+==latex==
+$$b_k = (-1)^k \tilde{a}_{1-k}$$
+====
+==subsection: The support==
+The support of [${}_{d,\td}\psi$] can be derived from the representation
+==latex==
+\begin{equation*}
+\psi(x) := \sum_{k\in\Z}b_k\varphi(2x-k)\tag{*}
+\end{equation*}
+====
+The factor [$b_k$] can only be nonzero for [$k\in[2-\frac{1}{2}(d-\mu(d)) - \td, \frac{1}{2}(d-\mu(d)) + \td]$].
+Using this range we yield nonzero for the scaling function iff
+[$(2x-k)\in\supp\ \varphi$]. So we get
+==list:begin==
+->[left border:] [$2x-2+\frac{1}{2}(d+\mu(d)) + \td \geq \frac{1}{2}(\mu(d)-d)$]
+->[right border:] [$2x+\frac{1}{2}(\mu(d)-d) - \td \leq \frac{1}{2}(\mu(d)+d)$]
+==list:end==
+Simplifying this yields
+
+==latex==
+\supp\ {}_{d,\td}\psi = [\frac{1}{2}(2-(d+\td)),\frac{1}{2}(d+\td)]=: [\ell_1,\ell_2].
+====
+For the scaled and translated version we yield
+==latex==
+\supp\ {}_{d,\td}\psi_{[j,k]} = 2^{-j}[\ell_1+k,\ell_2+k].
+====
+
+==subsection: The singular support==
+Since a primal B-spline wavelet has support of length [d+d_] and we have twice
+as much polynomial pieces (as you can see from (*)), the singular support is [linspace(l1,l2,2*(d+d_)-1)].
+
+==subsection: Point evaluation of derivatives of wavelets==
+As for B-splines we have the analogous relation
+==latex==
+$$\psi_{[j,k]} := 2^{j/2}\psi(2^jx-k)$$
+====
+and utilizing (*) again we already have a straight forward formula to evaluate
+wavelets as long as there are no derivatives given. Derivatives can be handled
+the same way but we get another factor (from the derivative of the inner function)
+which can be easily verified as [$2^{\mathtt{deriv}*(j+1)}$] (for every derivative we get
+an additional factor [$2^{j+1}$] since we have to derive [$2^{j+1}x$]!).
+
+
+==section: Constructors==
+
+==subsection: Constructs a primal B-spline wavelet (given: d,d_)==
+==coderef==
+Wavelet(int _d, int _d_);
+====
+Constructs the primal B-spline wavelet [${}_{d,\td}\psi$].
+
+==subsection: Constructs a primal B-spline wavelet (given: d,d_,deriv)==
+==coderef==
+Wavelet(int _d, int _d_, int _deriv);
+====
+Constructs the [_deriv]th derivative of the primal B-spline wavelet [${}_{d,\td}\psi$].
+
+==subsection: Constructs a primal B-spline wavelet (given: _phi,_phi_)==
+==coderef==
+Wavelet(const BSpline<T,Primal,R,CDF> &_phi,
+        const BSpline<T,Dual,R,CDF> &_phi_);
+====
+Constructs the primal B-spline wavelet [${}_{d,\td}\psi$].
+
+==subsection: Constructs a primal B-spline wavelet (given: _phi,_phi_,_deriv)==
+==coderef==
+Wavelet(const BSpline<T,Primal,R,CDF> &_phi,
+        const BSpline<T,Dual,R,CDF> &_phi_,
+        int _deriv);
+====
+Constructs the [_deriv]th derivative of the primal B-spline wavelet [${}_{d,\td}\psi$].
+
+==section: Operators==
+
+==subsection: point evaluation (given: x, level, translation)==
+==coderef==
+T
+operator()(T x, int j, int k) const;
+====
+Evaluates the (derivative of the) wavelets on level [j] with translation [k] at [x].
+
+==section: Member functions==
+
+==subsection: The support of the wavelet (given: level, translation)==
+==coderef==
+Support<T>
+support(int j, int k) const;
+====
+Returns the support of the wavelet on level [j] with translation [k].
+
+==subsection: The singular support of the wavelet (given: level, translation)==
+==coderef==
+DenseVector<Array<T> >
+singularSupport(int j, int k) const;
+====
+Returns the {@concepts/singularsupport}{singular support} of the wavelet on level [j] with translation [k].
+
+==subsection: The width of a polynomial piece (given: j)==
+==coderef==
+T
+tic(int j) const;
+====
+Returns the width of each polynomial piece of the wavelet on level [j].
+
+==section: Public Member Variables==
+
+==code.cc==
+const int d, d_, mu;
+const int deriv, polynomialOrder
+const int vanishingMoments;
+const int l1, l2;
+const DenseVector<Array<T> > b;
+const BSpline<T,Primal,R,CDF> phi,
+      BSpline<T,Dual,R,CDF> phi_;
+====
+
+==subsection: the specific wavelet  (d,d_)==
+==code.cc==
+const int d, d_;
+====
+[d] and [d_] select the primal B-spline wavelet [${}_{d,\td}\psi$]. Notice that [d] and [d_] are constants during the lifetime of the object.
+
+==subsection: the "shift from symmetry"  (mu)==
+==code.cc==
+const int mu;
+====
+The wavelets are based on [cardinal centralized B-splines] which are symmetric around [$x=0$] for even [d] and around [$x=\frac{1}{2}$] for odd [d]. Thus we define [$\mu(d) := d\ \text{mod}\ 2$] and yield [${}_d\varphi(x+\mu(d)) = {}_d\varphi(-x)$]. We will need this variable [mu] in many cases when we deal with this "shifted symmetry". Since [d] is a constant [mu] is as well.
+
+==subsection: the derivative of wavelet  (deriv)==
+==code.cc==
+const int deriv;
+====
+The object represents the [deriv]th derivative of the wavelet. For practical reasons only derivatives less than the [d]th derivative are allowed. Notice that [deriv] is a constant during the lifetime of the object.
+
+==subsection: the polynomial order of the wavelet  (polynomialOrder)==
+==code.cc==
+const int polynomialOrder;
+====
+The polynomial order of the wavelet, i.e the highest degree power in its polynomial representation. Notice that [polynomialOrder] is a constant during the lifetime of the object.
+
+==subsection: the number of vanishing moments of the wavelet  (vanishingMoments)==
+==code.cc==
+const int vanishingMoments;
+====
+The number of vanishing moments of the wavelet. Notice that [vanishingMoments] is a constant during the lifetime of the object.
+
+==subsection: the support of the wavelet  (l1,l2)==
+==code.cc==
+const int l1, l2;
+====
+The support of the wavelet. Notice that [l1] and [l2] are constants during the lifetime of the object.
+
+==subsection: the refinement coefficients of the wavelet  (b)==
+==code.cc==
+const DenseVector<Array<T> > b;
+====
+The wavelet is a refinable function with finite mask [$\mathbf{b}=(b_k)_{\ell_1\leq k\leq\ell_2} $]. These refinement coefficients [$b_k$] are stored in the vector [b] with corresponding range  [$(\ell_1,\ \ell_2)$]. Notice that [b] is a constant during the lifetime of the object.
+
+==subsection: the underlying scaling functions (phi, phi_)==
+==code.cc==
+const BSpline<T,Primal,R,CDF> phi,
+      BSpline<T,Dual,R,CDF> phi_;
+====
+The underlying scaling functions [phi] and [phi_] from which the wavelet is constructed.
+
+

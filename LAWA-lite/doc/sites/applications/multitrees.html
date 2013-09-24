@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../index.html">home</a></li>
+<li><a href="../doc/license.html">license</a></li>
+<li><a href="../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../doc/features.html">lawa features</a></li>
+<li><a href="../doc/highperformance.html">high performance</a></li>
+<li><a href="../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../doc/download.html">download</a></li>
+<li><a href="../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+<p >
+     <a href="applications.html">PhD thesis by S.K.</a> - <a href="multitrees.html">Multitree based algorithms</a></p>
+
+<h2 class="doc">
+Multitree based algorithms (Chapters 6 and 7)</h2>
+
+<p >
+     We describe the realization of the multitree-based algorithms from Chapters  6 and 7. We start with tree structures and required routines.</p>
+
+<h3 class="doc">
+Tree structured index sets and required routines</h3>
+
+<p >
+     In Chapter 6 and 7, our tensor product bases are composed of univariate uniformly local, piecewise polynomial wavelet bases \(\Psi\) which can be written as follows</p>\[   \Psi = \bigcup_{j \in \mathbb{N}_0} \Psi_j, \qquad \Psi_0 := \Phi_1,\]<p >
+     where</p>\[   \Psi_j = \{ \psi_{j,k} : k \in \mathcal{J}_j \}\]<p >
+     and where</p>\[   \Phi_j = \{ \phi_{j,k} : k \in \mathcal{I}_j \}\]<p >
+     for \(j \in \mathbb{N}\) corresponds to the collection of scaling functions on level \(j\) associated to the wavelet basis \(\Psi\).</p><p >
+     The evaluation schemes \(\textbf{EvalS}\), \(\textbf{EvalU}\) and \(\textbf{EvalL}\) are (mainly) based on the refinement of scaling functions \(\phi_{j,k}\) and wavelets \(\psi_{j,k}\) in terms of scaling functions on level \(j+1\), i.e.,</p>\[   \Psi_j = \mathrm{M}_{j,1}^\top \Phi_{j+1} , \qquad \Phi_j = \mathrm{M}_{j,0}^\top \Phi_{j+1}.\]<p >
+     for refinement matrices \(\mathrm{M}_{j,0}\) and \(\mathrm{M}_{j,1}\).</p><p >
+     In order to obtain an efficient numerical scheme, the elements of \(\Phi_j\) (for which we evaluate underlying bilinear forms) should be &#8220;easy to handle&#8221. For standard basis constructions, the scaling functions are B-Splines which do not impose any problems. For multiwavelet basis, however, we have multiple types of scaling functions whose distinction is computationally costly. To this end, furthermore, we also consider so-called uniformly local, piecewise polynomial <tt>refinement bases</tt></p>\[   \bar\Phi_{j+\bar{j}} = \{ \bar\phi_{j+\bar{j},k} : k \in \bar{\mathcal{I}}_{j+\bar{j}} \}\]<p >
+     for \(j = 0,1,\ldots\) and a certain \(\bar j>0\) such that</p>\[\begin{align*}  & \bar{\Phi}_{j+\bar{j}} = \bar{\bar{\mathrm{M}}}_{j,0}^\top \bar{\Phi}_{j+\bar{j}+1 }, \\  & \Psi_j = \bar{\mathrm{M}}_{j,1}^\top \bar{\Phi}_{j+\bar j+1}, \qquad \Phi_j = \bar{\mathrm{M}}^\top_{j,0} \bar{\Phi}_{j+\bar j},\\  & \mathrm{span}\bar{\Phi}_{j+\bar j+1} \supseteq \mathrm{span} \Phi_j \cup \Psi_j,\end{align*}\]<p >
+     for refinement matrices \(\bar{\mathrm{M}}_{j,0}\) and \(\bar{\mathrm{M}}_{j,1}\). For our purposes, we may always think of \(\bar{\Phi}_j\) as a collections of B-Splines to which we shall also refer to as <tt>refinement B-Splines</tt>.</p><p >
+     Observe that for the refinement of wavelets in terms of refinement B-Splines, we need to use refinement B-Splines on one level higher than for scaling functions. This is due to the fact that wavelets are finite linear combinations of scaling functions on the next higher level.</p><p >
+     It is also important to note that if scaling functions are already B-Splines, then refinement B-Splines and scaling functions are actually the same. In particular, \(\bar{\mathrm{M}}_{j,0}\) is an identity matrix and \(\bar j = 0\).</p><p >
+     As we shall also see below, that the adoption of the algorithms \(\textbf{EvalS}\), \(\textbf{EvalU}\) and \(\textbf{EvalL}\) to this slightly extended setting is straightforward.</p><p >
+     In order to set up, test and understand the tree structure of one-dimensional index sets (or, respectively, coefficient vectors), we have the following test programs:</p><ul class="itemize">
+    <li>
+        <p >
+             <a href="new_eval_scheme/doc/test_local_refinement.html">Refinements and neighbors on the interval</a>: <tt>applications/new_eval_scheme/test_local_refinement.cpp</tt>        </p>    </li>
+    <li>
+        <p >
+             <a href="new_eval_scheme/doc/test_local_refinement_realline.html">Refinements and neighbors on the realline</a>: <tt>applications/new_eval_scheme/test_local_refinement_realline.cpp</tt>        </p>    </li>
+    <li>
+        <p >
+             <a href="new_eval_scheme/doc/test_local_reconstruction.html">Local reconstruction on the interval</a>: <tt>applications/new_eval_scheme/test_local_reconstruction.cpp</tt>        </p>    </li>
+    <li>
+        <p >
+             <a href="new_eval_scheme/doc/test_local_reconstruction_realline.html">Local reconstruction on the realline</a>: <tt>applications/new_eval_scheme/test_local_reconstruction_realline.cpp</tt>        </p>    </li>
+    <li>
+        <p >
+             <a href="new_eval_scheme/doc/test_local_decomposition.html">Local decomposition on the interval</a>: <tt>applications/new_eval_scheme/test_local_decomposition.cpp</tt>        </p>    </li>
+    <li>
+        <p >
+             <a href="new_eval_scheme/doc/test_local_operator.html">Tree based evaluation of a local operator on the interval</a>: <tt>applications/new_eval_scheme/test_local_operator1d.cpp</tt>        </p>    </li>
+    <li>
+        <p >
+             <a href="new_eval_scheme/doc/test_local_operator_realline.html">Tree based evaluation of a local operator on the realline</a>: <tt>applications/new_eval_scheme/test_local_operator_realline1d.cpp</tt>        </p>    </li>
+</ul>
+<!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>

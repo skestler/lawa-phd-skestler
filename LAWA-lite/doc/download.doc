@@ -1,0 +1,41 @@
+Installation of LAWA
+--------------------
+
+:document:  lawa::installation
+
+LAWA is distributed as release to be downloaded from
+the project-site at sourceforge (download lawa).
+
+LAWA is currently bundled with a slightly modified version of FLENS. In the
+long term the minor modifications will be integrated into FLENS so that the
+standard version of FLENS will match the LAWA requirements. For the moment 
+a suitable FLENS comes directly with LAWA. 
+
+The installation of FLENS and LAWA on a Unix-like system (the only ones we give
+installation support for) takes the following steps:
+
+- Download and extract the release from the sourceforge __download site__. This will result
+  in two folders in the current directory:
+  
+  ___ CODE __________________
+  FLENS-lite
+  LAWA-lite
+  ___________________________
+  
+- You have to set two environment-variables pointing to the two project roots:
+
+  ___ CODE __________________
+  export FLENS_HOME=/path/to/the/flens/installation
+  export LAWA_HOME=/path/to/the/lawa/installation
+  ___________________________
+  
+  Probably you should place these two lines in one of `.bashrc` or `.profile`
+  depending on your system to have the variables set automatically.
+- Perhaps you have to/want to change some things in the `config`-file in the
+  main directory of LAWA-lite. Here you can choose different settings for
+    - the compiler you want to use
+    - additional compiler flags
+    - debug mode/release mode/profile mode
+  The `config`-file is the only place where you can/should change such settings.
+
+:links: __download site__ -> http://sf.net/projects/lawa/files

@@ -1,0 +1,83 @@
+:document:    lawa::applications::multitrees
+
+__PhD thesis by S.K.__ - __Multitree based algorithms__
+
+Multitree based algorithms (Chapters 6 and 7)
+=============================================
+
+We describe the realization of the multitree-based algorithms from Chapters  6 and 7. We start with tree structures and required routines.
+
+Tree structured index sets and required routines
+------------------------------------------------
+
+In Chapter 6 and 7, our tensor product bases are composed of univariate uniformly local, piecewise polynomial wavelet bases $\Psi$ which can be written as follows
+
+___ LATEX ________________
+   \Psi = \bigcup_{j \in \mathbb{N}_0} \Psi_j, \qquad \Psi_0 := \Phi_1,
+___________________________
+
+where
+
+___ LATEX ________________
+   \Psi_j = \{ \psi_{j,k} : k \in \mathcal{J}_j \}
+___________________________
+
+and where
+
+___ LATEX ________________
+   \Phi_j = \{ \phi_{j,k} : k \in \mathcal{I}_j \}
+___________________________
+
+for $j \in \mathbb{N}$ corresponds to the collection of scaling functions on level $j$ associated to the wavelet basis $\Psi$.
+
+The evaluation schemes $\textbf{EvalS}$, $\textbf{EvalU}$ and $\textbf{EvalL}$ are (mainly) based on the refinement of scaling functions $\phi_{j,k}$ and wavelets $\psi_{j,k}$ in terms of scaling functions on level $j+1$, i.e.,
+
+___ LATEX ________________
+   \Psi_j = \mathrm{M}_{j,1}^\top \Phi_{j+1} , \qquad \Phi_j = \mathrm{M}_{j,0}^\top \Phi_{j+1}.
+___________________________
+
+for refinement matrices $\mathrm{M}_{j,0}$ and $\mathrm{M}_{j,1}$.
+
+In order to obtain an efficient numerical scheme, the elements of $\Phi_j$ (for which we evaluate underlying bilinear forms) should be "easy to handle". For standard basis constructions, the scaling functions are B-Splines which do not impose any problems. For multiwavelet basis, however, we have multiple types of scaling functions whose distinction is computationally costly. To this end, furthermore, we also consider so-called uniformly local, piecewise polynomial `refinement bases`
+
+___ LATEX ________________
+   \bar\Phi_{j+\bar{j}} = \{ \bar\phi_{j+\bar{j},k} : k \in \bar{\mathcal{I}}_{j+\bar{j}} \}
+___________________________
+
+for $j = 0,1,\ldots$ and a certain $\bar j>0$ such that
+
+___ LATEX ________________
+\begin{align*}
+  & \bar{\Phi}_{j+\bar{j}} = \bar{\bar{\mathrm{M}}}_{j,0}^\top \bar{\Phi}_{j+\bar{j}+1 }, \\
+  & \Psi_j = \bar{\mathrm{M}}_{j,1}^\top \bar{\Phi}_{j+\bar j+1}, \qquad \Phi_j = \bar{\mathrm{M}}^\top_{j,0} \bar{\Phi}_{j+\bar j},\\
+  & \mathrm{span}\bar{\Phi}_{j+\bar j+1} \supseteq \mathrm{span} \Phi_j \cup \Psi_j,
+\end{align*}
+___________________________
+
+for refinement matrices $\bar{\mathrm{M}}_{j,0}$ and $\bar{\mathrm{M}}_{j,1}$. For our purposes, we may always think of $\bar{\Phi}_j$ as a collections of B-Splines to which we shall also refer to as `refinement B-Splines`.
+
+Observe that for the refinement of wavelets in terms of refinement B-Splines, we need to use refinement B-Splines on one level higher than for scaling functions. This is due to the fact that wavelets are finite linear combinations of scaling functions on the next higher level.
+
+It is also important to note that if scaling functions are already B-Splines, then refinement B-Splines and scaling functions are actually the same. In particular, $\bar{\mathrm{M}}_{j,0}$ is an identity matrix and $\bar j = 0$.
+
+As we shall also see below, that the adoption of the algorithms $\textbf{EvalS}$, $\textbf{EvalU}$ and $\textbf{EvalL}$ to this slightly extended setting is straightforward.
+
+In order to set up, test and understand the tree structure of one-dimensional index sets (or, respectively, coefficient vectors), we have the following test programs:
+
+- __Refinements and neighbors on the interval__: `applications/new_eval_scheme/test_local_refinement.cpp`
+- __Refinements and neighbors on the realline__: `applications/new_eval_scheme/test_local_refinement_realline.cpp`
+- __Local reconstruction on the interval__: `applications/new_eval_scheme/test_local_reconstruction.cpp`
+- __Local reconstruction on the realline__: `applications/new_eval_scheme/test_local_reconstruction_realline.cpp`
+- __Local decomposition on the interval__: `applications/new_eval_scheme/test_local_decomposition.cpp`
+- __Tree based evaluation of a local operator on the interval__: `applications/new_eval_scheme/test_local_operator1d.cpp`
+- __Tree based evaluation of a local operator on the realline__: `applications/new_eval_scheme/test_local_operator_realline1d.cpp`
+
+:links:   PhD thesis by S.K. -> lawa::applications::home
+          Multitree based algorithms -> lawa::applications::multitrees
+          Refinements and neighbors on the interval -> lawa::applications::multitrees::testlocalrefinement
+          Refinements and neighbors on the realline -> lawa::applications::multitrees::testlocalrefinementrealline
+          Local reconstruction on the interval -> lawa::applications::multitrees::testlocalreconstruction
+          Local reconstruction on the realline -> lawa::applications::multitrees::testlocalreconstructionrealline
+          Local decomposition on the interval -> lawa::applications::multitrees::testlocaldecomposition
+          Tree based evaluation of a local operator on the interval -> lawa::applications::multitrees::testlocaloperator
+          Tree based evaluation of a local operator on the realline -> lawa::applications::multitrees::testlocaloperatorrealline

@@ -1,0 +1,59 @@
+:document:    lawa::applications::multitrees::testlocalreconstruction
+
+__PhD thesis by S.K.__ - __Multitree based algorithms__ - __Local reconstruction on the interval__
+
+Test of local reconstruction on the interval
+--------------------------------------------
+
+Source file `applications/new_eval_scheme/test_local_reconstruction.cpp`
+
+Let us consider a tree-structured index set $\Lambda \subset \mathcal{J}$, i.e., an index set where for $\lambda \in \Lambda$ with $|\lambda|>0$, $\mathrm{supp}\, \psi_{\lambda}$ is covered by $\mathrm{supp}\, \psi_{\mu}$ with $\mu \in \Lambda$ and $|\mu|=1$.
+Based $\Lambda$, we consider a coefficient vector $\mathbf{v}_{\Lambda}$ whose support is $\Lambda$ with an associated expansion (multiscale expansion)
+
+___ LATEX ________________
+   v = \sum_{\lambda \in \Lambda} v_{\lambda} \psi_{\lambda}
+___________________________
+
+Observe that for $|\lambda|=0$, $\psi_\lambda$ corresponds to a scaling function!
+
+We now intend to represent the function $v$ in terms of the refinement B-Spline basis (local single scale expansion)
+
+___ LATEX ________________
+   \bar \Phi = \bigcup_{j \in \mathbb{N}_0} \bar \Phi_j = \{ \bar \phi_{\lambda}: \lambda = (j,k) \in \bar{\mathcal{I}} \}, \qquad \mathrm{span}\bar{\Phi}_{j+\bar j+1} \supseteq \mathrm{span} \Phi_j \cup \Psi_j.
+___________________________
+
+This requires the computation of an index set $\bar \Lambda$ and coefficients $\bar{\mathbf{v}}_{\bar \Lambda}$ such that
+
+___ LATEX ________________
+   v = \sum_{\lambda \in \bar\Lambda} \bar{v}_{\lambda} \bar{\phi}_{\lambda}.
+___________________________
+
+It is crucial to note that we now have refinement B-Splines on different levels!
+
+So, in a first step, in case that refinement B-Splines and scaling functions are different, we make use of the relation
+
+___ LATEX ________________
+   \Phi_{0}^\top \mathbf{d} = \bar{\Phi}_{\bar j}^\top\bar{\mathbf{d}} :=\bar{\Phi}_{\bar j}^\top\bar{\mathrm{M}}_{0,0} \mathbf{d},
+___________________________
+
+where $\mathbf{d} = (v_\lambda)_{\lambda \in \Lambda, |\lambda|=0}$. This operation is only applied `locally`, i.e., for all non-zero entries $v_\lambda$ in $\Lambda$ with $|\lambda|=0$.
+
+Next, we use the relation
+
+___ LATEX ________________
+   \big[ \bar{\Phi}_{\bar j} \quad \Psi_{0} \big] \left[\begin{array}{l}  \mathbf{d} \\ \mathbf{c} \end{array} \right] = \bar{\Phi}_{\bar{j} +1}^\top \bar{\mathbf{d}} = \bar{\Phi}_{j_0 +1}^\top \big[  \bar{\bar{\mathrm{M}}}_{\bar{j}} \quad \bar{\mathrm{M}}_{0,1}   \big] \left[ \begin{array}{l}  \mathbf{d} \\ \mathbf{c} \end{array}  \right]
+___________________________
+
+where $\mathbf{c} = (v_\lambda)_{\lambda \in \Lambda, |\lambda|>0}$ to obtain the representation of $v$ in term of $\bar{\Phi}_{\bar{j}+1}$ and $\Psi_{1}$, $\Psi_{2}$, $\ldots$. Again, only non-zero indices have to be processed. This proceeding can be now repeated until the highest wavelet level in $\Lambda$ is reached. That is, for the next iteration, we have
+
+___ LATEX ________________
+   \big[ \bar{\Phi}_{1+\bar j} \quad \Psi_{1} \big] \left[\begin{array}{l}  \bar{\mathbf{d}} \\ \mathbf{c} \end{array} \right] =  \bar{\Phi}_{1+\bar{j} +1}^\top \big[  \bar{\bar{\mathrm{M}}}_{1+\bar{j}} \quad \bar{\mathrm{M}}_{1,1}   \big] \left[ \begin{array}{l} \bar{\mathbf{d}} \\ \mathbf{c} \end{array}  \right]
+___________________________
+
+where now $\mathbf{c} = (v_\lambda)_{\lambda \in \Lambda, |\lambda|>1}$.
+
+:import: applications/new_eval_scheme/test_local_reconstruction.cpp [brief]
+
+:links:   PhD thesis by S.K. -> lawa::applications::home
+          Multitree based algorithms -> lawa::applications::multitrees
+          Local reconstruction on the interval -> lawa::applications::multitrees::testlocalreconstruction

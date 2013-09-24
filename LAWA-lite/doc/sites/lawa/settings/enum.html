@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../../index.html">home</a></li>
+<li><a href="../../doc/license.html">license</a></li>
+<li><a href="../../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../../doc/features.html">lawa features</a></li>
+<li><a href="../../doc/highperformance.html">high performance</a></li>
+<li><a href="../../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../../doc/download.html">download</a></li>
+<li><a href="../../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+<p >
+     ==title:Enumeration types used in LAWA==</p><p >
+     ==section:FunctionSide#FunctionSide== Enumeration type to differentiate between primal and dual B-splines/wavelets. We are open for suggestions concerning the typename [FunctionSide] ;-). ==code:.cc== enum FunctionSide {</p><p >
+     Primal, Dual</p><p >
+     }; ====</p><p >
+     ==section:DomainType#DomainType== Enumeration Type specifying the used domain. ==code.cc== enum DomainType {</p><p >
+     Periodic, R, Interval</p><p >
+     }; ==== ==list:begin== -&gt;[Periodic]:  the interval \[0,1\] with periodic boundary conditions.</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     -&gt;[R]:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the whole real line.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     -&gt;[Interval]:  the interval \[0,1\] (but not periodic boundary conditions). ==list:end==</p><p class="paramlist">
+     ==section:XType#XType== An enumeration type we did not yet find a suitable name, so it's called XType so far. Intented to distinguish between B-splines and wavelets. Someone an idea for a name? ==code.cc== enum XType {</p><p class="paramlist">
+     XBSpline, XWavelet</p><p class="paramlist">
+     }; ====</p><p class="paramlist">
+     ==section:Construction#Construction== An enumeration to distinguish between different constructions of B-splines/wavelets. ==code.cc== enum Construction {</p><p class="paramlist">
+     CDF, AnyInterval, DKU, Primbs, Dijkema</p><p class="paramlist">
+     }; ==== ==list:begin== -&gt;[CDF]:  the construction by Cohen, Daubechies, Faveau (on the real line).</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     -&gt;[AnyInterval]:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     Any construction (out of [DKU, Primbs, Dijkema]) on the interval.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     -&gt;[DKU]:  the construction by Dahmen, Kunoth, Urban.</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     -&gt;[Primbs]:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the construction by Primbs.</p></td>
+</tr>
+</table>
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     -&gt;[Dijkema]:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the construction by Dijkema.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     ==list:end==</p><p class="paramlist">
+     ==section:BoundaryCondition#BoundaryCondition== An enumeration listing the different boundary conditions available for interval bases. At the moment only homogenuous Dirichlet boundary conditions are realized. ==code.cc== enum BoundaryCondition {</p><p class="paramlist">
+     NoBC = 0, DirichletBC = 1,</p><p class="paramlist">
+     }; ====</p><!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>

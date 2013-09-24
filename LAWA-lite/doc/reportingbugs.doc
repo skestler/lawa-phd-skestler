@@ -1,0 +1,14 @@
+Reporting Bugs
+--------------
+
+Bugs should be found in nature, not in software. So if you find one of these
+tiny beasties, be free to post on the mailing list.
+
+To be able to handle such bug reports correctly and to be able to reproduce
+the bug it is neccesary that you provide:
+
+- a minimalistic test program producing the bug
+- the exact command line invocation (all compiler options)
+- the system, compiler information
+
+We are thankful for every hint that helps to increase the code quality of LAWA! 

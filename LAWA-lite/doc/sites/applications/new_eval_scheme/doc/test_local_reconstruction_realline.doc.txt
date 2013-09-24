@@ -1,0 +1,18 @@
+:document:    lawa::applications::multitrees::testlocalreconstructionrealline
+
+__PhD thesis by S.K.__ - __Multitree based algorithms__ - __Local reconstruction on the realline__
+
+Test of local reconstruction on the realline
+--------------------------------------------
+
+Source file `applications/new_eval_scheme/test_local_reconstruction_realline.cpp`
+
+
+The test programm for local reconstruction on the realline is very similar to the __local reconstruction on the interval__. So we do not repeat the general setting given there.
+
+:import: applications/new_eval_scheme/test_local_reconstruction_realline.cpp [brief]
+
+:links:   PhD thesis by S.K. -> lawa::applications::home
+          Multitree based algorithms -> lawa::applications::multitrees
+          Local reconstruction on the realline -> lawa::applications::multitrees::testlocalreconstructionrealline
+          local reconstruction on the interval -> lawa::applications::multitrees::testlocalreconstruction

@@ -1,0 +1,13 @@
+Mailing List
+------------
+
+A mailing list for the LAWA-project is provided for users and developers. 
+Intended for all aspects of LAWA development - discussion, feature requests, 
+bug reports, ...
+
+You can easily subsribe to the mailing list by sending an email to 
+<a href="mailto:sympa@lists.uni-ulm.de">sympa@lists.uni-ulm.de</a> with
+the following content:
+
+`subscribe lawa`
+

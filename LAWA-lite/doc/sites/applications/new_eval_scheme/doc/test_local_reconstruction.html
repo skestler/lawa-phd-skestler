@@ -1,0 +1,261 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../../../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../../../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../../../index.html">home</a></li>
+<li><a href="../../../doc/license.html">license</a></li>
+<li><a href="../../../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../../../doc/features.html">lawa features</a></li>
+<li><a href="../../../doc/highperformance.html">high performance</a></li>
+<li><a href="../../../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../../../doc/download.html">download</a></li>
+<li><a href="../../../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../../../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../../../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../../../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+<p >
+     <a href="../../applications.html">PhD thesis by S.K.</a> - <a href="../../multitrees.html">Multitree based algorithms</a> - <a href="test_local_reconstruction.html">Local reconstruction on the interval</a></p>
+
+<h3 class="doc">
+Test of local reconstruction on the interval</h3>
+
+<p >
+     Source file <tt>applications/new_eval_scheme/test_local_reconstruction.cpp</tt></p><p >
+     Let us consider a tree-structured index set \(\Lambda \subset \mathcal{J}\), i.e., an index set where for \(\lambda \in \Lambda\) with \(|\lambda|>0\), \(\mathrm{supp}\, \psi_{\lambda}\) is covered by \(\mathrm{supp}\, \psi_{\mu}\) with \(\mu \in \Lambda\) and \(|\mu|=1\). Based \(\Lambda\), we consider a coefficient vector \(\mathbf{v}_{\Lambda}\) whose support is \(\Lambda\) with an associated expansion (multiscale expansion)</p>\[   v = \sum_{\lambda \in \Lambda} v_{\lambda} \psi_{\lambda}\]<p >
+     Observe that for \(|\lambda|=0\), \(\psi_\lambda\) corresponds to a scaling function!</p><p >
+     We now intend to represent the function \(v\) in terms of the refinement B-Spline basis (local single scale expansion)</p>\[   \bar \Phi = \bigcup_{j \in \mathbb{N}_0} \bar \Phi_j = \{ \bar \phi_{\lambda}: \lambda = (j,k) \in \bar{\mathcal{I}} \}, \qquad \mathrm{span}\bar{\Phi}_{j+\bar j+1} \supseteq \mathrm{span} \Phi_j \cup \Psi_j.\]<p >
+     This requires the computation of an index set \(\bar \Lambda\) and coefficients \(\bar{\mathbf{v}}_{\bar \Lambda}\) such that</p>\[   v = \sum_{\lambda \in \bar\Lambda} \bar{v}_{\lambda} \bar{\phi}_{\lambda}.\]<p >
+     It is crucial to note that we now have refinement B-Splines on different levels!</p><p >
+     So, in a first step, in case that refinement B-Splines and scaling functions are different, we make use of the relation</p>\[   \Phi_{0}^\top \mathbf{d} = \bar{\Phi}_{\bar j}^\top\bar{\mathbf{d}} :=\bar{\Phi}_{\bar j}^\top\bar{\mathrm{M}}_{0,0} \mathbf{d},\]<p >
+     where \(\mathbf{d} = (v_\lambda)_{\lambda \in \Lambda, |\lambda|=0}\). This operation is only applied <tt>locally</tt>, i.e., for all non-zero entries \(v_\lambda\) in \(\Lambda\) with \(|\lambda|=0\).</p><p >
+     Next, we use the relation</p>\[   \big[ \bar{\Phi}_{\bar j} \quad \Psi_{0} \big] \left[\begin{array}{l}  \mathbf{d} \\ \mathbf{c} \end{array} \right] = \bar{\Phi}_{\bar{j} +1}^\top \bar{\mathbf{d}} = \bar{\Phi}_{j_0 +1}^\top \big[  \bar{\bar{\mathrm{M}}}_{\bar{j}} \quad \bar{\mathrm{M}}_{0,1}   \big] \left[ \begin{array}{l}  \mathbf{d} \\ \mathbf{c} \end{array}  \right]\]<p >
+     where \(\mathbf{c} = (v_\lambda)_{\lambda \in \Lambda, |\lambda|>0}\) to obtain the representation of \(v\) in term of \(\bar{\Phi}_{\bar{j}+1}\) and \(\Psi_{1}\), \(\Psi_{2}\), \(\ldots\). Again, only non-zero indices have to be processed. This proceeding can be now repeated until the highest wavelet level in \(\Lambda\) is reached. That is, for the next iteration, we have</p>\[   \big[ \bar{\Phi}_{1+\bar j} \quad \Psi_{1} \big] \left[\begin{array}{l}  \bar{\mathbf{d}} \\ \mathbf{c} \end{array} \right] =  \bar{\Phi}_{1+\bar{j} +1}^\top \big[  \bar{\bar{\mathrm{M}}}_{1+\bar{j}} \quad \bar{\mathrm{M}}_{1,1}   \big] \left[ \begin{array}{l} \bar{\mathbf{d}} \\ \mathbf{c} \end{array}  \right]\]<p >
+     where now \(\mathbf{c} = (v_\lambda)_{\lambda \in \Lambda, |\lambda|>1}\).</p><p >
+     We require special datastructures for univariate trees where coefficients are stored level-wise.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#c000c0">#include&nbsp;</span><span style="color:#c00000">&lt;lawa/methods/adaptive/datastructures/treecoefficients1d.h&gt;</span><br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Wavelet basis over an interval</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#8080ff">//typedef Basis&lt;T, Orthogonal, Interval, Multi&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PrimalBasis;</span><br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;Basis&lt;T, Primal, Interval, Dijkema&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PrimalBasis;<br>
+<!-- CodeLine     3 --><span style="color:#008000">typedef</span>&nbsp;PrimalBasis::RefinementBasis&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RefinementBasis;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Typedef for iterators</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;CoefficientsByLevel&lt;T&gt;::const_it&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const_coeffbylevel_it;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;IndexSet&lt;Index1D&gt;::const_iterator&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const_set1d_it;<br>
+<!-- CodeLine     3 --><span style="color:#008000">typedef</span>&nbsp;Coefficients&lt;Lexicographical,T,Index1D&gt;::const_iterator&nbsp;&nbsp;&nbsp;&nbsp; const_coeff1d_it;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Routine for constructing a random, nontrivial tree.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->constructRandomTree(<span style="color:#008000">const</span>&nbsp;PrimalBasis &amp;basis,&nbsp;<span style="color:#008000">int</span>&nbsp;J, TreeCoefficients1D&lt;T&gt; &amp;LambdaTree);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Basis initialization, using Dirichlet boundary conditions</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//PrimalBasis basis(d, j0);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // For L2_orthonormal and special MW bases</span><br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;PrimalBasis basis(d, d, j0);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// For biorthogonal wavelet bases</span><br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>&nbsp;(d&gt;<span style="color:#c00000">1</span>) basis.enforceBoundaryCondition&lt;DirichletBC&gt;();<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;RefinementBasis &amp;refinementbasis = basis.refinementbasis;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     The class LocalRefinement provides routines for the refinement of scaling functions \(\phi_{j,k}\) and wavelets \(\psi_{j,k}\) in terms of refinement B-Splines \(\bar \phi_{j,k}\).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;LocalRefinement&lt;PrimalBasis&gt; LocalRefine(basis);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Computing a vector of (multi-)scaling coefficients and a vector of (multi-)wavelet coefficients. Here, we consider a vector \(v\) with \(\mathrm{supp}\, v = \mathcal{I}_j \cup \mathcal{J}_j\), i.e., &#8220;full levels&#8221.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;CoefficientsByLevel&lt;T&gt; u_scaling1, u_wavelet1;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(<span style="color:#008000">int</span>&nbsp;k=basis.mra.rangeI(j).firstIndex(); k&lt;=basis.mra.rangeI(j).lastIndex(); ++k) {<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;u_scaling1.map.<span style="color:#af5f00">operator</span>[](k) = (T)rand()/<span style="color:#c00000">RAND_MAX</span>;<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(<span style="color:#008000">int</span>&nbsp;k=basis.rangeJ(j).firstIndex(); k&lt;=basis.rangeJ(j).lastIndex(); ++k) {<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;u_wavelet1.map.<span style="color:#af5f00">operator</span>[](k) = (T)rand()/<span style="color:#c00000">RAND_MAX</span>;<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     In case of multiscaling functions, we have to represent them first in a B-spline basis (refinement basis). Here, \(\text{u_scaling1}\) contains the coefficients and \(j\) indicates the level. The variables \(\text{u_bspline1}\) and \(\text{refinement_j_bspline}\) are called by reference and contain the corresponding coefficients in the refinement B-Spline basis on \(\text{level refinement_j_bspline}\) so that \(\sum_{v_k \in \text{u_scaling1}} v_k \phi_{j,k} = \sum_{\bar{d}_k \in \text{u_bspline1}} \bar{d}_k \bar{\phi}_{\text{refinement_j_bspline},k}\)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;CoefficientsByLevel&lt;T&gt; u_bspline1;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;refinement_j_bspline =&nbsp;<span style="color:#c00000">0</span>;<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>&nbsp;(PrimalBasis::Cons==Multi &amp;&amp; d&gt;<span style="color:#c00000">1</span>) {<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LocalRefine.reconstructOnlyMultiScaling(u_scaling1, j, u_bspline1, refinement_j_bspline);<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">else</span>&nbsp;{<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;refinement_j_bspline = j;<br>
+<!-- CodeLine     8 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;u_bspline1 = u_scaling1;<br>
+<!-- CodeLine     9 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Now we compute the common representation of the refinement B-spline coefficient vector and the wavelet coefficient vector so that \(\sum_{\bar{d}_k \in \text{u_bspline1}} \bar{d}_k \bar{\phi}_{\text{refinement_j_bspline},k}\) \(+ \sum_{c_k \in \text{u_wavelet1}} c_k \psi_{j,k} = \sum_{\bar{v}_k \in \text{u_loc_single_1}} \bar{v}_k \bar{\phi}_{\text{refinement_j},k}\)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;CoefficientsByLevel&lt;T&gt; u_loc_single1;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;refinement_j =&nbsp;<span style="color:#c00000">0</span>;<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;Timer time;<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;time.start();<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;LocalRefine.reconstruct(u_bspline1, refinement_j_bspline, u_wavelet1, j, u_loc_single1, refinement_j);<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;time.stop();<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt;&nbsp;<span style="color:#c00000">&quot;Local reconstruction took: &quot;</span>&nbsp;&lt;&lt; time.elapsed() &lt;&lt; endl;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     We validate our operations by comparing the error between our computed expansions. Here, \(\text{val1}\) corresponds to the value of the multiscale representation, \(\text{val2}\) to the representation where the scaling functions is represented in terms of refinement B-Splines, and \(\text{val3}\) corresponds to the representation by refinement B-Splines only.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;T max_error1 =&nbsp;<span style="color:#c00000">0.</span>, max_error2 =&nbsp;<span style="color:#c00000">0.</span>;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(T x=<span style="color:#c00000">0.</span>; x&lt;=<span style="color:#c00000">1.</span>; x+=pow2i&lt;T&gt;(-<span style="color:#c00000">8</span>-j)) {<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T val1 =&nbsp;<span style="color:#c00000">0.L</span>, val2 =&nbsp;<span style="color:#c00000">0.L</span>, val3 =&nbsp;<span style="color:#c00000">0.L</span>;<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// no refinement</span><br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(const_coeffbylevel_it it=u_scaling1.map.begin(); it!=u_scaling1.map.end(); ++it) {<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;val1 += (*it).second * basis.generator(XBSpline).<span style="color:#af5f00">operator</span>()(x,j,(*it).first,<span style="color:#c00000">0</span>);<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine     8 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(const_coeffbylevel_it it=u_wavelet1.map.begin(); it!=u_wavelet1.map.end(); ++it) {<br>
+<!-- CodeLine     9 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;val1 += (*it).second * basis.generator(XWavelet).<span style="color:#af5f00">operator</span>()(x,j,(*it).first,<span style="color:#c00000">0</span>);<br>
+<!-- CodeLine    10 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    11 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// from multiscaling to bspline representation</span><br>
+<!-- CodeLine    12 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(const_coeffbylevel_it it=u_bspline1.map.begin(); it!=u_bspline1.map.end(); ++it) {<br>
+<!-- CodeLine    13 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;val2 += (*it).second * refinementbasis.generator(XBSpline).<span style="color:#af5f00">operator</span>()(x,refinement_j_bspline,(*it).first,<span style="color:#c00000">0</span>);<br>
+<!-- CodeLine    14 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    15 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(const_coeffbylevel_it it=u_wavelet1.map.begin(); it!=u_wavelet1.map.end(); ++it) {<br>
+<!-- CodeLine    16 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;val2 += (*it).second * basis.generator(XWavelet).<span style="color:#af5f00">operator</span>()(x,j,(*it).first,<span style="color:#c00000">0</span>);<br>
+<!-- CodeLine    17 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    18 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// single scale representation</span><br>
+<!-- CodeLine    19 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(const_coeffbylevel_it it=u_loc_single1.map.begin(); it!=u_loc_single1.map.end(); ++it) {<br>
+<!-- CodeLine    20 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;val3 += (*it).second * refinementbasis.generator(XBSpline).<span style="color:#af5f00">operator</span>()(x,refinement_j,(*it).first,<span style="color:#c00000">0</span>);<br>
+<!-- CodeLine    21 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    22 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;max_error1 = std::max(max_error1,fabs(val1-val2));<br>
+<!-- CodeLine    23 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;max_error2 = std::max(max_error2,fabs(val1-val3));<br>
+<!-- CodeLine    24 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Next, we intend to perform analogous operations as above on a tree. To this end, we construct a random tree on which we test the transformation to a local refinement B-Spline representation</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;TreeCoefficients1D&lt;T&gt; u_tree(<span style="color:#c00000">4096</span>,basis.j0);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;Coefficients&lt;Lexicographical,T,Index1D&gt; u, u_loc_single;<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;constructRandomTree(basis, J, u_tree);<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;fromTreeCoefficientsToCoefficients(u_tree,u);<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;IndexSet&lt;Index1D&gt; supp_u;<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;supp_u = supp(u);<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(const_set1d_it it=supp_u.begin(); it!=supp_u.end(); ++it) {<br>
+<!-- CodeLine     8 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;u[*it] = (T)rand()/<span style="color:#c00000">RAND_MAX</span>;<br>
+<!-- CodeLine     9 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     The vector u contains the multilevel representation of a coefficient vector. We transform it to the local single scale representation.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;time.start();<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;LocalRefine.reconstruct(u, j0, u_loc_single);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;time.stop();<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt;&nbsp;<span style="color:#c00000">&quot;Local reconstruction took &quot;</span>&nbsp;&lt;&lt; time.elapsed() &lt;&lt; endl;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     We validate our operations by comparing the error between our computed expansions. Here, \(\text{val1}\) corresponds to the value of the multiscale representation, \(\text{val2}\) to the representation by refinement B-Splines only.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;max_error1=<span style="color:#c00000">0.</span>;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(T x=<span style="color:#c00000">0.</span>; x&lt;<span style="color:#c00000">1.</span>; x+=pow2i&lt;T&gt;(-<span style="color:#c00000">6</span>-J)) {<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T val1=<span style="color:#c00000">0.L</span>, val2=<span style="color:#c00000">0.L</span>;<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(const_coeff1d_it it=u.begin(); it!=u.end(); ++it) {<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;val1 += (*it).second *<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;basis.generator((*it).first.xtype).<span style="color:#af5f00">operator</span>()(x,(*it).first.j,(*it).first.k,<span style="color:#c00000">0</span>);<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine     8 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(const_coeff1d_it it=u_loc_single.begin(); it!=u_loc_single.end(); ++it) {<br>
+<!-- CodeLine     9 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;val2 += (*it).second *<br>
+<!-- CodeLine    10 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;refinementbasis.mra.phi.<span style="color:#af5f00">operator</span>()(x,(*it).first.j,(*it).first.k,<span style="color:#c00000">0</span>);<br>
+<!-- CodeLine    11 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    12 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;max_error1 = std::max(max_error1,fabs(val1-val2));<br>
+<!-- CodeLine    13 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    14 -->&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt;&nbsp;<span style="color:#c00000">&quot;Reconstruction error for the whole tree: &quot;</span>&nbsp;&lt;&lt; max_error1 &lt;&lt; endl;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Finally, we visualize the corresponding index sets. Visualizations of the corresponding index sets may then be created with Gnuplot.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;plotCoeff(u, basis,&nbsp;<span style="color:#c00000">&quot;coeff_multi_scale&quot;</span>,&nbsp;<span style="color:#c00000">false</span>,&nbsp;<span style="color:#c00000">true</span>);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;plotCoeff(u_loc_single, basis,&nbsp;<span style="color:#c00000">&quot;coeff_local_single_scale&quot;</span>,&nbsp;<span style="color:#c00000">true</span>,&nbsp;<span style="color:#c00000">true</span>);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>

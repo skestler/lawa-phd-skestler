@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../index.html">home</a></li>
+<li><a href="../doc/license.html">license</a></li>
+<li><a href="../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../doc/features.html">lawa features</a></li>
+<li><a href="../doc/highperformance.html">high performance</a></li>
+<li><a href="../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../doc/download.html">download</a></li>
+<li><a href="../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+<p >
+     ==title:Coding Style== The following documents the coding style we use in FLENS.  It has evolved since the beginning of FLENS and was mainly established by Alexander Stippler and Michael Lehn.  Some of the rules might seem strange but most of them are there for some good reason.</p><p >
+     The main purpose of every coding style is achieving consistency and expressiveness of the developed code.  Furthermore, it sometimes prevents us from producing nasty bugs in the middle of the night.  And at least it helps us to understand each others code.</p><p >
+     Our coding style does not conform to the [STL] coding style.  And we do not want to.  Instead we want clearly want to distinct between functionality provided by C++ out of the box and functionality given by FLENS used as an add on.</p><p >
+     ==section:Spacing and Indentation==</p><p >
+     ==subsection: No More Than 80 Characters per Line?!?== Whenever possible, lines are no longer than 80 characters in FLENS. But for LAWA we are a litte  more relaxed. Since lines can get very long and cannot easily be wrapped without losing convience when reading, we allow at about 100 characters per line. Whenever easily possible, shorter lines are preferable.</p><p >
+     ==subsection:No Tabs, Use Four Spaces== We do not use tabs but spaces.  In fact, we use &lt;b&gt;four spaces&lt;/b&gt;. ==code:.cc== for (int i=0; i&lt;10; ++i) {</p><p >
+     cout &lt;&lt; &#8220;For indentation we use 4 spaces.&#8221 &lt;&lt; endl;</p><p >
+     } ==== The reason: The code should look the same no matter what editor you use. And no matter what settings you use with your editor.  For some editors the default tab size is [4] on others it is [8].  Spaces are spaces. Hence, we do use spaces.</p><p >
+     ==subsection:Function Declaration== Return types get an extra line: ==code:.cc== int someFunction(int a); ==== That is because our types get really long.  For example ==code:.cc== DenseVector&lt;Array&lt;double&gt;, IndexOptions&lt;long,0&gt;, std::allocator&lt;double&gt; &gt; ==== which has already a total of 80 characters.  So in some cases it even might be better to use more than one line for the return type: ==code:.cc== DenseVector&lt;Array&lt;double&gt;,</p><p >
+     IndexOptions&lt;long, 0&gt;, std::allocator&lt;double&gt; &gt;</p>
+
+<h2 class="doc">
+dumm</h2>
+
+<p >
+     or when using templates ==code:.cc== template &lt;typename T, typename IndexType&gt;</p><p >
+     DenseVector&lt;Array&lt;T&gt;,</p><p >
+     IndexOptions&lt;IndexType, 0&gt;, std::allocator&lt;T&gt; &gt;</p>
+
+<h2 class="doc">
+    </h2>
+
+<p >
+     Another advantage you can [grep] your source files for function names.</p><p >
+     ==subsection:Template Function Declaration== Like non-templated functions. But one line for the declaration of template parameters.  The remaining of the declaration gets indented the usual four spaces: ==code:.cc== template &lt;typename Integer&gt;</p><p >
+     Integer someFunction(Integer a);</p><p >
+     ==== If the template list does not fit within the 80 characters (or if it would not look good) we split: ==code:.cc== template &lt;typename T, StorageOrder Order,</p><p >
+     typename I = IndexOptions&lt;long&gt;, typename A = std::allocator&lt;T&gt; &gt;</p><p >
+     const T * someOtherFunction(const Array&lt;T, I, A&gt; &array);</p><p >
+     ==== In general: one line for template list, return type, ... always means at least one line.</p><p >
+     ==subsection:(Templated) Function Definition== As for the declaration: One line for the template list, one line for the return type, one line for the function name and its parameters.  Then, one line for the curly open bracket, then the function body and finally one line for the closing curly bracket: ==code:.cc== template &lt;typename FS<i>A, typename FS</i>B&gt; void myCopy(const FS<i>A &A, FS</i>B &B) {</p><p >
+     // function body</p><p >
+     } ====</p><p >
+     ==section:Naming Conventions==</p><p >
+     ==subsection: Names== In general we compose names without underscores.  Instead an uppercase letter indicates that a name was glues together: ==code:.cc== int numRows;   // ok int num<i>cols;  // NO int num</i>Rows;  // NO</p><p >
+     // ok: int getNumRows(const SomeMatrix &A) {</p><p >
+     // ...</p><p >
+     } ====</p><p >
+     ==subsection:Variable Names with First Letter Lower Case== Variable names begin with lowercase letters. ==code:.cc== int numRows; // ok int NumRows; // NO ====</p><p >
+     ==subsection:Private Variables (Private Attributes)== Private variable in a class names begin with lowercase letters and are prefixed with an underscore. ==code:.cc== class SomeClass {</p><p >
+     public:</p><p >
+     // ...</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     int numRows;</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     // ok</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     private:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     int _length;</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     // ok</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     int numCols;</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     // NO</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     } ==== This prevents name conflicts in the constructor: ==code:.cc== SomeClass::SomeClass(int length)</p><p class="paramlist">
+     : _length(length)</p><p class="paramlist">
+     {</p><p class="paramlist">
+     } ====</p><p class="paramlist">
+     ==subsection:Type Names with First Letter Upper Case== Type names and in particular classes and structs begin with an upper case letter. ==code:.cc== class MyMatrix; // ok class myMatrix; // NO ====</p><p class="paramlist">
+     ==section:Organization of Code==</p><p class="paramlist">
+     ==subsection:No Implementation in Header Files== Header files only declare things and never implement anything.  No matter how small and simple an implementation of a function or methods might be it does not belong in a header file.</p><p class="paramlist">
+     ==subsection:Header File Skeleton== A header file looks like this: ==code:.cc== /*</p><p class="paramlist">
+     Copyright ...</p><p class="paramlist">
+     */</p><p class="paramlist">
+     // your declarations</p><p class="paramlist">
+     ====</p><p class="paramlist">
+     ==subsection:Implementation of Template Classes== If you have a class with template parameters its declared in a file with ending [.h].  Let us say [myclass.h].  Then its implementation is located in a file with ending [.tcc].  So in this case [myclass.tcc].  The implementation gets included at the end of the header file.</p><p class="paramlist">
+     Let this be the header file ==code:.cc== /*</p><p class="paramlist">
+     Your Copyright</p><p class="paramlist">
+     */</p><p class="paramlist">
+     template &lt;typename T&gt; class MyClass {</p><p class="paramlist">
+     // declare your methods, ... int dummy();</p><p class="paramlist">
+     };</p><p class="paramlist">
+     ==== And this is the corresponding implementation in [path/to/your/header/myclass.tcc]: ==code:.cc== template &lt;typename T&gt; int MyClass::dummy() {</p><p class="paramlist">
+     // your implementation</p><p class="paramlist">
+     } ====</p><p class="paramlist">
+     ==subsection:Include Guards== Include guards contain the relative path to the header file followed by the name of the header file.  The include guard is in upper case only.  Slashes and dots become underscores.  For example, the include guard of header file [flens/storage/array/constarrayview.h] is [FLENS<i>STORAGE</i>ARRAY<i>CONSTARRAYVIEW</i>H].</p><p class="paramlist">
+     ==subsection:One File per Class & Filename is Class Name== No matter how simple, each class deserves its own file.  That means its own header and implementation file.</p><p class="paramlist">
+     ==section:Expressive Programming==</p><p class="paramlist">
+     ==subsection:Using ++i vs. i++== If [++i] and [i++] would have the same effect we always use the pre-increment: ==code:.cc== // NO: for (int i=0; i&lt;10; i++) {</p><p class="paramlist">
+     // do something</p><p class="paramlist">
+     }</p><p class="paramlist">
+     // YES: for (int i=0; i&lt;10; ++i) {</p><p class="paramlist">
+     // do something</p><p class="paramlist">
+     } ==== We only use the post-increment [i++] if there is a good reason do do so.  For instance, if it makes something faster or more readable.</p><p class="paramlist">
+     ==subsection: Comments are Evil== Comments are not evil.  But do not miss-use comment for completely documenting your code.  Document your algorithm somewhere (maybe you already published a paper about it anyway).  Leave a reference to this document. Assume that each person browsing your code has read your documentation first. Inside the function use at most a few comments like [Step 1] and [Step 2] in the following example: ==code:.cc== // see http://mycrazyalgorithm.com/dummy void dummy() {</p><p class="paramlist">
+     // Step 1: /<b> ...  some fancy code doing things documented above ... </b>/</p><p class="paramlist">
+     // Step 2: /<b> ...  some fancy code doing things documented above ... </b>/</p><p class="paramlist">
+     } ====</p><!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>

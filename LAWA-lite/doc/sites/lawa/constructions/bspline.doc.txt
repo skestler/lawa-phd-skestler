@@ -1,0 +1,28 @@
+==title:The root class for all B-splines==
+The root class for all B-spline types used in [LAWA]. This class is just empty since all implemented types of B-splines are specializations of it. The distinction between different B-spline types is realized by template parameters.
+
+==section: Template parameters==
+The declaration of [BSpline] reads
+==code.cc==
+template <typename T,
+          FunctionSide Side,
+          DomainType Domain,
+          Construction Cons=CDF>
+struct BSpline;
+====
+with template parameters
+==list:begin==
+->[T]:    the (numerical) element type (e.g. double)
+->[FunctionSide]:    the kind of B-spline ([Primal] or [Dual])
+->[Domain]:    the domain (e.g. [R], [Interval])
+->[Cons]:    the underlying construction, by default [CDF] is chosen.
+==list:end==
+
+==section: Specializations of the BSpline class==
+The available realizations of B-splines can be found here:
+
+==toc:realline/primal/[bspline]==
+==toc:realline/dual/[bspline]==
+==toc:interval/dku/[bspline]==
+==toc:interval/primbs/[bspline]==
+==toc:interval/dijkema/[bspline]==

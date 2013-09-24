@@ -1,0 +1,264 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../../../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../../../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../../../index.html">home</a></li>
+<li><a href="../../../doc/license.html">license</a></li>
+<li><a href="../../../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../../../doc/features.html">lawa features</a></li>
+<li><a href="../../../doc/highperformance.html">high performance</a></li>
+<li><a href="../../../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../../../doc/download.html">download</a></li>
+<li><a href="../../../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../../../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../../../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../../../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+<p >
+     <a href="../../applications.html">PhD thesis by S.K.</a> - <a href="../../multitrees.html">Multitree based algorithms</a> - <a href="test_local_operator.html">Tree based evaluation of a local operator on the interval</a></p>
+
+<h3 class="doc">
+Tree based evaluation of a local operator on the interval</h3>
+
+<p >
+     Source file <tt>applications/new_eval_scheme/test_local_operator1d.cpp</tt></p><p >
+     We are now coming to the evaluation schemes \(\textbf{EvalS}\), \(\textbf{EvalU}\) and \(\textbf{EvalL}\). For testing, we consider the bilinear forms</p>\[   a(v,w) := \int_0^1  v'(x) w'(x) dx, \qquad a(w,v) := \int_0^1 v(x) w(x)  dx.\]<p >
+     Furthermore, for a wavelet basis \(\Psi\) over the interval \([0,1]\) we assume that we are given two (possibly) different trees \(\Lambda\) and \(\widetilde{\Lambda}\) and intend to evaluate</p>\[   a(\Psi|_{\widetilde{\Lambda}},\Psi|_{\Lambda}) \mathbf{v}_{\Lambda} = \mathbf{A}_{\widetilde{\Lambda} \times \Lambda} \mathbf{v}_{\Lambda},\]<p >
+     where \(\mathbf{v}_{\Lambda}\) is a vector supported on \(\Lambda\) and \(\mathbf{A} := a(\Psi,\Psi)\). Moreover, we define the upper and lower triangular matrices</p>\[   \mathbf{U} := a(\psi_\lambda,\psi_\mu)_{|\lambda|\leq||mu|}, \qquad  \mathbf{L} := a(\psi_\lambda,\psi_\mu)_{|\lambda|>||mu|}.\]<p >
+     In the following, we compute \(\mathbf{A}_{\widetilde{\Lambda} \times \Lambda} \mathbf{v}_{\Lambda}\), \(\mathbf{U}_{\widetilde{\Lambda} \times \Lambda} \mathbf{v}_{\Lambda}\) and \(\mathbf{L}_{\widetilde{\Lambda} \times \Lambda} \mathbf{v}_{\Lambda}\) by the local evaluation schemes \(\textbf{EvalS}\), \(\textbf{EvalU}\) and \(\textbf{EvalL}\) and also by a straightforward implementation based on assembling the corresponding matrices.</p><p >
+     It is important to observe that within the routines \(\textbf{EvalS}\), \(\textbf{EvalU}\) and \(\textbf{EvalL}\) we only need evaluations of the bilinear form \(a\) of the following type</p>\[   a(\bar{\phi}_{j+\bar{j},k_1},\bar{\phi}_{j+\bar{j},k_2})\]<p >
+     where only refinement B-Splines on the same level are involved. This is realized by using a specific operator that is implement as a member function of the refinement basis (see also below).</p><p >
+     Typedefs for Flens data types:</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;<span style="color:#008000">double</span>&nbsp;T;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;flens::DenseVector&lt;flens::Array&lt;T&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Wavelet basis over an interval</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#8080ff">//typedef Basis&lt;T, Orthogonal, Interval, Multi&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PrimalBasis;</span><br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;Basis&lt;T, Primal, Interval, Dijkema&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PrimalBasis;<br>
+<!-- CodeLine     3 --><span style="color:#008000">typedef</span>&nbsp;PrimalBasis::RefinementBasis&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RefinementBasis;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Underlying bilinear form for \(a(v,w) := \int_0^1 w'(x) v'(x) dx\) and \(a(v,w) := \int_0^1 w(x) v(x) dx\). Observe that the first definition of a corresponding operator is the standard definition and is required for the computation of reference values. The second operator is solely for refinement B-Spline bases as here, we only require evaluation of type \(a(\bar{\phi}_{j,k_1},\bar{\phi}_{j,k_2})\) which permit some optimizations. The third operator can be used for debugging of the (optimized) operator for refinement B-Spline bases.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;LaplaceOperator1D&lt;T,PrimalBasis&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BilinearForm;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;RefinementBasis::LaplaceOperator1D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RefinementBilinearForm;<br>
+<!-- CodeLine     3 --><span style="color:#008000">typedef</span>&nbsp;LaplaceOperator1D&lt;T,RefinementBasis&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RefinementBilinearFormTest;<br>
+<!-- CodeLine     4 --><span style="color:#8080ff">//typedef IdentityOperator1D&lt;T,PrimalBasis&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BilinearForm;</span><br>
+<!-- CodeLine     5 --><span style="color:#8080ff">//typedef RefinementBasis::IdentityOperator1D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RefinementBilinearForm;</span><br>
+<!-- CodeLine     6 --><span style="color:#8080ff">//typedef IdentityOperator1D&lt;T,RefinementBasis&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RefinementBilinearFormTest;</span><br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of a local operator in 1d</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;LocalOperator1D&lt;PrimalBasis,PrimalBasis,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RefinementBilinearForm&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LocOp1D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Construction of a random tree with (possibly) random values.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->constructRandomTree(<span style="color:#008000">const</span>&nbsp;PrimalBasis &amp;basis,&nbsp;<span style="color:#008000">int</span>&nbsp;J,&nbsp;<span style="color:#008000">bool</span>&nbsp;withRandomValues,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TreeCoefficients1D&lt;T&gt; &amp;LambdaTree,&nbsp;<span style="color:#008000">bool</span>&nbsp;sparsetree,&nbsp;<span style="color:#008000">int</span>&nbsp;seed);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Computation of a reference value \(\mathbf{L}_{\widetilde{\Lambda}\times \Lambda} \mathbf{v}_{\Lambda}\).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->computeEvalLRef(<span style="color:#008000">const</span>&nbsp;BilinearForm &amp;Bil,&nbsp;<span style="color:#008000">const</span>&nbsp;PrimalBasis &amp;basis,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">const</span>&nbsp;TreeCoefficients1D&lt;T&gt; &amp;v_tree, TreeCoefficients1D&lt;T&gt; &amp;Lv_tree);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Computation of a reference value \(\mathbf{U}_{\widetilde{\Lambda}\times \Lambda} \mathbf{v}_{\Lambda}\).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->computeEvalURef(<span style="color:#008000">const</span>&nbsp;BilinearForm &amp;Bil,&nbsp;<span style="color:#008000">const</span>&nbsp;PrimalBasis &amp;basis,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">const</span>&nbsp;TreeCoefficients1D&lt;T&gt; &amp;v_tree, TreeCoefficients1D&lt;T&gt; &amp;Uv_tree);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Computation of a reference value \(\mathbf{A}_{\widetilde{\Lambda}\times \Lambda} \mathbf{v}_{\Lambda}\).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->computeEvalARef(<span style="color:#008000">const</span>&nbsp;BilinearForm &amp;Bil,&nbsp;<span style="color:#008000">const</span>&nbsp;PrimalBasis &amp;basis,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">const</span>&nbsp;TreeCoefficients1D&lt;T&gt; &amp;v_tree, TreeCoefficients1D&lt;T&gt; &amp;Av_tree);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     wavelet basis parameters:</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;d&nbsp;&nbsp;&nbsp;&nbsp;= atoi(argv[<span style="color:#c00000">1</span>]);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;j0&nbsp;&nbsp; = atoi(argv[<span style="color:#c00000">2</span>]);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;J&nbsp;&nbsp;&nbsp;&nbsp;= atoi(argv[<span style="color:#c00000">3</span>]);<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">bool</span>&nbsp;sparsetree =&nbsp;<span style="color:#c00000">true</span>;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Basis initialization, using Dirichlet boundary conditions</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//PrimalBasis basis(d, j0);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // For L2_orthonormal and special MW bases</span><br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;PrimalBasis basis(d, d, j0);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// For biorthogonal wavelet bases</span><br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;basis.enforceBoundaryCondition&lt;DirichletBC&gt;();<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;RefinementBasis &amp;refinementbasis = basis.refinementbasis;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Operator initialization</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;BilinearForm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bil(basis);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;LocOp1D localOperator1D(basis,basis,refinementbasis.LaplaceOp1D);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//LocOp1D localOperator1D(basis,basis,refinementbasis.IdentityOp1D);</span><br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     We test proper functionality of the (optimized) operator based on refinement B-Splines.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;RefinementBilinearFormTest&nbsp;&nbsp;RefinementBilTest(refinementbasis);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;j=j0+<span style="color:#c00000">4</span>;<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(<span style="color:#008000">int</span>&nbsp;k1=refinementbasis.mra.rangeI(j).firstIndex(); k1&lt;=refinementbasis.mra.rangeI(j).lastIndex(); ++k1) {<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(<span style="color:#008000">int</span>&nbsp;k2=refinementbasis.mra.rangeI(j).firstIndex(); k2&lt;=refinementbasis.mra.rangeI(j).lastIndex(); ++k2) {<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>&nbsp;(abs(k1-k2)&gt;<span style="color:#c00000">9</span>)&nbsp;<span style="color:#af5f00">continue</span>;<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T val1 = RefinementBilTest(XBSpline, j, k1, XBSpline, j, k2);<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T val2 = refinementbasis.IdentityOp1D(XBSpline, j, k1, XBSpline, j, k2);<br>
+<!-- CodeLine     8 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>&nbsp;(fabs(val1-val2)&gt;<span style="color:#c00000">1e-14</span>) {<br>
+<!-- CodeLine     9 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt;&nbsp;<span style="color:#c00000">&quot;[&quot;</span>&nbsp;&lt;&lt; j &lt;&lt;&nbsp;<span style="color:#c00000">&quot;, (&quot;</span>&nbsp;&lt;&lt; k1 &lt;&lt;&nbsp;<span style="color:#c00000">&quot;,&quot;</span>&nbsp;&lt;&lt; k2 &lt;&lt;&nbsp;<span style="color:#c00000">&quot;)]: &quot;</span>&nbsp;&lt;&lt; val1 &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span>&nbsp;&lt;&lt; val2<br>
+<!-- CodeLine    10 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span>&nbsp;&lt;&lt; pow2i&lt;T&gt;(j) &lt;&lt; endl;<br>
+<!-- CodeLine    11 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    12 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    13 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of input and output trees. Observe that for tree coefficients we always require the minimal level of the basis for proper implementations.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TreeCoefficients1D&lt;T&gt; v_tree(<span style="color:#c00000">389</span>,basis.j0), Av_tree(<span style="color:#c00000">389</span>,basis.j0),<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Uv_tree(COEFFBYLEVELSIZE,basis.j0), Lv_tree(COEFFBYLEVELSIZE,basis.j0);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TreeCoefficients1D&lt;T&gt; Av_ref_tree(COEFFBYLEVELSIZE,basis.j0),<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Uv_ref_tree(COEFFBYLEVELSIZE,basis.j0),<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lv_ref_tree(COEFFBYLEVELSIZE,basis.j0);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     We construct random tree based coefficients where the output vector is initialized with zero values.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;constructRandomTree(basis, j,&nbsp;<span style="color:#c00000">true</span>, v_tree, sparsetree, seed);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;constructRandomTree(basis, j+<span style="color:#c00000">1</span>,&nbsp;<span style="color:#c00000">false</span>, Av_tree, sparsetree, seed+<span style="color:#c00000">37</span>);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Av_ref_tree = Av_tree;<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Uv_tree&nbsp;&nbsp;&nbsp;&nbsp; = Av_tree;<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Uv_ref_tree = Av_tree;<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lv_tree&nbsp;&nbsp;&nbsp;&nbsp; = Av_tree;<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lv_ref_tree = Av_tree;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Computation of a reference value for \(\mathbf{A}_{\widetilde{\Lambda}\times \Lambda} \mathbf{v}_{\Lambda}\).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;computeEvalARef(Bil, basis, v_tree, Av_ref_tree);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Computation of \(\mathbf{A}_{\widetilde{\Lambda}\times \Lambda} \mathbf{v}_{\Lambda}\) by \(\textbf{EvalS}\).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;localOperator1D.eval(v_tree, Av_tree,<span style="color:#c00000">&quot;A&quot;</span>);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Computation of a reference value for \(\mathbf{U}_{\widetilde{\Lambda}\times \Lambda} \mathbf{v}_{\Lambda}\).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;computeEvalURef(Bil, basis, v_tree, Uv_ref_tree);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Computation of \(\mathbf{U}_{\widetilde{\Lambda}\times \Lambda} \mathbf{v}_{\Lambda}\) by \(\textbf{EvalU}\).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;localOperator1D.eval(v_tree, Uv_tree,<span style="color:#c00000">&quot;U&quot;</span>);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Computation of a reference value for \(\mathbf{L}_{\widetilde{\Lambda}\times \Lambda} \mathbf{v}_{\Lambda}\).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;computeEvalLRef(Bil, basis, v_tree, Lv_ref_tree);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Computation of \(\mathbf{L}_{\widetilde{\Lambda}\times \Lambda} \mathbf{v}_{\Lambda}\) by \(\textbf{EvalL}\).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;localOperator1D.eval(v_tree, Lv_tree,<span style="color:#c00000">&quot;L&quot;</span>);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>

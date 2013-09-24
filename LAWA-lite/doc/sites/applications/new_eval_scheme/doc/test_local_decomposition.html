@@ -1,0 +1,248 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../../../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../../../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../../../index.html">home</a></li>
+<li><a href="../../../doc/license.html">license</a></li>
+<li><a href="../../../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../../../doc/features.html">lawa features</a></li>
+<li><a href="../../../doc/highperformance.html">high performance</a></li>
+<li><a href="../../../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../../../doc/download.html">download</a></li>
+<li><a href="../../../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../../../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../../../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../../../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+<p >
+     <a href="../../applications.html">PhD thesis by S.K.</a> - <a href="../../multitrees.html">Multitree based algorithms</a> - <a href="test_local_decomposition.html">Local decomposition on the interval</a></p>
+
+<h3 class="doc">
+Test of local decomposition on the interval</h3>
+
+<p >
+     Source file <tt>applications/new_eval_scheme/test_local_decomposition.cpp</tt></p><p >
+     Assume we are given a function \(f:[0,1] \to \mathbb{R}\) and we have computed </p>\[   \mathbf{f} = <  \bar{\Phi}_{j+\bar{j}+1},f> = \big(\int_0^1  \bar{\phi}_{j+\bar{j}+1,k}(x)f(x) dx\big)_{k \in \bar{\mathcal{I}}_{j+\bar{j}+1}}\]<p >
+     By using the refinement matrices \(\bar{\bar{\mathrm{M}}}_{j+\bar{j}+1}\), \(\bar{\mathrm{M}}_{j,0}\) and \(\bar{\mathrm{M}}_{j,1}\), we can compute the vectors</p>\[   \mathbf{g} = < \Phi_{j},f> = \big(\int_0^1  \phi_{j,k}(x) f(x) dx\big)_{k \in \mathcal{I}_{j}}, \qquad    \mathbf{h} = < \Psi_{j},f> = \big(\int_0^1  \psi_{j,k}(x) f(x) dx\big)_{k \in \mathcal{J}_{j}}.\]<p >
+     To this end, we use the following straightforward identities:</p>\[\begin{align}  &  \bar{\bar{\mathrm{M}}}_{j,0}^\top \mathbf{f} = \bar{\bar{\mathrm{M}}}_{j,0}^\top < \bar{\Phi}_{j+\bar{j}+1},f> = < \bar{\Phi}_{j + \bar{j}}, f> := \bar{\mathbf{g}}\\  & \bar{\mathrm{M}}_{j,1}^\top \mathbf{f} = \bar{\mathrm{M}}_{j,1}^\top < \bar{\Phi}_{j+\bar{j}+1},f> = < \Psi_{j}, f>  = \mathbf{h}\\  & \bar{\mathrm{M}}_{j,0}^\top \bar{\mathbf{g}} = \bar{\mathrm{M}}_{j,0}^\top < \bar{\Phi}_{j+\bar{j}},f> = < \Phi_{j}, f>  = \mathbf{f}\end{align}\]<p >
+     Typedefs for FLENS and precision. Important: <tt>long double</tt> is only available for \(L_2\)- orthonormal constructions!</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;<span style="color:#008000">double</span>&nbsp;T;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;flens::DenseVector&lt;flens::Array&lt;T&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Wavelet basis over an interval and corresponding refinement B-Spline basis</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#8080ff">//typedef Basis&lt;T, Orthogonal, Interval, Multi&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PrimalBasis;</span><br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;Basis&lt;T, Primal, Interval, Dijkema&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PrimalBasis;<br>
+<!-- CodeLine     3 --><span style="color:#008000">typedef</span>&nbsp;PrimalBasis::RefinementBasis&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RefinementBasis;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Wavelet integrals w.r.t. wavelet basis and refinement B-Splines</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;IntegralF&lt;Gauss,PrimalBasis&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IntegralFBasis;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;IntegralF&lt;Gauss,RefinementBasis&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IntegralFRefinementBasis;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     The function \(f\) we use for this test.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->T<br>
+<!-- CodeLine     2 -->f(T x) {&nbsp;<span style="color:#af5f00">return</span>&nbsp;exp(x); }<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     wavelet basis parameters:</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;d&nbsp;&nbsp;= atoi(argv[<span style="color:#c00000">1</span>]);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;j0 = atoi(argv[<span style="color:#c00000">2</span>]);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of the level \(j\) in our documentation.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;j_wavelet&nbsp;&nbsp;= j0+<span style="color:#c00000">5</span>;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;j_scaling&nbsp;&nbsp;= j_wavelet;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Basis initialization, using Dirichlet boundary conditions</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//PrimalBasis basis(d, j0);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // For L2_orthonormal MW bases</span><br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;PrimalBasis basis(d, d, j0);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// For biorthogonal wavelet bases</span><br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;basis.enforceBoundaryCondition&lt;DirichletBC&gt;();<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;RefinementBasis &amp;refinementbasis = basis.refinementbasis;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Integral initialization</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;singPts;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;Function&lt;T&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; f_fct(f,singPts);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;IntegralFBasis&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;integralf_basis(f_fct,basis);<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;IntegralFRefinementBasis&nbsp;&nbsp;&nbsp;&nbsp;integralf_refinementbasis(f_fct,refinementbasis);<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;integralf_basis.quadrature.setOrder(<span style="color:#c00000">30</span>);<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;integralf_refinementbasis.quadrature.setOrder(<span style="color:#c00000">30</span>);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Local refinement initialization</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;LocalRefinement&lt;PrimalBasis&gt; LocalRefine(basis);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Get \(j + \bar{j}+1\).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;j_refinement = basis.psi.getRefinementLevel(j_wavelet);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Computing a vector of refinement B-spline coefficients, i.e., \(\mathbf{f}\).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;CoefficientsByLevel&lt;T&gt; f_loc_single;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(<span style="color:#008000">int</span>&nbsp;k= refinementbasis.mra.rangeI(j_refinement).firstIndex();<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; k&lt;=refinementbasis.mra.rangeI(j_refinement).lastIndex(); ++k) {<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f_loc_single.map.<span style="color:#af5f00">operator</span>[](k) = integralf_refinementbasis(j_refinement,k,XBSpline,<span style="color:#c00000">0</span>);<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initializing output vectors for (multi-)wavelets and (multi-)scaling functions. This is required as only existing entries in the corresponding hash maps are processed!</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;CoefficientsByLevel&lt;T&gt; f_bspline, f_wavelet, f_scaling;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(<span style="color:#008000">int</span>&nbsp;k =basis.rangeJ(j_wavelet).firstIndex(); k&lt;=basis.rangeJ(j_wavelet).lastIndex(); ++k) {<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f_wavelet.map.<span style="color:#af5f00">operator</span>[](k) =&nbsp;<span style="color:#c00000">0.</span>;<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(<span style="color:#008000">int</span>&nbsp;k =refinementbasis.mra.rangeI(j_refinement-<span style="color:#c00000">1</span>).firstIndex();<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; k&lt;=refinementbasis.mra.rangeI(j_refinement-<span style="color:#c00000">1</span>).lastIndex(); ++k) {<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f_bspline.map.<span style="color:#af5f00">operator</span>[](k) =&nbsp;<span style="color:#c00000">0.</span>;<br>
+<!-- CodeLine     8 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine     9 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>&nbsp;(PrimalBasis::Cons==Multi) {<br>
+<!-- CodeLine    10 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(<span style="color:#008000">int</span>&nbsp;k =basis.mra.rangeI(j_scaling).firstIndex();<br>
+<!-- CodeLine    11 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; k&lt;=basis.mra.rangeI(j_scaling).lastIndex(); ++k) {<br>
+<!-- CodeLine    12 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f_scaling.map.<span style="color:#af5f00">operator</span>[](k) =&nbsp;<span style="color:#c00000">0.</span>;<br>
+<!-- CodeLine    13 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    14 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Decompose the refinement B-spline coefficient vector, i.e., compute \(\bar{\mathbf{g}}\) and \(\mathbf{h}\).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;LocalRefine.decompose_(f_loc_single, f_bspline, j_refinement-<span style="color:#c00000">1</span>, f_wavelet, j_wavelet);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Check if wavelet coefficients in \(\mathbf{h}\) are correct.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(const_coeffbylevel_it it=f_wavelet.map.begin(); it!=f_wavelet.map.end(); ++it) {<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T val1 = integralf_basis(j_wavelet,(*it).first,XWavelet,<span style="color:#c00000">0</span>);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T val2 = (*it).second;<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt; (*it).first &lt;&lt;&nbsp;<span style="color:#c00000">&quot;: &quot;</span>&nbsp;&lt;&lt; val1 &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span>&nbsp;&lt;&lt; val2 &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span>&nbsp;&lt;&lt; fabs(val1-val2) &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span><br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; fabs(val1-val2)/fabs(val1) &lt;&lt; endl;<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt; endl;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Check if refinement B-Spline coefficients in \(\bar{\mathbf{g}}\) are correct.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(const_coeffbylevel_it it=f_bspline.map.begin(); it!=f_bspline.map.end(); ++it) {<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T val1 = integralf_refinementbasis(j_refinement-<span style="color:#c00000">1</span>,(*it).first,XBSpline,<span style="color:#c00000">0</span>);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T val2 = (*it).second;<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt; (*it).first &lt;&lt;&nbsp;<span style="color:#c00000">&quot;: &quot;</span>&nbsp;&lt;&lt; val1 &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span>&nbsp;&lt;&lt; val2 &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span>&nbsp;&lt;&lt; fabs(val1-val2) &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span><br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; fabs(val1-val2)/fabs(val1) &lt;&lt; endl;<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt; endl;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     In case of multiscaling functions, we have to further decompose the refinement B-splines, i.e., compute \(\mathbf{g}\).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>&nbsp;(PrimalBasis::Cons==Multi) {<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LocalRefine.decompose_OnlyMultiScaling(f_bspline, f_scaling, j_scaling);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Check if refinement scaling function coefficients in \(\mathbf{g}\) are correct.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt;&nbsp;<span style="color:#c00000">&quot;************** Scaling Decompositions *************&quot;</span>&nbsp;&lt;&lt; endl;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(const_coeffbylevel_it it=f_scaling.map.begin(); it!=f_scaling.map.end(); ++it) {<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T val1 = integralf_basis(j_scaling,(*it).first,XBSpline,<span style="color:#c00000">0</span>);<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T val2 = (*it).second;<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt; (*it).first &lt;&lt;&nbsp;<span style="color:#c00000">&quot;: &quot;</span>&nbsp;&lt;&lt; val1 &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span>&nbsp;&lt;&lt; val2 &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span>&nbsp;&lt;&lt; fabs(val1-val2) &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span><br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; fabs(val1-val2)/fabs(val1) &lt;&lt; endl;<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine     8 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>

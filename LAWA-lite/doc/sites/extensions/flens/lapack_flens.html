@@ -1,0 +1,2369 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../../index.html">home</a></li>
+<li><a href="../../doc/license.html">license</a></li>
+<li><a href="../../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../../doc/features.html">lawa features</a></li>
+<li><a href="../../doc/highperformance.html">high performance</a></li>
+<li><a href="../../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../../doc/download.html">download</a></li>
+<li><a href="../../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     getrf</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     trf</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Short:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     compute an \(LU\) factorization  of  a  general  \(M \times N\) matrix \(A\) using partial pivoting with row interchanges</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Purpose:   computes an \(LU\)  factorization  of  a  general  \(M \times N\)</p><p class="paramlist">
+     matrix  \(A\)  using partial pivoting with row interchanges. The factorization has the form</p><p class="paramlist">
+     \(A = P L U\)</p><p class="paramlist">
+     where \(P\) is a permutation matrix, \(L\) is lower triangular  with unit  diagonal  elements (lower trapezoidal if \(m > n\)), and \(U\) is upper triangular (upper trapezoidal if \(m < n\)).</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On  entry,  the  \(M \times N\)  matrix  to be factored.  On exit, the factors \(L\) and \(U\) from the factorization \(A = P L U\);  the  unit  diagonal  elements  of  \(L\) are not stored.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [P]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (output) The pivot indices; for \(1 \leq i \leq \min\{M,N\}\), row \(i\)  of the matrix was interchanged with row \(P(i)\).</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i>0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     then \(U(i,i)\) is exactly zero.  The factorization  has  been completed, but the factor \(U\) is exactly singular, and division by zero will occur if it is used to solve a system of equations.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @@</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     getri</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     tri</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Short:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     compute the inverse of a matrix using the \(LU\) factorization computed by &lt;&lt;trf (getrf)&gt;&gt;</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Purpose:   &lt;&lt;tri (getri)&gt;&gt; computes the inverse of a matrix using the LU</p><p class="paramlist">
+     factorization  computed  by &lt;&lt;trf (getrf)&gt;&gt;. This function inverts \(U\) and then computes \(A^{-1}\) by solving the system \(A^{-1}*L = U^{-1}\) for \(A^{-1}\).</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On entry, the factors \(L\) and \(U\) from the factorization \(A = PLU\) as computed by &lt;&lt;trf (getrf)&gt;&gt;.  On successful exit, the inverse of the original matrix \(A\).</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [P]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) The pivot indices from &lt;&lt;trf (getrf)&gt;&gt;; for \(1 \leq i \leq N\), row \(i\) of the matrix was interchanged with row \(P(i)\).</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i>0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     then \(U(i,i)\) is exactly zero; the matrix is singular and its inverse could not be computed.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @@</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     gbtrf</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     trf</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Short:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     compute an \(LU\) factorization of a real  \(M \times N\) band matrix \(A\) using partial pivoting with row interchanges </p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Purpose:   &lt;&lt;trf (gbtrf)&gt;&gt; computes an \(LU\) factorization of a real \(M \times N\)</p><p class="paramlist">
+     band matrix \(A\) using partial pivoting with row interchanges. This is the blocked version of the algorithm, calling Level 3 BLAS.</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On entry, the matrix \(A\) in band storage and on exit overwritten with the \(LU\) factorization.  Matrix {\tt A} is required to have a total of \(k_l\) subdiagonals and \(k_l + k_u\) superdiagonals where on entry only the elements within the \(k_l\) subdiagonals and \(k_u\) superdiagonals need to be set (See Further Details).</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [P]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) The pivot indices; for \(1 \leq i \leq N\), row \(i\) of the matrix was interchanged with row \(P(i)\).</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:   </p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i>0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     then \(U(i,i)\) is exactly zero.  The factorization  has  been completed, but the factor \(U\) is exactly singular, and division by zero will occur if it is used to solve a system of equations.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Details:</p><p class="paramlist">
+     Assume non-zero elements of \(A\) reside within a band of \(k_l\) subdiagonals and \(k_u\) superdiagonals. Then storing its \(LU\) factorization requires a band of \(k_l\) subdiagonals and \(k_l+k_u\) superdiagonals. Hence, the {\tt GbMatrix} holding the matrix \(A\) needs to have \(k_l\) subdiagonals and \(k_l+k_u\) superdiagonals allocated; but only the elements within its \(k_l\) subdiagonals and \(k_u\) superdiagonals must be set.</p><p class="paramlist">
+     If, for example, \(A\) is a tridiagonal matrix (i.\,e.\ \(k_l = k_u = 1\)), then matrix \(U\) will have in general two super-diagonals.  This requires the {\tt GbMatrix} storing \(A\) has allocated an additional superdiagonal (as indicated by `$*$'): \begin{center} \begin{tabular}{ccc} $ A = \begin{pmatrix}</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     a<i>{1,1} & a</i>{1,2} & *</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & 0</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & 0</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     \\</p></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     a<i>{2,1} & a</i>{2,2} & a_{2,3} & *</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & 0</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     \\</p></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     0</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & a<i>{3,2} & a</i>{3,3} & a_{3,4} & *</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     \\</p></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     0</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & 0</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     & a<i>{4,3} & a</i>{4,4} & a_{4,5} \\    </p></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     0</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & 0</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & 0</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     & a<i>{5,4} & a</i>{5,5} \\    </p></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<p class="paramlist">
+     \end{pmatrix} \( & \) \leadsto\(  & \) A_{LU} = \begin{pmatrix}</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     u<i>{1,1} & u</i>{1,2} & u_{1,3} & 0</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & 0</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     \\</p></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     m<i>{2,1} & u</i>{2,2} & u<i>{2,3} & u</i>{2,4} & 0</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     \\</p></td>
+</tr>
+</table>
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     0</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     & m<i>{3,2} & u</i>{3,3} & u<i>{3,4} & u</i>{3,5} \\</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     0</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & 0</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     & m<i>{4,3} & u</i>{4,4} & u_{4,5} \\  </p></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     0</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & 0</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & 0</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     & m<i>{5,4} & u</i>{5,5} \\    </p></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<p class="paramlist">
+     \end{pmatrix}\(. \\ \end{tabular} \end{center} Elements of \)L\( are stored (in general rearranged due to pivoting) on the sub-diagonal of \)A_{LU}$.</p><p class="paramlist">
+     @@</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     getrs</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     trs</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Short:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     solve a system of linear equations \(A X = B\) or  \(A^T X = B\) with a general \(N \times N\) matrix \(A\) using the \(LU\) factorization computed by &lt;&lt;trf (getrf)&gt;&gt;</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Purpose:   &lt;&lt;trs (getrs)&gt;&gt; solves a system of linear equations \(A X = B\) or</p><p class="paramlist">
+     \(A^T X = B\) with a general \(N \times N\) matrix \(A\) using the \(LU\) factorization computed by &lt;&lt;trf (getrf)&gt;&gt;.</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [trans]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) Specifies the form of the system of equations:</p><p class="paramlist">
+     \begin{tabular}{ll}</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     {\tt trans = NoTrans}&</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     \(A   X = B\)  (No transpose)\\</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     {\tt trans = Trans}&</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     \(A^T X = B\)  (Transpose)\\</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     {\tt trans = ConjTrans}&  \(A^H X = B\)  (Conjugate transpose = Transpose) \end{tabular}</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) The factors \(L\) and \(U\) from the factorization \(A = PLU\) as computed by &lt;&lt;trf (getrf)&gt;&gt;.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [P]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) The pivot indices from &lt;&lt;trf (getrf)&gt;&gt;; for \(1 \leq i \leq N\), row \(i\) of the matrix was interchanged with row \(P(i)\).</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [B]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On  entry,  the  right hand side matrix \(B\).  On exit, the solution matrix \(X\).</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @@</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     gbtrs</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     trs</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Short:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     solve a system of linear equations \(A  X = B\) or  \(A^T X = B\) with a general band matrix \(A\) using the LU factorization computed by &lt;&lt;trf (gbtrf)&gt;&gt;</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Purpose:   &lt;&lt;trs (gbtrs)&gt;&gt; solves a system of linear equations \(A X = B\) or</p><p class="paramlist">
+     \(A^T X = B\) with a general band matrix \(A\) using the \(LU\) factorization computed by &lt;&lt;trf (gbtrf)&gt;&gt;.</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [trans]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) Specifies the form of the system of equations:</p><p class="paramlist">
+     \begin{tabular}{ll}</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     {\tt trans = NoTrans}&</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     \(A   X = B\)  (No transpose)\\</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     {\tt trans = Trans}&</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     \(A^T X = B\)  (Transpose)\\</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     {\tt trans = ConjTrans}&  \(A^H X = B\)  (Conjugate transpose = Transpose) \end{tabular}</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) Details of the \(LU\) factorization of the band matrix \(A\),  as  computed by &lt;&lt;trf (gbtrf)&gt;&gt;.  \(U\) is stored as an upper triangular band matrix in the diagonal and the \(k_l + k_u\) superdiagonals of \(A\); the multipliers (i.\,e.\ the elements of \(L\) rearranged due to pivoting) used during the factorization are  stored in the \(k_l\) subdiagonals of \(A\).</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [P]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) The pivot indices from &lt;&lt;trf (getrf)&gt;&gt;; for \(1 \leq i \leq N\), row \(i\) of the matrix was interchanged with row \(P(i)\).</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [B]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On  entry,  the  right hand side matrix \(B\).  On exit, the solution matrix \(X\).</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @@</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     gesv</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     sv</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Short:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     compute the solution to  a  real  system  of  linear equations \(A X = B\)</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Purpose:   computes the solution to a real or complex  system  of  linear</p><p class="paramlist">
+     equations \(A X = B\), where \(A\) is an \(N \times N\) matrix and \(X\) and \(B\) are \(N \times R\) matrices.</p><p class="paramlist">
+     The \(LU\) decomposition with partial pivoting  and  row interchanges is used to factor \(A\) as</p><p class="paramlist">
+     \[A = P L U,\]</p><p class="paramlist">
+     where \(P\) is a permutation matrix, \(L\) is unit lower triangular, and  \(U\)  is upper triangular.  The factored form of \(A\) is then used to solve the system of equations \(A X = B\).</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On entry, the \(N \times N\) coefficient matrix \(A\).  On exit, the  factors  \(L\)  and  \(U\)  from  the factorization \(A = P L U\); the unit  diagonal  elements  of  \(L\)  are  not stored.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [P]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (output) The pivot indices; for \(1 \leq i \leq \min\{M,N\}\), row \(i\)  of the matrix was interchanged with row \(P(i)\).</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [B]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On  entry,  the  \(N \times R\) matrix of right hand side matrix \(B\).  On exit, if function returned 0, the \(N \times R\) solution matrix \(X\).</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i>0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     then \(U(i,i)\) is exactly zero.  The factorization  has  been completed, but the factor \(U\) is exactly singular, so the solution could not be computed.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @@</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     gbsv</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     sv</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Short:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     compute the solution to a real system of linear equations \(A X  = B\), where \(A\) is a band matrix of order \(N\) with \(k_l\) subdiagonals and \(k_u\) superdiagonals, and \(X\) and \(B\) are \(N \times R\) matrices</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Purpose:   &lt;&lt;sv (gbsv)&gt;&gt; computes the solution to a real system of linear</p><p class="paramlist">
+     equations \(A X = B\), where \(A\) is a band matrix of order \(N\) with \(k_l\) subdiagonals and \(k_u\) superdiagonals, and \(X\) and  \(B\)  are \(N \times R\) matrices.  The \(LU\) decomposition with partial pivoting and row interchanges is used to factor \(A\) as \(A\) = \(L U\), where \(L\) is a product of permutation and unit lower triangular matrices with \(k_l\) subdiagonals, and  \(U\) is upper triangular with  \(k_l+k_u\) superdiagonals.  The factored form of \(A\) is then used to solve the system of equations \(A X = B\).</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On entry, the matrix \(A\) in band storage and on exit overwritten with the \(LU\) factorization.  Matrix {\tt A} is required to have a total of \(k_l\) subdiagonals and \(k_l + k_u\) superdiagonals where on entry only the elements within the \(k_l\) subdiagonals and \(k_u\) superdiagonals need to be set (See Further Details).</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [P]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) The pivot indices; for \(1 \leq i \leq N\), row \(i\) of the matrix was interchanged with row \(P(i)\).</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [B]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On  entry,  the  right hand side matrix \(B\).  On exit, the solution matrix \(X\).</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i>0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     then \(U(i,i)\) is exactly zero.  The factorization  has  been completed, but the factor \(U\) is exactly singular, and division by zero will occur if it is used to solve a system of equations.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Details:</p><p class="paramlist">
+     Assume non-zero elements of \(A\) reside within a band of \(k_l\) subdiagonals and \(k_u\) superdiagonals. Then storing its \(LU\) factorization requires a band of \(k_l\) subdiagonals and \(k_l+k_u\) superdiagonals. Hence, the {\tt GbMatrix} holding the matrix \(A\) needs to have \(k_l\) subdiagonals and \(k_l+k_u\) superdiagonals allocated; but only the elements within its \(k_l\) subdiagonals and \(k_u\) superdiagonals must be set.</p><p class="paramlist">
+     If, for example, \(A\) is a tridiagonal matrix (i.\,e.\ \(k_l = k_u = 1\)), then matrix \(U\) will have in general two super-diagonals.  This requires the {\tt GbMatrix} storing \(A\) has allocated an additional superdiagonal (as indicated by `$*$'): \begin{center} \begin{tabular}{ccc} $ A = \begin{pmatrix}</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     a<i>{1,1} & a</i>{1,2} & *</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & 0</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & 0</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     \\</p></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     a<i>{2,1} & a</i>{2,2} & a_{2,3} & *</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & 0</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     \\</p></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     0</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & a<i>{3,2} & a</i>{3,3} & a_{3,4} & *</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     \\</p></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     0</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & 0</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     & a<i>{4,3} & a</i>{4,4} & a_{4,5} \\    </p></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     0</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & 0</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & 0</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     & a<i>{5,4} & a</i>{5,5} \\    </p></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<p class="paramlist">
+     \end{pmatrix} \( & \) \leadsto\(  & \) A_{LU} = \begin{pmatrix}</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     u<i>{1,1} & u</i>{1,2} & u_{1,3} & 0</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & 0</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     \\</p></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     m<i>{2,1} & u</i>{2,2} & u<i>{2,3} & u</i>{2,4} & 0</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     \\</p></td>
+</tr>
+</table>
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     0</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     & m<i>{3,2} & u</i>{3,3} & u<i>{3,4} & u</i>{3,5} \\</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     0</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & 0</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     & m<i>{4,3} & u</i>{4,4} & u_{4,5} \\  </p></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     0</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & 0</p></td>
+<td class="paramlist_value">
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     & 0</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     & m<i>{5,4} & u</i>{5,5} \\    </p></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<p class="paramlist">
+     \end{pmatrix}\(. \\ \end{tabular} \end{center} Elements of \)L\( are stored (in general rearranged due to pivoting) on the sub-diagonal of \)A_{LU}$.</p><p class="paramlist">
+     @@</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     trtrs</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     trs</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Short:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     solve a triangular system of the form  \(A X = B\) or \(A^T X = B\)</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Purpose:   &lt;&lt;trs (trtrs)&gt;&gt; solves a triangular system of the form \(A X =  B\)  or</p><p class="paramlist">
+     \(A^T X = B\), where \(A\) is a triangular matrix of order \(N\), and \(B\) is an \(N \times R\) matrix.  A check is made to verify that  \(A\) is nonsingular.</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [trans]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) Specifies the form of the system of equations:</p><p class="paramlist">
+     \begin{tabular}{ll}</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     {\tt trans = NoTrans}&</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     \(A   X = B\)  (No transpose)\\</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     {\tt trans = Trans}&</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     \(A^T X = B\)  (Transpose)\\</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     {\tt trans = ConjTrans}&  \(A^H X = B\)  (Conjugate transpose = Transpose) \end{tabular}</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) The (unit or non-unit) triangular matrix A.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [B]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On  entry,  the  \(N \times R\) matrix of right hand side matrix \(B\).  On exit, if function returned 0, the \(N \times R\) solution matrix \(X\).</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i>0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     then \(A(i,i)\) is zero, indicating that the matrix is singular and the solutions \(X\) have not been computed.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @@</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     geqrf</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     qrf</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Short:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     compute a \(QR\) factorization of a real \(M \times N\) matrix \(A\)</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Purpose:   &lt;&lt;qrf (geqrf)&gt;&gt; computes a \(QR\) factorization of a real </p><p class="paramlist">
+     \(M \times N\) matrix \(A\):  \[ A = Q R. \]</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On  entry,  the  \(M \times N\) matrix \(A\).  On exit, the elements on and above the diagonal of the array contain the   \(\min\{M,N\} \times N\)  upper trapezoidal matrix \(R\) (\(R\) is upper triangular if \(m \geq n\)); the elements below  the diagonal, with the array {\tt tau}, represent the orthogonal matrix \(Q\) as a  product  of  \(\min\{m,n\}\)  elementary reflectors (see Further Details).</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [tau]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (output) The scalar factors \(\tau\) of the elementary reflectors (see Further Details).</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Details:   The matrix \(Q\) is  represented  as  a  product  of  elementary</p><p class="paramlist">
+     reflectors \[ Q = H<i>1 H</i>2 \cdots H<i>k, \;\text{where}\; k = \min\{m,n\}. \] Each $H</i>i\( has the form \[ H_i = I - \tau * v * v' \] where \)\tau\( is a real scalar, and \)v\( is a real vector with \)v<i>1 = \dots v</i>{i-1} = 0\( and \)v<i>i = 1\(; \)(v</i>{i+1}, \dots, v_{m})$ is  stored  on  exit  in {\tt A(i+1,i), .., A(m,i)} and $\tau$ in {\tt tau(i)}.</p><p class="paramlist">
+     @@</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     orgqr</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     orgqr</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Short:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     generate an \(M \times N\) real matrix \(Q\)  with  orthonormal columns</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Purpose:   &lt;&lt;orgqr (orgqr)&gt;&gt; generates an \(M \times N\) real matrix  \(Q\)  with</p><p class="paramlist">
+     orthonormal columns,  which  is defined as the first \(N\) columns of a product of \(k\) elementary reflectors of order \(M\) \[</p><p class="paramlist">
+     Q  =  H<i>1 H</i>2 \cdot \dots \cdot H_k</p><p class="paramlist">
+     \] as returned by &lt;&lt;qrf (geqrf)&gt;&gt;.</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On  entry,  the  \(i\)-th column must contain the vector which defines the elementary reflector \(H_i\), for \(i = 1,2, \dots,k\), as returned by &lt;&lt;qrf (geqrf)&gt;&gt; in the first \(k\) columns of its matrix argument \(A\). On exit, the \(M \times N\) matrix Q.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [tau]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) {\tt TAU(i)} must contain the scalar factor of the elementary reflector \(H_i\), as returned by &lt;&lt;qrf (geqrf)&gt;&gt;.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @@</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     ormqr</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     ormqr</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Short:      @Purpose:   &lt;&lt;ormqr (ormqr)&gt;&gt; overwrites the general real \(M \times N\) matrix \(C\)</p><p class="paramlist">
+     as follows: \[  C \leftarrow</p><p class="paramlist">
+     \begin{cases} Q C   & \text{if {\tt side=Left} and {\tt trans=NoTrans}} \\ Q^T C & \text{if {\tt side=Left} and {\tt trans=Trans}} \\ C Q   & \text{if {\tt side=Right} and {\tt trans=NoTrans}} \\ C Q^T & \text{if {\tt side=Right} and {\tt trans=Trans}} \end{cases}</p><p class="paramlist">
+     \] where \(Q\) is a real orthogonal matrix defined as  the  product of \(k\) elementary reflectors \[</p><p class="paramlist">
+     Q  =  H<i>1 H</i>2 \cdot \dots \cdot H_k</p><p class="paramlist">
+     \] as returned by &lt;&lt;qrf (geqrf)&gt;&gt;. \(Q\) is of order \(M\) if {\tt side=Left} and  of order \(N\) if {\tt side=Right}.</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [side]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) \begin{tabular}{ll} {\tt side = Left}  & apply \(Q\) or \(Q^T\) from left\\ {\tt side = Right} & apply \(Q\) or \(Q^T\) from right \end{tabular}</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [trans]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) \begin{tabular}{ll} {\tt trans=NoTrans}  & No transpose, apply \(Q\)\\</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     {\tt trans=Trans}</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     & Transpose, apply \(Q^T\)</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     \end{tabular}</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) On  entry,  the  \(i\)-th column must contain the vector which defines the elementary reflector \(H_i\), for \(i = 1,2, \dots,k\), as returned by &lt;&lt;qrf (geqrf)&gt;&gt; in the first \(k\) columns of its matrix argument \(A\). \(A\) is modified by the routine but restored on exit.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [tau]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) {\tt TAU(i)} must contain the scalar factor of the elementary reflector \(H_i\), as returned by &lt;&lt;qrf (geqrf)&gt;&gt;.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [C]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On  entry,  the  \(M \times N\) matrix \(C\).</p><p class="paramlist">
+     On  exit, \(C\) is overwritten by \(Q C\) or \(Q^T C\) or \(C Q^T\) or \(C Q\).</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @@</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     gels</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     ls</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Short:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     solve overdetermined or underdetermined real linear systems involving  an  \(M \times N\)  matrix  \(A\), or its transpose, using a \(QR\) or \(LQ\) factorization of \(A\)</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Purpose:   &lt;&lt;ls (gels)&gt;&gt; solves overdetermined or underdetermined  real</p><p class="paramlist">
+     linear systems  involving  an  \(M \times N\)  matrix  \(A\), or its transpose, using a \(QR\) or \(LQ\) factorization of \(A\). It is  assumed  that \(A\) has full rank. The following options are provided: \begin{enumerate} \item If {\tt trans = NoTrans} and \(M \geq N\): find the least</p><p class="paramlist">
+     squares solution of an overdetermined system, i.\,e.\,, solve the  least  squares problem \[</p><p class="paramlist">
+     || B - AX || \to \text{min}.</p><p class="paramlist">
+     \]</p><p class="paramlist">
+     \item If {\tt trans = NoTrans} and \(M < N\):  find the minimum</p><p class="paramlist">
+     norm solution of an underdetermined system \(A  X = B\).</p><p class="paramlist">
+     \item If {\tt trans = Trans} and \(M \geq N\):  find the minimum</p><p class="paramlist">
+     norm  solution of an undetermined system \(A^T  X = B\).</p><p class="paramlist">
+     \item If {\tt trans = Trans} and \(M < N\):  find the least  squares</p><p class="paramlist">
+     solution of an overdetermined system, i.\,e.\,, solve the least  squares problem \[</p><p class="paramlist">
+     || B - A^T * X ||  \to \text{min}.</p><p class="paramlist">
+     \]</p><p class="paramlist">
+     \end{enumerate} Several right hand side vectors \(b\) and solution vectors \(x\) can be  handled in a single call; they are stored as the columns of the \(M \times R\) right hand side matrix \(B\) and the \(N \times R\) solution matrix \(X\).</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [trans]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) \begin{tabular}{ll}</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     {\tt trans = NoTrans}&</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the linear system involves \(A\);\\</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     {\tt trans = Trans}&</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the linear system involves \(A^T\).</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     \end{tabular}</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On  entry, the \(M \times N\) matrix \(A\).  On exit, if \(M \geq N\), \(A\) is overwritten by details of its \(QR\) factorization as returned by &lt;&lt;qrf (geqrf)&gt;&gt;; if \(M <  N\), \(A\) is overwritten by details of its \(LQ\) factorization  as  returned  by &lt;&lt;lqf (gelqf)&gt;&gt;.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [B]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On  entry,  the matrix \(B\) of right hand side vectors, stored column-wise; \(B\) is \(M \times R\) if {\tt trans=NoTrans}, or \(N \times R\) if {\tt trans=Trans}.</p><p class="paramlist">
+     On exit, \(B\) is overwritten by the solution vectors, stored  column-wise: \begin{enumerate} \item if {\tt trans=NoTrans} and \(M \geq N\), rows \(1\) to \(N\)</p><p class="paramlist">
+     of \(B\) contain the least squares solution vectors; the residual sum  of squares for the solution in each column is given by the sum of squares of elements  \(N+1\)  to  \(M\) in  that column;</p><p class="paramlist">
+     \item if {\tt trans=NoTrans} and \(M < N\), rows \(1\) to \(N\) of \(B\)</p><p class="paramlist">
+     contain the minimum norm solution vectors;</p><p class="paramlist">
+     \item if  {\tt trans=Trans} and  \(M \geq N\),  rows \(1\) to \(M\)</p><p class="paramlist">
+     of \(B\) contain the minimum norm solution vectors;</p><p class="paramlist">
+     \item if {\tt trans=Trans} and  \(M < N\), rows  \(1\) to \(M\) of \(B\)</p><p class="paramlist">
+     contain the least squares solution vectors; the residual sum of  squares for the  solution  in each column is given by the sum of squares of elements \(M+1\) to \(N\) in that column.</p><p class="paramlist">
+     \end{enumerate}</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @@</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     gelss</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     lss</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Short:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     compute the minimum norm solution to a real linear least squares problem using a singular value decomposition (SVD)</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Purpose:   &lt;&lt;lss (gelss)&gt;&gt; computes the minimum norm solution to a real linear</p><p class="paramlist">
+     least squares problem:  \[</p><p class="paramlist">
+     || b - A x ||_2 \to \text{min}</p><p class="paramlist">
+     \] using the singular value decomposition (SVD) of \(A\). \(A\) is an \(M \times N\) matrix which may be rank-deficient.</p><p class="paramlist">
+     Several right hand side vectors \(b\) and solution vectors \(x\) can be handled in a single call; they are stored as the columns of the \(M \times R\) right hand side matrix \(B\) and the  \(N \times R\) solution matrix \(X\).</p><p class="paramlist">
+     The effective rank of \(A\) is determined by  treating  as  zero those  singular  values which are less than RCOND times the largest singular value.</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On  entry,  the \(M \times N\) matrix \(A\).  On exit, the first \(\min\{m,n\}\) rows of \(A\) are overwritten  with  its  right singular vectors, stored row-wise.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [B]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On  entry,  the  \(M \times R\) right hand side matrix \(B\).</p><p class="paramlist">
+     On exit, \(B\) is overwritten by the \(N \times R\)  solution matrix \(X\).   If  \(M \geq N\) and \(\text{rank}(A) = N\), the residual sum-of-squares for the solution in the  \(i\)-th column is  given by the sum of squares of elements \(B_{N+1,i}, \dots, B_{M,i}\).</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i>0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the algorithm for computing the SVD failed  to converge; more precisely, \(i\) off-diagonal elements of an intermediate bi-diagonal form did not converge to zero.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Todo:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     \begin{enumerate} \item Provide a version of &lt;&lt;lss (gelss)&gt;&gt; for a single right-hand side,</p><p class="paramlist">
+     i.\,e.\ handle the case where \(B\) would be a \(M \times 1\) matrix (as was done for &lt;&lt;sv (gesv)&gt;&gt;).</p><p class="paramlist">
+     \item In this form the wrapper for {\tt gelss} suppresses some of the</p><p class="paramlist">
+     output computed by its underlying LAPACK routine (e.\,g.\ the singular values).</p><p class="paramlist">
+     \end{enumerate}</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @@</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     geev,real</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     ev</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Short:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     compute for an \(N \times N\) real non-symmetric matrix \(A\), the eigenvalues and, optionally, the left and/or right eigenvectors</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Purpose:   &lt;&lt;ev (geev,real)&gt;&gt; computes for an \(N \times N\) real non-symmetric</p><p class="paramlist">
+     matrix \(A\), the eigenvalues and, optionally, the left and/or right eigenvectors. The right eigenvector \(v_j\) of \(A\) satisfies \[ A v<i>j = \lambda</i>j  v<i>j \] where $\lambda</i>j$ is its eigenvalue.</p><p class="paramlist">
+     The left eigenvector \(u_j\) of \(A\) satisfies \[ u<i>j^H A = \lambda</i>j u<i>j^H \] where $u</i>j^H\( denotes the conjugate transpose of \)u_j$.</p><p class="paramlist">
+     The computed eigenvectors are normalized to have Euclidean norm equal to \(1\) and largest component real.</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [leftEV]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) specifies whether left eigenvectors of \(A\) are computed.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     [rightEV]   (input)</p><p class="paramlist">
+     specifies whether right eigenvectors of \(A\) are computed.</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On entry, the \(N \times N\) matrix \(A\).</p><p class="paramlist">
+     On exit, \(A\) has been overwritten.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [wr,wi]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (output) {\tt wr} and {\tt wi} contain the real and imaginary parts, respectively, of the computed eigenvalues. Complex conjugate pairs of eigenvalues appear consecutively with the eigenvalue having  the positive imaginary part first.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [vl]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (output) If {\tt leftEV=true}, the left eigenvectors \(u_j\) are stored one after another in the columns of {\tt vl}, in the same order as their  eigenvalues. If {\tt leftEV=false}, then {\tt vl} is not referenced.</p><p class="paramlist">
+     If the \(j\)-th eigenvalue is real, then \(u_j\) is stored in the \(j\)-th column of {\tt vl}. If the \(j\)-th and \((j+1)\)-th eigenvalues form a complex conjugate pair, then \[ u<i>j = \verb#vl(</i>,j) + i <b> vl(<i>,j+1)# \] and \[ u</i>{j+1} = \verb#vl(_,j) - i </b> vl(_,j+1)# \]</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [vr]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (output) If {\tt rightEV=true}, the left eigenvectors \(u_j\) are stored one after another in the columns of {\tt vr}, in the same order as their  eigenvalues. If {\tt rightEV=false}, then {\tt vr} is not referenced.</p><p class="paramlist">
+     If the \(j\)-th eigenvalue is real, then \(u_j\) is stored in the \(j\)-th column of {\tt vr}. If the \(j\)-th and \((j+1)\)-th eigenvalues form a complex conjugate pair, then \[ u<i>j = \verb#vr(</i>,j) + i <b> vr(<i>,j+1)# \] and \[ u</i>{j+1} = \verb#vr(_,j) - i </b> vr(_,j+1)# \]</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:   </p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i>0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the \(QR\) algorithm failed to compute all the eigenvalues, and no eigenvectors have been computed; elements \(i+1\) to \(N\) of {\tt wr} and  {\tt wi} contain eigenvalues which have converged.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @@</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     geev,complex</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     ev</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Short:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     compute for an \(N \times N\) complex non-symmetric matrix \(A\), the eigenvalues and, optionally, the left and/or right eigenvectors</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Purpose:   &lt;&lt;ev (geev,complex)&gt;&gt; computes for an \(N \times N\) complex non-symmetric</p><p class="paramlist">
+     matrix \(A\), the eigenvalues and, optionally, the left and/or right eigenvectors. The right eigenvector \(v_j\) of \(A\) satisfies \[ A v<i>j = \lambda</i>j  v<i>j \] where $\lambda</i>j$ is its eigenvalue.</p><p class="paramlist">
+     The left eigenvector \(u_j\) of \(A\) satisfies \[ u<i>j^H A = \lambda</i>j u<i>j^H \] where $u</i>j^H\( denotes the conjugate transpose of \)u_j$.</p><p class="paramlist">
+     The computed eigenvectors are normalized to have Euclidean norm equal to \(1\) and largest component real.</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [leftEV]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) specifies whether left eigenvectors of \(A\) are computed.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     [rightEV]   (input)</p><p class="paramlist">
+     specifies whether right eigenvectors of \(A\) are computed.</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On entry, the \(N \times N\) matrix \(A\).</p><p class="paramlist">
+     On exit, \(A\) has been overwritten.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [w]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (output) contains the computed eigenvalues.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [vl]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (output) If {\tt leftEV=true}, the left eigenvectors \(u_j\) are stored one after another in the columns of {\tt vl}, in the same order as their  eigenvalues. If {\tt leftEV=false}, then {\tt vl} is not referenced.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [vr]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (output) If {\tt rightEV=true}, the left eigenvectors \(u_j\) are stored one after another in the columns of {\tt vr}, in the same order as their  eigenvalues. If {\tt rightEV=false}, then {\tt vr} is not referenced.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:   </p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i>0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the \(QR\) algorithm failed to compute all the eigenvalues, and no eigenvectors have been computed; elements \(i+1\) to \(N\) of {\tt wr} and  {\tt wi} contain eigenvalues which have converged.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @@</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     syev</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     ev</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Short:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     compute all eigenvalues and, optionally, eigenvectors of a real symmetric matrix \(A\)</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Purpose:   &lt;&lt;ev (syev)&gt;&gt; computes all eigenvalues and, optionally, eigenvectors</p><p class="paramlist">
+     of a real symmetric matrix \(A\).</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [compEV]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) specifies whether eigenvectors of \(A\) are computed.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On  entry,  the  symmetric matrix \(A\).</p><p class="paramlist">
+     On successful exit and if {\tt compEV=true}, then the underlying full storage scheme of \(A\)  contains  the  orthonormal  eigenvectors  of  the matrix \(A\).</p><p class="paramlist">
+     If {\tt compEV=false}, then  on  exit  the referenced triangle of the underlying full storage scheme is  destroyed.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [w]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (output) On successful exit, the eigenvalues in ascending order.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i>0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the algorithm failed to converge; \(i\) off-diagonal elements of an intermediate tridiagonal form did not converge to zero.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @@</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     sbev</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     ev</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Short:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     compute all the eigenvalues and, optionally,  eigenvectors of a real symmetric band matrix \(A\)</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Purpose:   &lt;&lt;ev (sbev)&gt;&gt; computes all the eigenvalues and,  optionally,  eigenvectors of a</p><p class="paramlist">
+     real symmetric band matrix \(A\).</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [compEV]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) specifies whether eigenvectors of \(A\) are computed.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On entry, the symmetric band matrix \(A\).</p><p class="paramlist">
+     On exit, \(A\) is overwritten by values generated  during  the  reduction  to tridiagonal form.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [w]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (output) On successful exit, the eigenvalues in ascending order.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [Z]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     If {\tt compEV=true}, then on successful exit,  \(Z\)  contains  the orthonormal  eigenvectors  of the matrix \(A\), with the \(i\)-th column of \(Z\) holding the eigenvector associated with \(w(i)\).</p><p class="paramlist">
+     If {\tt compEV=false}, then \(Z\) is not referenced.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i>0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the algorithm failed to converge; \(i\) off-diagonal elements of an intermediate tridiagonal form did not converge to zero.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @@</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     spev</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     ev</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Short:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     compute all the eigenvalues and, optionally,  eigenvectors of a real symmetric matrix in packed storage</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Purpose:   &lt;&lt;ev (spev)&gt;&gt; computes all the eigenvalues and,  optionally,  eigenvectors of a</p><p class="paramlist">
+     real symmetric matrix in packed storage.</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [compEV]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) specifies whether eigenvectors of \(A\) are computed.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On entry, the symmetric  matrix \(A\) in packed storage format.</p><p class="paramlist">
+     On exit, \(A\) is overwritten by values generated during the reduction to tridiagonal form.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [w]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (output) On successful exit, the eigenvalues in ascending order.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [Z]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     If {\tt compEV=true}, then on successful exit,  \(Z\)  contains  the orthonormal  eigenvectors  of the matrix \(A\), with the \(i\)-th column of \(Z\) holding the eigenvector associated with \(w(i)\).</p><p class="paramlist">
+     If {\tt compEV=false}, then \(Z\) is not referenced.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:   </p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i>0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the algorithm failed to converge; \(i\) off-diagonal elements of an intermediate tridiagonal form did not converge to zero.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @@</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     heev</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     ev</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Short:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     compute all eigenvalues and, optionally, eigenvectors of a complex Hermitian matrix \(A\)</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Purpose:   &lt;&lt;ev (heev)&gt;&gt; computes all eigenvalues and, optionally, eigenvectors of a complex</p><p class="paramlist">
+     Hermitian matrix \(A\).</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [compEV]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) specifies whether eigenvectors of \(A\) are computed.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On entry, the Hermitian matrix A.</p><p class="paramlist">
+     On successful exit and if {\tt compEV=true}, \(A\)  contains  the  orthonormal eigenvectors of the matrix \(A\).  If {\tt compEV=false}, then on exit the referenced triangle of the underlying full storage scheme is  destroyed.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [w]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (output) On successful exit, the eigenvalues in ascending order.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:   </p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i>0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the algorithm failed to converge; \(i\) off-diagonal elements of an intermediate tridiagonal form did not converge to zero.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @@</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     hbev</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     ev</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Short:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     compute all the eigenvalues and, optionally,  eigenvectors of a complex Hermitian band matrix \(A\)</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Purpose:   &lt;&lt;ev (hbev)&gt;&gt; computes all the eigenvalues and,  optionally,  eigenvectors of a</p><p class="paramlist">
+     complex Hermitian band matrix \(A\).</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [compEV]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) specifies whether eigenvectors of \(A\) are computed.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On entry, the Hermitian band matrix \(A\).</p><p class="paramlist">
+     On exit, \(A\) is overwritten by values generated during the reduction to tridiagonal form.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [w]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (output) On successful exit, the eigenvalues in ascending order.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [Z]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     If {\tt compEV=true}, then on successful exit,  \(Z\)  contains  the orthonormal  eigenvectors  of the matrix \(A\), with the \(i\)-th column of \(Z\) holding the eigenvector  associated with \(w(i)\).</p><p class="paramlist">
+     If {\tt compEV=false}, then \(Z\) is not referenced.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i>0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the algorithm failed to converge; \(i\) off-diagonal elements of an intermediate tridiagonal form did not converge to zero.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @@</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     hpev</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     ev</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Short:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     compute all the eigenvalues and, optionally,  eigenvectors of a complex Hermitian matrix in packed storage</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Purpose:   &lt;&lt;ev (hpev)&gt;&gt; computes all the eigenvalues and,  optionally,  eigenvectors of a</p><p class="paramlist">
+     complex Hermitian matrix in packed storage.</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [compEV]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input) specifies whether eigenvectors of \(A\) are computed.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On entry, the Hermitian  matrix \(A\) in packed storage format.</p><p class="paramlist">
+     On exit, \(A\) is overwritten by values generated during the reduction to tridiagonal form.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [w]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (output) On successful exit, the eigenvalues in ascending order.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [Z]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     If {\tt compEV=true}, then on successful exit,  \(Z\)  contains  the orthonormal  eigenvectors  of the matrix \(A\), with the \(i\)-th column of \(Z\) holding the eigenvector  associated with \(w(i)\).</p><p class="paramlist">
+     If {\tt compEV=false}, then \(Z\) is not referenced.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:   </p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i>0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the algorithm failed to converge; \(i\) off-diagonal elements of an intermediate tridiagonal form did not converge to zero.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @@</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Key:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     gesvd</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Name:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     svd</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     @Short:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     compute the singular value decomposition (SVD) of a complex or real  \(M \times N\)  matrix \(A\), optionally computing the left and/or right singular vectors</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Purpose:   &lt;&lt;svd (gesvd)&gt;&gt; computes the singular value decomposition (SVD) of</p><p class="paramlist">
+     a real (or complex) \(M \times N\) matrix \(A\), optionally computing the left and/or right singular vectors. The SVD is written \[ A = U  \Sigma V^T \quad(\text{or}\; A = U  \Sigma V^H) \] where \(\Sigma\) is an \(M \times N\) matrix which is zero except for its \(\min\{m,n\}\) diagonal  elements,  \(U\) is an \(M \times N\) orthogonal (or unitary) matrix, and \(V\) is an \(N \times N\) orthogonal (or unitary) matrix.  The  diagonal elements of \(\Sigma\) are the singular values of \(A\); they are real and non-negative, and are returned in descending order. The first \(\min\{m,n\}\) columns of \(U\) and \(V\) are the left and right singular vectors of \(A\).</p><p class="paramlist">
+     \noindent {\bf Note} that the routine returns \(V^T\) (or \(V^H\)), not \(V\).</p><p class="paramlist">
+     @Arguments:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [jobu]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     Specifies options for computing all or part of the matrix \(U\):</p><p class="paramlist">
+     \begin{tabular}{lp{8.5cm}}</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     {\tt jobu = All}</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     &  all \(M\) columns of \(U\) are returned in</p><p class="paramlist">
+     matrix {\tt U}\\</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     {\tt jobu = SmallDim} &  the first \(\min\{m,n\}\) columns of \(U\)</p><p class="paramlist">
+     (the  left singular  vectors) are returned in the matrix {\tt U}\\</p><p class="paramlist">
+     {\tt jobu = Overwrite}&  the first \(\min\{m,n\}\) columns of \(U\)</p><p class="paramlist">
+     (the  left singular  vectors) are overwritten on the matrix {\tt A} \\</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     {\tt jobu = None}</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     &  no columns of \(U\) (no left singular vectors) are</p><p class="paramlist">
+     computed</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     \end{tabular}</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [jobvt]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     Specifies options for computing all or part of the matrix \(V^T\) (or \(V^H\)):</p><p class="paramlist">
+     \begin{tabular}{lp{8.5cm}}</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     {\tt jobu = All}</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     &  all \(N\) rows of \(V^T\) (or \(V^H\)) are returned</p><p class="paramlist">
+     in matrix {\tt VT}\\</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     {\tt jobu = SmallDim} &  the first \(\min\{m,n\}\) rows of \(V^T\) (or \(V^H\))</p><p class="paramlist">
+     (the  right singular  vectors) are returned in the matrix {\tt VT}\\</p><p class="paramlist">
+     {\tt jobu = Overwrite}&  the first \(\min\{m,n\}\) rows of \(V^T\) (or \(V^H\))</p><p class="paramlist">
+     (the  right singular  vectors) are overwritten on the matrix {\tt A} \\</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     {\tt jobu = None}</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     &  no rows of \(V^T\) (or \(V^H\)) (no right</p><p class="paramlist">
+     singular vectors) are computed</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     \end{tabular}</p><p class="paramlist">
+     {\bf Note:} {\tt jobu} and {\tt jobvt} can not both be set to be {\tt Overwrite}.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [A]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (input/output) On entry, the \(M \times N\) matrix \(A\).</p><p class="paramlist">
+     On exit, if {\tt jobu = Overwrite}, \(A\) is overwritten with the  first \(\min\{m,n\}\) columns of \(U\)  (the  left  singular  vectors, stored columnwise);  if {\tt jobvt = Overwrite}, \(A\) is overwritten with the first \(\min\{m,n\}\) rows of \(V^T\) (or \(V^H\)) (the right  singular vectors, stored rowwise); if {\tt jobu \(\neq\) Overwrite} and {\tt jobu \(\neq\) Overwrite}, the contents of \(A\) are destroyed.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [S]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (output) The singular values of \(A\), sorted so that \(S(i) \geq S(i+1)\).</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [U]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (output) If {\tt jobu = All}, {\tt U} contains the \(M \times M\) orthogonal (or unitary) matrix \(U\); if  {\tt jobu = SmallDim}, {\tt U}  contains  the  first \(\min\{m,n\}\) columns  of \(U\) (the left singular vectors, stored columnwise); if {\tt jobu = None}, then {\tt U} is not referenced.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [VT]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     (output) If {\tt jobvt = All}, {\tt VT} contains the \(N \times N\) orthogonal (or unitary) matrix \(V^T\) (or \(V^H\)); if  {\tt jobu = SmallDim}, {\tt VT}  contains  the  first \(\min\{m,n\}\) rows of \(V^T\) (or \(V^H\)) (the right singular vectors, stored rowwise); if {\tt jobu = None}, then {\tt VT} is not referenced.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     @Returns:</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i=0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     successful exit</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     [\(i>0\)]</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the algorithm failed to converge; \(i\) specifies how many superdiagonals of  an intermediate bidiagonal form \(B\) did not converge to zero.</p></td>
+</tr>
+</table>
+<!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>

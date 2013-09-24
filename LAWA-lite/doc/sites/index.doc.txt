@@ -1,0 +1,33 @@
+:document:    lawa::home
+
+Welcome to LAWA!
+----------------
+
+LAWA is intended as a basic C++-framework for wavelet applications for PDEs, 
+especially for adaptive methods. 
+
+Key features of LAWA are:
+
+- wavelet bases for different domains
+- realizations of adaptive algorithms
+- ease of use
+
+Consequences of the design:
+
+- extensibility
+- flexibility
+
+
+
+LAWA is still in continuous development. Several parts have reached some quite 
+stable state whereas others still underly permanent change and improvements 
+(especially design aspects). For more detailed information look at the 
+__roadmap__.
+
+To get started with LAWA, please see the 
+__documentation__ which is intended as a developers guide or read about the 
+__available features__.
+
+:links: roadmap -> lawa::roadmap
+        documentation -> lawa::documentation
+        available features -> lawa::features

@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../../index.html">home</a></li>
+<li><a href="../../doc/license.html">license</a></li>
+<li><a href="../../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../../doc/features.html">lawa features</a></li>
+<li><a href="../../doc/highperformance.html">high performance</a></li>
+<li><a href="../../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../../doc/download.html">download</a></li>
+<li><a href="../../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+<p >
+     ==title: The class Support==</p><p >
+     In [LAWA] a (one-dimensional) support is realized as an object of the class [Support\&lt;T\&gt;]. It stands for a closed interval [\([\ell_1,\ell_2]\)]. Every nonempty support fulfills [\(\ell_1\leq\ell_2\)] and thus has nonnegative length. An empty support (by convention) is characterized by [\(\ell_1>\ell_2\)].</p><p >
+     ==section:Constructors==</p><p >
+     ==subsection: Constructs an empty support== ==code.cc== Support(); ==== Constructs an empty support. Characterized by [\(\ell_1>\ell_2\)] resulting in a support of negative length.</p><p >
+     ==subsection: Constructs a support [a,b]== ==code.cc== Support(const T &a, const T &b); ==== Constructs the support S=\[a,b\]. Assumes [a] less or equal [b].</p><p >
+     ==section:Member functions==</p><p >
+     ==subsection: the length of the support== ==code.cc== T length() const; ==== Returns the length of the support i.e. [\(\ell_2-\ell_1\)].</p><p >
+     ==section: Public Member Variables==</p><p >
+     ==subsection: the borders of the support (l1,l2)== ==code.cc== T l1, l2; ==== The boundaries of the support. [l1] = [\(\ell_1\)] and [l2] = [\(\ell_2\)].</p><p >
+     ==section: Functions operating on supports==</p><p >
+     ==subsection: Does a point x lie in the support?== ==code.cc== template &lt;typename T&gt;</p><p >
+     bool inner(T x, const Support&lt;T&gt; &supp);</p><p >
+     ==== Returns true if [\(x\in(\ell_1,\ell_2)\)] false otherwise.</p><p >
+     ==subsection: Do two supports overlap?== ==code.cc== template &lt;typename T&gt;</p><p >
+     T overlap(const Support&lt;T&gt; &supp1, const Support&lt;T&gt; &supp2);</p><p >
+     ==== Returns the size of the overlapping part of [supp1] and [supp2]. Negative return values mean no overlapping (and give the distance).</p><p >
+     ==subsection: Do two supports overlap and if, where?== ==code.cc== template &lt;typename T&gt;</p><p >
+     T overlap(const Support&lt;T&gt; &supp1, const Support&lt;T&gt; &supp2, Support&lt;T&gt; &common);</p><p >
+     ==== Returns the size of the overlapping part of [supp1] and [supp2]. Negative return values mean no overlapping (and give the distance). Additionaly [common] will be set to the shared support of [supp1] and [supp2].</p><p >
+     ==subsection: the distance between two supports== ==code.cc== template &lt;typename T&gt;</p><p >
+     T distance(const Support&lt;T&gt; &supp1, const Support&lt;T&gt; &supp2);</p><p >
+     ==== Returns the distance between [supp1] and [supp2]. If [supp1] and [supp2] overlap in at least one point, the result is negative (size of overlap).</p><p >
+     ==subsection: getting a shifted support== ==code.cc== template &lt;typename T, typename S&gt;</p><p >
+     Support&lt;T&gt; operator+(const Support&lt;T&gt; &supp, S shift);</p><p >
+     ==== [supp+shift] returns a support which has the support of [supp] shifted by amount [shift] i.e. both boudaries are translated by [shift].</p><p >
+     ==subsection: getting a scaled support== ==code.cc== template &lt;typename S, typename T&gt;</p><p >
+     Support&lt;T&gt; operator*(S factor, const Support&lt;T&gt; &supp);</p><p >
+     ==== [factor*supp] returns a support which is a scaled version of [supp] i.e. both boundaries are scaled by [factor].</p><p >
+     ==subsection: print the support== ==code.cc== template &lt;typename T&gt;</p><p >
+     std::ostream & operator&lt;&lt;(std::ostream &out, const Support&lt;T&gt; &supp);</p><p >
+     ==== Prints the support [supp] to the stream [out].</p><!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>

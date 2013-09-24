@@ -1,0 +1,4 @@
+==title: Biorthogonal Spline Wavelets On The Interval - (construction by DKU)==
+
+==toc:primal==
+==toc:dual==

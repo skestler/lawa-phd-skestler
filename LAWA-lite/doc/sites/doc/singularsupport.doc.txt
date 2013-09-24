@@ -1,0 +1,4 @@
+==title: Singular support==
+
+The singular support of a function [$\varphi$] is a list of points within the support of [$\varphi$] where the function is not smooth (plus the interval ends of the support).
+

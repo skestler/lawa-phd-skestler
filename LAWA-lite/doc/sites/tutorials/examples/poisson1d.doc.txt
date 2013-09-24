@@ -1,0 +1,19 @@
+Tutorial 1: Poisson Equation in 1D
+----------------------------------
+
+:document:  tutorials::examples::poisson1d
+
+As a starting point we use the _Poisson equation_ on the unit interval with 
+_Dirichlet boundary conditions_, i.e. we consider the following equation:
+
+___ LATEX ________________
+\begin{cases}
+\ \ \phantom{u(0)=}-u'' & =  f \ \text{on}\ (0,1) \\
+\ \ u(0) = u(1) & = 0 \\
+\end{cases}
+___________________________
+
+The solution is obtained using a uniform Wavelet-Galerkin method utilizing a 
+diagonal preconditioner. This results in the following code:
+
+:import: tutorials/examples/poisson1d.cpp

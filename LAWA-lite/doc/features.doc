@@ -1,0 +1,59 @@
+A (coarse) feature matrix of LAWA
+---------------------------------
+
+:document:     lawa::features
+
+In principle LAWAcan be divided in two main building blocks. General Wavelet 
+Basis Constructions for different domains and adaptive wavelet algorithms.
+
+Wavelets / Basis Constructions
+------------------------------
+
+LAWA is organized with respect to several rather orthogonal criteria. These
+are mostly reflected by different template parameters. We show a summary of 
+all currently available realizations of wavelet bases and some outlook.
+
+First we take a look at the realizations of biorthogonal wavelet constructions 
+available. The whole library is centered around biorthogonal wavelets; this is 
+indeed the main focus.
+
++---------------------+-------------------------+--------------------------------+
+|   _domain_          | _construction_          | _status_                       |
++=====================+=========================+================================+
+| R                   | CDF                     | final                          |
++---------------------+-------------------------+--------------------------------+
+| Periodic            | CDF                     | final                          |
++---------------------+-------------------------+--------------------------------+
+| Interval            | DKU, Primbs, Dijkema    | some minor polishing necessary |
++---------------------+-------------------------+--------------------------------+
+| $[0,1]^n$           | based on interval bases | working                        |
++---------------------+-------------------------+--------------------------------+
+| more general domain | based on interval bases | to be done yet (middle p.)     |
++---------------------+-------------------------+--------------------------------+
+
+For all these biorthogonal wavelet constructions we realized both the primal
+and the corresponding duals for the B-splines and the wavelets.
+
+LAWA provides different kinds of wavelets:
+
++---------------------+-------------------------+--------------------+--------------------------+
+| _kind of wavelets_  | _domain_                | _construction_     | _status_                 |
++=====================+=========================+====================+==========================+
+| orthogonal          |  R                      | Daubechies         | just coefficients, final |
++---------------------+-------------------------+--------------------+--------------------------+
+| orthogonal          |  $[0,1]^n$              | Multiwavelets      | polishing to be done     |
++---------------------+-------------------------+--------------------+--------------------------+
+| biorthogonal        | see table above         | see table above    | see table above          |
++---------------------+-------------------------+--------------------+--------------------------+
+| semiorthogonal      | Interval                | BU                 | to be done yet (high p.) |
++---------------------+-------------------------+--------------------+--------------------------+
+
+For the n-dimensional cube, and therefor especially also for the interval,
+homogeneous Dirichlet boundary conditions or no/free boundary conditions have
+been realized. Other boundary conditions could be easily added. Just a matter of
+implementation time.
+
+Adaptive realizations
+---------------------
+
+not documented yet ...

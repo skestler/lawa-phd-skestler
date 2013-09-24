@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../../index.html">home</a></li>
+<li><a href="../../doc/license.html">license</a></li>
+<li><a href="../../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../../doc/features.html">lawa features</a></li>
+<li><a href="../../doc/highperformance.html">high performance</a></li>
+<li><a href="../../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../../doc/download.html">download</a></li>
+<li><a href="../../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+<p >
+     ==title:The root class for all B-splines== The root class for all B-spline types used in [LAWA]. This class is just empty since all implemented types of B-splines are specializations of it. The distinction between different B-spline types is realized by template parameters.</p><p >
+     ==section: Template parameters== The declaration of [BSpline] reads ==code.cc== template &lt;typename T,</p><p >
+     FunctionSide Side, DomainType Domain, Construction Cons=CDF&gt;</p>
+
+<h2 class="doc">
+stru</h2>
+
+<p >
+     with template parameters ==list:begin==</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     -&gt;[T]:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the (numerical) element type (e.g. double)</p></td>
+</tr>
+</table>
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     -&gt;[FunctionSide]:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the kind of B-spline ([Primal] or [Dual])</p></td>
+</tr>
+</table>
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     -&gt;[Domain]:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the domain (e.g. [R], [Interval])</p></td>
+</tr>
+</table>
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     -&gt;[Cons]:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the underlying construction, by default [CDF] is chosen.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     ==list:end==</p><p class="paramlist">
+     ==section: Specializations of the BSpline class== The available realizations of B-splines can be found here:</p><p class="paramlist">
+     ==toc:realline/primal/[bspline]== ==toc:realline/dual/[bspline]== ==toc:interval/dku/[bspline]== ==toc:interval/primbs/[bspline]== ==toc:interval/dijkema/[bspline]==</p><!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,8 @@
+==title: Multiresolution analysis on the real line==
+
+Since this documentation is intended for the programmer we just repeat the definition of an MRA for the real line  and some other definitions from [the book] to have some notation at hand we will utilize further on:
+
+==section: Primal and dual scaling functions==
+
+We will work with primal and dual scaling functions [$\varphi,\ \tilde{\varphi}$] which fulfill the refinement equation
+[$\varphi(x)=\sum_{k\in\Z}a_k\varphi(2x-k),\quad x\in\R\quad a.e.$] for some coefficients [$a_k\in\R, k\in\Z$] and analogously for [$\tilde{\varphi}$] and [$\tilde{a}_k$].

@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../../../../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../../../../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../../../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../../../../index.html">home</a></li>
+<li><a href="../../../../doc/license.html">license</a></li>
+<li><a href="../../../../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../../../../doc/features.html">lawa features</a></li>
+<li><a href="../../../../doc/highperformance.html">high performance</a></li>
+<li><a href="../../../../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../../../../doc/download.html">download</a></li>
+<li><a href="../../../../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../../../../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../../../../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../../../../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+<p >
+     ==title:B-splines on the real line==</p><p >
+     The class realizing B-splines on the real line is a specialization of the general {@lawa/bspline}{[BSpline]} class. The signature reads ==code.cc== template &lt;typename T&gt;</p>
+
+<h2 class="doc">
+    </h2>
+
+<p >
+     with [FunctionSide=Primal], [DomainType=R] and [Construction=CDF] as fixed template parameters. You easily see from the signature that the B-splines will play the role of primal scaling functions when we deal with MRAs and wavelets later on.</p><p >
+     [Note]: Since [CDF] is set as default template argument in the root class we can actually omit it here. Currently [CDF] is also the only construction realized so far for the real line.</p><p >
+     One particular B-spline is (completely) characterized by the following properties: ==list:begin==</p><table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     -&gt;[d]:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the order of the B-spline.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     -&gt;[j]:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the level the B-splines lives on.</p></td>
+</tr>
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     -&gt;[k]:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the translation of the B-spline.</p></td>
+</tr>
+</table>
+<table class="paramlist">
+<tr class="paramlist">
+<td class="paramlist_key">
+<p class="paramlist">
+     -&gt;[deriv]:</p></td>
+<td class="paramlist_value">
+<p class="paramlist">
+     the [deriv]th derivative of the B-spline.</p></td>
+</tr>
+</table>
+<p class="paramlist">
+     ==list:end== The B-spline is constructed from the parameters [d] and [deriv] as the [deriv]th derivative of [\(N_d\)] i.e. as (derivative of) the centralized cardinal B-spline. When we deal with multilevel methods we use scaled ([j]) and shifted ([k]) versions of [\(N_d\)]. Most often we will use [j] and [k] as kind of iterator, e.g. we iterate over all shifted B-splines on level [j].</p><p class="paramlist">
+     ==section: Essential properties==</p><p class="paramlist">
+     ==subsection: The support== For the centralized cardinal B-spline of order d we have the following support ==latex== \supp\ {}<i>d\varphi = [-\lfloor\frac{d}{2}\rfloor,\lceil\frac{d}{2}\rceil] =  [\frac{1}{2}(-d+\mu(d)),\frac{1}{2}(d+\mu(d))]=: [\ell</i>1,\ell<i>2]. ==== For the scaled and translated version we yield ==latex== \supp\ {}</i>d\varphi<i>{[j,k]} = 2^{-j}[\ell</i>1+k,\ell_2+k]. ====</p><p class="paramlist">
+     ==section: Essential algorithms==</p><p class="paramlist">
+     ==subsection: Point evaluation for centralized cardinal B-splines== Centralized cardinal B-spline means [j]==[k]==[deriv]==0.</p><p class="paramlist">
+     For cardinal B-splines we have the explicit representation (as shown in the book): ==latex== $$N_d(x) = \frac{1}{(d-1)!} \sum_{k=0}^d (-1)^k {d\choose k} (x-k)_+^{d-1}.$$ ==== This formula is not realized in [LAWA] one-to-one since it uses the [$(\cdot)_+$]-function. For a realization the following version for centralized B-splines is much more efficient (and elegant): ==latex== \begin{equation} N_d(x) = \frac{1}{(d-1)!} \sum_{k=0}^{\lfloor\frac{d}{2}-|x|\rfloor} (-1)^k {d\choose k} (\frac{d}{2}-|x|-k)^{d-1}.\tag{*} \end{equation} ====</p><p class="paramlist">
+     ==subsection: Point evaluation for derivatives of cardinal B-splines== Derivatives of cardinal B-splines satisfy (as again listed in the book) ==latex== $${\frac{d}{dx}}{}_{d}\varphi (x)= {}_{d-1}\varphi (x+\mu(d-1))-{}_{d-1}\varphi (x-\mu(d)).$$ ==== Theoretically this recursive relation is very nice, but for a realization again it is more practical to utilize centralized B-splines and use the derivatives of (*) to calcualte the [m]th derivative of [$N_d$]: ==latex== \begin{equation*} N_d^{(m)}(x) = \frac{1}{(d-1-m)!} \sum_{k=0}^{\lfloor\frac{d}{2}-|x|\rfloor} (-1)^k\ \text{sgn}(x)(-1)^m {d\choose k} (\frac{d}{2}-|x|-k)^{d-1-m}. \end{equation*} ==== The realization is straight forward except for the factor -1 or 1 inside the sum. We look at the parts [$(-1)^k,\ \mathrm{sgn}(x)$] and [$(-1)^m $] separately: ==latex== \tiny \begin{tabular}{r|r|r|r} k is odd & $x&gt;0$ & m is odd   & factor \\ \hline true   &  false  &  true   &   1  \\ \hline true   &  true   &  false  &   1  \\ \hline false  &  false  &  false  &   1  \\ \hline false  &  true   &  true   &   1  \\ \hline true   &  true   &  true   &  -1  \\ \hline true   &  false  &  false  &  -1  \\ \hline false  &  false  &  true   &  -1  \\ \hline false  &  true   &  false  &  -1  \\ \hline \end{tabular} ====</p><p class="paramlist">
+     After some agonizing one can compress this conditions like this: we yield -1 iff: ==list:begin== -&gt;[k is odd]: [x&gt;0] and [m is odd] yield the same value -&gt;[k is even]: [x&gt;0] and [m is odd] yield different values ==list:end==</p><p class="paramlist">
+     and compress this again to: [k is odd] yields the same value as ([x&gt;0] and [m is odd]). In terms of C++ this is: ==code.cc== (k&1)==( (x&gt;0)&&(m&1) ) ====</p><p class="paramlist">
+     ==subsection: The singular support== Since a B-spline of order [d] is built up of [d] polynomial pieces, the singular support is [linspace(l1,l2,d+1)].</p><p class="paramlist">
+     ==subsection: The polynomial order== Obviously the polynomial order of the B-spline is determined by [d]-[deriv].</p><p class="paramlist">
+     ==section: Constructors== The least one has to provide when allocating a B-spline object is the order of the B-spline [d]. The other parameter [deriv] (the derivative) is assumed to be zero if omitted i.e. we yield the centralized cardinal B-spline then.</p><p class="paramlist">
+     ==subsection: Constructs a B-spline (given: order)== ==coderef== BSpline(int <i>d); ==== Constructs the centralized cardinal B-spline of order [</i>d].</p><p class="paramlist">
+     ==subsection: Constructs a B-spline (given: order, derivative)== ==coderef== BSpline(int <i>d, int </i>deriv); ==== Constructs the [<i>deriv]th derivative of the centralized cardinal B-spline of order [</i>d].</p><p class="paramlist">
+     ==section: Operators==</p><p class="paramlist">
+     ==subsection: point evaluation (given: x, level, translation)== ==coderef== T operator()(T x, int j, int k) const; ==== Evaluates the (derivative of the) B-spline on level [j] with translation [k] at [x].</p><p class="paramlist">
+     ==section: Methods==</p><p class="paramlist">
+     ==subsection: The support of the B-spline (given: level, translation)== ==coderef== Support&lt;T&gt; support(int j, int k) const; ==== Returns the support of the B-spline on level [j] with translation [k].</p><p class="paramlist">
+     ==subsection: The singular support of the B-spline (given: level, translation)== ==coderef== DenseVector&lt;Array&lt;T&gt; &gt; singularSupport(int j, int k) const; ==== Returns the {@concepts/singularsupport}{singular support} of the B-spline on level [j] with translation [k].</p><p class="paramlist">
+     ==subsection: The width of each polynomial piece (given: j)== ==coderef== T tic(int j) const; ==== Returns the width of each polynomial piece of the B-spline on level [j].</p><p class="paramlist">
+     ==section: Public Member Variables== ==code.cc== const int d, mu, deriv, polynomialOrder; const int l1, l2; const DenseVector&lt;Array&lt;T&gt; &gt; a; ====</p><p class="paramlist">
+     ==subsection: the order of the B-spline  (d)== ==code.cc== const int d; ==== [d] is the order of the B-spline (e.g. d==2 for piecewise linear B-splines). Notice that [d] is a constant during the lifetime of the object.</p><p class="paramlist">
+     ==subsection: the &#8220;shift from symmetry&#8221  (mu)#mu== ==code.cc== const int mu; ==== We use [cardinal centralized B-splines] i.e. they are symmetric around [\(x=0\)] for even [d] and around [\(x=\frac{1}{2}\)] for odd [d]. Thus we define [\(\mu(d) := d\ \text{mod}\ 2\)] and yield [\({}_d\varphi(x+\mu(d)) = {}_d\varphi(-x)\)]. We will need this variable [mu] in many cases when we deal with this &#8220;shifted symmetry&#8221. Since [d] is a constant [mu] is as well.</p><p class="paramlist">
+     ==subsection: the derivative of the B-spline  (deriv)== ==code.cc== const int deriv; ==== The object represents the [deriv]th derivative of the B-spline. For practical reasons only derivatives less than the [d]th derivative are allowed. Notice that [deriv] is a constant during the lifetime of the object.</p><p class="paramlist">
+     ==subsection: the polynomial order of the B-spline  (polynomialOrder)== ==code.cc== const int polynomialOrder; ==== The polynomial order of the B-spline, i.e the highest degree power in its polynomial representation. Notice that [polynomialOrder] is a constant during the lifetime of the object.</p><p class="paramlist">
+     ==subsection: the support of the B-spline  (l1,l2)== ==code.cc== const int l1, l2; ==== The support of the centralized cardinal B-spline. Notice that [l1] and [l2] are constants during the lifetime of the object.</p><p class="paramlist">
+     ==subsection: the refinement coefficients of the B-spline  (a)== ==code.cc== const DenseVector&lt;Array&lt;T&gt; &gt; a; ==== The B-spline is a refinable function with finite mask [\(\mathbf{a}=(a_k)_{\ell_1\leq k\leq\ell_2} \)]. These refinement coefficients [\(a_k\)] are stored in the vector [a] with corresponding range  [\((\ell_1,\ \ell_2)\)]. Notice that [a] is a constant during the lifetime of the object.</p><!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>

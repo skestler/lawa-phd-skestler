@@ -1,0 +1,410 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../index.html">home</a></li>
+<li><a href="../doc/license.html">license</a></li>
+<li><a href="../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../doc/features.html">lawa features</a></li>
+<li><a href="../doc/highperformance.html">high performance</a></li>
+<li><a href="../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../doc/download.html">download</a></li>
+<li><a href="../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+
+
+<h3 class="doc">
+Coding Style</h3>
+
+<p >
+     The following documents the coding style we use in LAWA. It has evolved since the beginning of LAWA and was mainly established by Alexander Stippler and Michael Lehn.  Some of the rules might seem strange but most of them are there for some good reason.</p><p >
+     The main purpose of every coding style is achieving consistency and expressiveness of the developed code.  Furthermore, it sometimes prevents us from producing nasty bugs in the middle of the night.  And at least it helps us to understand each others code.</p><p >
+     Our coding style does not conform to the <tt>STL</tt> coding style.  And we do not want to.  Instead we clearly want to distinct between functionality provided by C++ out of the box and functionality given by LAWA used as an add on.</p>
+
+<h3 class="doc">
+Spacing and Indentation</h3>
+
+
+
+<h4 class="doc">
+No More Than 80 Characters per Line?!?</h4>
+
+<p >
+     Whenever possible, lines are no longer than 80 characters in LAWA. But for LAWA we are a litte  more relaxed. Since lines can get very long and cannot easily be wrapped without losing convience when reading, we allow at about 100 characters per line. Whenever easily possible, shorter lines are preferable.</p>
+
+<h4 class="doc">
+No Tabs, Use Four Spaces</h4>
+
+<p >
+     We do not use tabs but spaces.  In fact, we use &lt;b&gt;four spaces&lt;/b&gt;.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#af5f00">for</span>&nbsp;(<span style="color:#008000">int</span>&nbsp;i=<span style="color:#c00000">0</span>; i&lt;<span style="color:#c00000">10</span>; ++i) {<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt;&nbsp;<span style="color:#c00000">&quot;For indentation we use 4 spaces.&quot;</span>&nbsp;&lt;&lt; endl;<br>
+<!-- CodeLine     3 -->}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     The reason: The code should look the same no matter what editor you use. And no matter what settings you use with your editor.  For some editors the default tab size is <tt>4 </tt>on others it is <tt>8</tt>.  Spaces are spaces. Hence, we do use spaces.</p>
+
+<h4 class="doc">
+Function Declaration</h4>
+
+<p >
+     Return types get an extra line:</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">int</span><br>
+<!-- CodeLine     2 -->someFunction(<span style="color:#008000">int</span>&nbsp;a);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     That is because our types get really long.  For example</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->DenseVector&lt;Array&lt;<span style="color:#008000">double</span>&gt;, IndexOptions&lt;<span style="color:#008000">long</span>,<span style="color:#c00000">0</span>&gt;, std::allocator&lt;<span style="color:#008000">double</span>&gt; &gt;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     which has already a total of 80 characters.  So in some cases it even might be better to use more than one line for the return type:</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->DenseVector&lt;Array&lt;<span style="color:#008000">double</span>&gt;,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IndexOptions&lt;<span style="color:#008000">long</span>,&nbsp;<span style="color:#c00000">0</span>&gt;,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::allocator&lt;<span style="color:#008000">double</span>&gt; &gt;<br>
+<!-- CodeLine     4 -->dummy();<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     or when using templates</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">template</span>&nbsp;&lt;<span style="color:#008000">typename</span>&nbsp;T,&nbsp;<span style="color:#008000">typename</span>&nbsp;IndexType&gt;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;DenseVector&lt;Array&lt;T&gt;,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IndexOptions&lt;IndexType,&nbsp;<span style="color:#c00000">0</span>&gt;,<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::allocator&lt;T&gt; &gt;<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;dummy();<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Another advantage you can <tt>grep </tt>your source files for function names.</p>
+
+<h4 class="doc">
+Template Function Declaration</h4>
+
+<p >
+     Like non-templated functions. But one line for the declaration of template parameters.  The remaining of the declaration gets indented the usual four spaces:</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">template</span>&nbsp;&lt;<span style="color:#008000">typename</span>&nbsp;Integer&gt;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;Integer<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;someFunction(Integer a);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     If the template list does not fit within the 80 characters (or if it would not look good) we split:</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">template</span>&nbsp;&lt;<span style="color:#008000">typename</span>&nbsp;T, StorageOrder Order,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">typename</span>&nbsp;I = IndexOptions&lt;<span style="color:#008000">long</span>&gt;,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">typename</span>&nbsp;A = std::allocator&lt;T&gt; &gt;<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">const</span>&nbsp;T *<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;someOtherFunction(<span style="color:#008000">const</span>&nbsp;Array&lt;T, I, A&gt; &amp;array);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     In general: one line for template list, return type, ... always means at least one line.</p>
+
+<h4 class="doc">
+(Templated) Function Definition</h4>
+
+<p >
+     As for the declaration: One line for the template list, one line for the return type, one line for the function name and its parameters.  Then, one line for the curly open bracket, then the function body and finally one line for the closing curly bracket:</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">template</span>&nbsp;&lt;<span style="color:#008000">typename</span>&nbsp;FS_A,&nbsp;<span style="color:#008000">typename</span>&nbsp;FS_B&gt;<br>
+<!-- CodeLine     2 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     3 -->myCopy(<span style="color:#008000">const</span>&nbsp;FS_A &amp;A, FS_B &amp;B)<br>
+<!-- CodeLine     4 -->{<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// function body</span><br>
+<!-- CodeLine     6 -->}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+
+
+<h3 class="doc">
+Naming Conventions</h3>
+
+
+
+<h4 class="doc">
+Names</h4>
+
+<p >
+     In general we compose names without underscores.  Instead an uppercase letter indicates that a name was glues together:</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">int</span>&nbsp;numRows;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// ok</span><br>
+<!-- CodeLine     2 --><span style="color:#008000">int</span>&nbsp;num_cols;&nbsp;&nbsp;<span style="color:#8080ff">// NO</span><br>
+<!-- CodeLine     3 --><span style="color:#008000">int</span>&nbsp;num_Rows;&nbsp;&nbsp;<span style="color:#8080ff">// NO</span><br>
+<!-- CodeLine     4 --><br>
+<!-- CodeLine     5 --><span style="color:#8080ff">// ok:</span><br>
+<!-- CodeLine     6 --><span style="color:#008000">int</span><br>
+<!-- CodeLine     7 -->getNumRows(<span style="color:#008000">const</span>&nbsp;SomeMatrix &amp;A)<br>
+<!-- CodeLine     8 -->{<br>
+<!-- CodeLine     9 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// ...</span><br>
+<!-- CodeLine    10 -->}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+
+
+<h4 class="doc">
+Variable Names with First Letter Lower Case</h4>
+
+<p >
+     Variable names begin with lowercase letters.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">int</span>&nbsp;numRows;&nbsp;<span style="color:#8080ff">// ok</span><br>
+<!-- CodeLine     2 --><span style="color:#008000">int</span>&nbsp;NumRows;&nbsp;<span style="color:#8080ff">// NO</span><br>
+</span></div><!--code_content-->
+</div><!-- code -->
+
+
+<h4 class="doc">
+Private Variables (Private Attributes)</h4>
+
+<p >
+     Private variable names in a class begin with lowercase letters and are prefixed with an underscore.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">class</span>&nbsp;SomeClass {<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">public</span>:<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// ...</span><br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;numRows;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// ok</span><br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">private</span>:<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;_length;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// ok</span><br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;numCols;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// NO</span><br>
+<!-- CodeLine     8 -->}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     This prevents name conflicts in the constructor:</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->SomeClass::SomeClass(<span style="color:#008000">int</span>&nbsp;length)<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;: _length(length)<br>
+<!-- CodeLine     3 -->{<br>
+<!-- CodeLine     4 --><br>
+<!-- CodeLine     5 -->}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     For public member variables on the other hand we may use a constructor argument  with leading underscore:</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->SomeClass::SomeClass(<span style="color:#008000">int</span>&nbsp;_length)<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;: length(_length)<br>
+<!-- CodeLine     3 -->{<br>
+<!-- CodeLine     4 --><br>
+<!-- CodeLine     5 -->}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+
+
+<h4 class="doc">
+Type Names with First Letter Upper Case</h4>
+
+<p >
+     Type names and in particular classes and structs begin with an upper case letter.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">class</span>&nbsp;MyMatrix;&nbsp;<span style="color:#8080ff">// ok</span><br>
+<!-- CodeLine     2 --><span style="color:#008000">class</span>&nbsp;myMatrix;&nbsp;<span style="color:#8080ff">// NO</span><br>
+</span></div><!--code_content-->
+</div><!-- code -->
+
+
+<h3 class="doc">
+Organization of Code</h3>
+
+
+
+<h4 class="doc">
+No Implementation in Header Files</h4>
+
+<p >
+     Header files only declare things and never implement anything.  No matter how small and simple an implementation of a function or methods might be it does not belong in a header file.</p>
+
+<h4 class="doc">
+Header File Skeleton</h4>
+
+<p >
+     A header file looks like this:</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#8080ff">/*</span><br>
+<!-- CodeLine     2 --><span style="color:#8080ff">&nbsp;&nbsp;&nbsp;&nbsp;Copyright ...</span><br>
+<!-- CodeLine     3 --><span style="color:#8080ff">*/</span><br>
+<!-- CodeLine     4 --><br>
+<!-- CodeLine     5 --><span style="color:#c000c0">#ifndef SOME_INCLUDE_GUARD</span><br>
+<!-- CodeLine     6 --><span style="color:#c000c0">#define SOME_INCLUDE_GUARD&nbsp;</span><span style="color:#c00000">1</span><br>
+<!-- CodeLine     7 --><br>
+<!-- CodeLine     8 --><span style="color:#8080ff">// your declarations</span><br>
+<!-- CodeLine     9 --><br>
+<!-- CodeLine    10 --><span style="color:#c000c0">#endif</span>&nbsp;<span style="color:#8080ff">// SOME_INCLUDE_GUARD</span><br>
+</span></div><!--code_content-->
+</div><!-- code -->
+
+
+<h4 class="doc">
+Implementation of Template Classes</h4>
+
+<p >
+     If you have a class with template parameters its declared in a file with ending <tt>.h</tt>.  Let us say <tt>myclass.h</tt>.  Then its implementation is located in a file with ending <tt>.tcc</tt>.  So in this case <tt>myclass.tcc</tt>.  The implementation gets included at the end of the header file.</p><p >
+     Let this be the header file</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#8080ff">/*</span><br>
+<!-- CodeLine     2 --><span style="color:#8080ff">&nbsp;&nbsp;&nbsp;&nbsp;Your Copyright</span><br>
+<!-- CodeLine     3 --><span style="color:#8080ff">*/</span><br>
+<!-- CodeLine     4 --><br>
+<!-- CodeLine     5 --><span style="color:#c000c0">#ifndef PATH_TO_YOUR_HEADER_MYCLASS_H</span><br>
+<!-- CodeLine     6 --><span style="color:#c000c0">#define PATH_TO_YOUR_HEADER_MYCLASS_H&nbsp;</span><span style="color:#c00000">1</span><br>
+<!-- CodeLine     7 --><br>
+<!-- CodeLine     8 --><span style="color:#008000">template</span>&nbsp;&lt;<span style="color:#008000">typename</span>&nbsp;T&gt;<br>
+<!-- CodeLine     9 --><span style="color:#008000">class</span>&nbsp;MyClass<br>
+<!-- CodeLine    10 -->{<br>
+<!-- CodeLine    11 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// declare your methods, ...</span><br>
+<!-- CodeLine    12 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span><br>
+<!-- CodeLine    13 -->&nbsp;&nbsp;&nbsp;&nbsp;dummy();<br>
+<!-- CodeLine    14 -->};<br>
+<!-- CodeLine    15 --><br>
+<!-- CodeLine    16 --><span style="color:#c000c0">#include&nbsp;</span><span style="color:#c00000">&lt;path/to/your/header/myclass.tcc&gt;</span><br>
+<!-- CodeLine    17 --><br>
+<!-- CodeLine    18 --><span style="color:#c000c0">#endif</span>&nbsp;<span style="color:#8080ff">// PATH_TO_YOUR_HEADER_MYCLASS_H</span><br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     And this is the corresponding implementation in <tt>path/to/your/header/myclass.tcc</tt>:</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">template</span>&nbsp;&lt;<span style="color:#008000">typename</span>&nbsp;T&gt;<br>
+<!-- CodeLine     2 --><span style="color:#008000">int</span><br>
+<!-- CodeLine     3 -->MyClass&lt;T&gt;::dummy()<br>
+<!-- CodeLine     4 -->{<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// your implementation</span><br>
+<!-- CodeLine     6 -->}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+
+
+<h4 class="doc">
+Include Guards</h4>
+
+<p >
+     Include guards contain the relative path to the header file followed by the name of the header file.  The include guard is in upper case only.  Slashes and dots become underscores.  For example, the include guard of header file <tt>LAWA/storage/array/constarrayview.h</tt> is <tt>'LAWA_STORAGE_ARRAY_CONSTARRAYVIEW_H</tt>'.</p>
+
+<h4 class="doc">
+One File per Class & Filename is Class Name</h4>
+
+<p >
+     No matter how simple, each class deserves its own file.  That means its own header and implementation file.</p>
+
+<h3 class="doc">
+Expressive Programming</h3>
+
+
+
+<h4 class="doc">
+Using ++i vs. i++</h4>
+
+<p >
+     If <tt>++i </tt>and <tt>i++</tt> would have the same effect we always use the pre-increment:</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#8080ff">// NO:</span><br>
+<!-- CodeLine     2 --><span style="color:#af5f00">for</span>&nbsp;(<span style="color:#008000">int</span>&nbsp;i=<span style="color:#c00000">0</span>; i&lt;<span style="color:#c00000">10</span>; i++) {<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// do something</span><br>
+<!-- CodeLine     4 -->}<br>
+<!-- CodeLine     5 --><br>
+<!-- CodeLine     6 --><span style="color:#8080ff">// YES:</span><br>
+<!-- CodeLine     7 --><span style="color:#af5f00">for</span>&nbsp;(<span style="color:#008000">int</span>&nbsp;i=<span style="color:#c00000">0</span>; i&lt;<span style="color:#c00000">10</span>; ++i) {<br>
+<!-- CodeLine     8 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// do something</span><br>
+<!-- CodeLine     9 -->}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     We only use the post-increment <tt>i++</tt> if there is a good reason do do so.  For instance, if it makes something faster or more readable.</p>
+
+<h3 class="doc">
+Comments are Evil</h3>
+
+<p >
+     Comments are not evil.  But do not miss-use comment for completely documenting your code.  Document your algorithm somewhere (maybe you already published a paper about it anyway).  Leave a reference to this document. Assume that each person browsing your code has read your documentation first. Inside the function use at most a few comments like <tt>Step 1</tt> and <tt>Step 2</tt> in the following example:</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#8080ff">// see <a href="http://mycrazyalgorithm.com/dummy">http://mycrazyalgorithm.com/dummy</a></span><br>
+<!-- CodeLine     2 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     3 -->dummy()<br>
+<!-- CodeLine     4 -->{<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// Step 1:</span><br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">/*</span><span style="color:#8080ff">&nbsp;...&nbsp;&nbsp;some fancy code doing things documented above ...&nbsp;</span><span style="color:#8080ff">*/</span><br>
+<!-- CodeLine     7 --><br>
+<!-- CodeLine     8 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// Step 2:</span><br>
+<!-- CodeLine     9 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">/*</span><span style="color:#8080ff">&nbsp;...&nbsp;&nbsp;some fancy code doing things documented above ...&nbsp;</span><span style="color:#8080ff">*/</span><br>
+<!-- CodeLine    10 -->}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>

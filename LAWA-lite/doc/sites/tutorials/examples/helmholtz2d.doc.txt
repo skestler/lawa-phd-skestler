@@ -1,0 +1,28 @@
+Tutorial 2: Helmholtz Equation in 2D
+------------------------------------
+
+:document:  tutorials::examples::helmholtz2d
+
+In our second tutorial we consider a two dimensional example, a 
+_Helmholtz Equation in 2D_. To be more precise:
+
+We calculate on the two-dimensional domain [0,1] x [0,1]
+with 
+
+- periodic boundary conditions in the first dimension,
+- homogeneous Dirichlet boundary conditions in the second dimension, 
+
+i.e. we have
+
+___ LATEX _______________________________________
+\begin{cases}
+\ \    - \Delta u + c\cdot u = f  & \text{ on } (0,1)^2 \\
+\ \    u(1,y) = u(0,y)     & \text{ for } y \in [0,1] \\
+\ \    u(x,0) = u(x,1) = 0 & \text{ for } x \in [0,1]
+\end{cases}         
+_________________________________________________
+
+Again the solution is obtained using a uniform Wavelet-Galerkin method with a
+diagonal scaling preconditioner.
+
+:import: tutorials/examples/helmholtz2d.cpp

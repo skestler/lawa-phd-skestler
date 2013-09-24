@@ -1,0 +1,231 @@
+==title: Primal MRA on the interval - Construction by Dahmen, Kunoth, Urban==
+
+The construction by W. Dahmen, A. Kunoth and K. Urban (DKU) yields primal and dual
+multiresolution analyses (MRAs) on the interval based on biorthogonal B-splines
+and associated dual scaling functions. The MRAs are themselves the base for
+the construction of biorthogonal B-spline wavelet bases on the interval).
+
+The class realizing the primal MRA on the interval using the DKU construction is
+ a specialization of the general {@lawa/mra}{[MRA]} class. The signature reads
+==code.cc==
+template <typename T>
+    class MRA<T,Primal,Interval,DKU>;
+====
+with [FunctionSide=Primal], [DomainType=Interval] and [Construction=DKU] as
+fixed template parameters.
+
+==section: Essential properties==
+
+==subsection: Index ranges==
+
+The relevant index sets for [$\Phi_j = \{\varphi_{j,k}:k\in\mathcal{I}_j\}$]
+where [$\mathcal{I}_j=\mathcal{I}^L_j\cup\mathcal{I}^I_j\cup\mathcal{I}^R_j$] are given by:
+==latex==
+\begin{eqnarray*}
+\mathcal{I}^L_j &:= &\{\ell-d,\dots,\ell-1\},\\
+\mathcal{I}^I_j &:= &\{\ell,\dots,2^j-q-1\},\\
+\mathcal{I}^R_j &:= &\{2^j-q,\dots,2^j-q+d-1\}.
+\end{eqnarray*}
+====
+For [$\ell$] and [$q$] one yields (considering biorthogonality requirements):
+==latex==
+\begin{eqnarray*}
+\ell & \geq & \tilde\ell_2-(\tilde{d}-d)\\
+q & \geq & \ell+\mu(d)-1
+\end{eqnarray*}
+====
+Here we assume that we first fixed the corresponding values for the dual
+MRA as [$\tilde\ell := \tilde\ell_2$] and [$\tilde{q} = \ell+\mu(d)-1$].
+
+==subsection: The minimal level==
+The minimal level takes the value [min_j0] := [$\lceil\log_2(\tilde\ell+\tilde\ell_2-1)+1\rceil.$]
+
+==subsection: Supports==
+Since we have for the left boundary scaling functions
+==latex==
+$$\varphi_{j,r}^L := \sum_{m=1-\ell_2}^{\ell-1}\alpha_{r,m}\varphi_{[j,m]}|_{\R^+}, \qquad r=0,\dots,d-1$$
+====
+and for the right ones
+==latex==
+$$\varphi_{j,r}^R := \sum_{m=2^j-q}^{2^j\ell_1-1}\alpha_{j,r,m}^R\varphi_{[j,m]}|_{[0,1]}, \qquad r=0,\dots,d-1$$
+====
+we have [d] boundary scaling functions (at both interval ends). To get the support of all left boundary scaling functions we just have to consider the (maximal!) support of the rightmost one. Thus we get:
+==latex==
+\supp\ \varphi_{j,d-1}^L = [0,2^{-j}(\ell-1 + \ell_2)]
+====
+Analogously we get for the right end:
+==latex==
+\supp\ \varphi_{j,d-1}^R = [0,1-2^{-j}(q - \ell_1)]
+====
+
+
+==section: Constructors==
+
+==subsection: Constructs MRA (given: d, d_, j)==
+
+==coderef==
+MRA(int d, int d_, int j0=-1);
+====
+Constructs a primal MRA based on [d] and [d_]. If no level [j0] is given as
+argument the minimal possible level [min_j0] will be chosen otherwise [j0]
+(assumes [j0]>=[min_j0]). [j0] is the minimal possible level during the lifetime
+ of the MRA objectv then.
+
+==section: Member functions==
+
+==subsection: number of scaling functions==
+==coderef==
+int
+cardI(int j) const;
+====
+Returns the number of scaling functions in the MRA. ([card] stands for
+cardinality, [I] for the index set [$\mathcal{I}_j$]).
+
+==subsection: number of left scaling functions==
+==coderef==
+int
+cardIL(int j=0) const;
+====
+Returns the number of left boundary scaling functions in the MRA. ([card] stands
+ for cardinality, [IL] for the index set [$\mathcal{I}^L_j$]. [Note:] This
+cardinality does not depend on the level. The argument [j] just exists for
+uniformity but due to the default argument it can be omitted.
+
+==subsection: number of inner scaling functions==
+==coderef==
+int
+cardII(int j) const;
+====
+Returns the number of inner scaling functions in the MRA. ([card] stands
+ for cardinality, [II] for the index set [$\mathcal{I}^I_j$].
+
+==subsection: number of right scaling functions==
+==coderef==
+int
+cardIR(int j=0) const;
+====
+Returns the number of right boundary scaling functions in the MRA. ([card]
+stands for cardinality, [IR] for the index set [$\mathcal{I}^R_j$]. [Note:]
+This cardinality does not depend on the level. The argument [j] just exists for
+uniformity but due to the default argument it can be omitted.)
+
+
+==subsection: The index set of the scaling functions==
+==coderef==
+Range<int>
+rangeI(int j) const;
+====
+Returns the index set associated to the scaling functions
+i.e.[$\mathcal{I}_j$].
+
+==subsection: The index set of left boundary scaling functions==
+==coderef==
+Range<int>
+rangeIL(int j=0) const;
+====
+Returns the index set associated to the left boundary scaling functions
+i.e.[$\mathcal{I}^L_j$]. [Note:] This range does not depend on the level. The
+argument [j] just exists for uniformity but due to the default argument it can
+be omitted.
+
+==subsection: The index set of inner scaling functions==
+==coderef==
+Range<int>
+rangeII(int j) const;
+====
+Returns the index set associated to the inner scaling functions
+i.e.[$\mathcal{I}^I_j$].
+
+==subsection: The index set of right boundary scaling functions==
+==coderef==
+Range<int>
+rangeIR(int j) const;
+====
+Returns the index set associated to the right boundary scaling functions
+i.e.[$\mathcal{I}^R_j$].
+
+==subsection: The support of all left boundary scaling functions==
+==coderef==
+Support<T>
+suppIL(int j=0) const;
+====
+Returns the support of all left boudary scaling functions i.e.
+[$\supp\ \Phi^L_j$]. [Note:] This support does not depend on the level. The
+argument [j] just exists for uniformity but due to the default argument it can
+be omitted.
+
+==subsection: The support of all inner scaling functions==
+==coderef==
+Support<T>
+suppII(int j) const;
+====
+Returns the support of all inner scaling functions i.e. [$\supp\ \Phi^I_j$].
+
+==subsection: The support of all right boundary scaling functions==
+==coderef==
+Support<T>
+suppIR(int j=0) const;
+====
+Returns the support of all right boudary scaling functions i.e.
+[$\supp\ \Phi^R_j$]. [Note:] This support does not depend on the level. The
+argument [j] just exists for uniformity but due to the default argument it can
+be omitted.
+
+==subsection: The current level of the MRA==
+==coderef==
+int
+level() const;
+====
+Returns the current level of the MRA.
+
+==subsection: Set the level of the MRA==
+==coderef==
+void
+setLevel(int j);
+====
+Change the current level of the MRA to [j]. (Assumes [j]>=[j0]).
+
+==subsection: Enforcing boundary conditions==
+==coderef==
+template <BoundaryCondition BC>
+    void
+    enforceBoundaryCondition();
+====
+Adapts the MRA to enforce the specified boundary conditions. At the moment only
+homogenuous Dirichlet boundary conditions ([DirichletBC]) are realized.
+
+==section: Public Member Variables==
+
+==subsection: Selecting a specific MRA (d, d_)==
+==coderef==
+const int d, d_;
+====
+The parameters [d] and [d] select the sprecific MRA.
+
+==subsection: The "shift from symmetry" (mu)==
+==coderef==
+const mu;   // mu = mu(d) = d&1.
+====
+The role of [mu] is the same as described
+{@lawa/realline/primal/bspline#mu}{here}.
+
+==subsection: The minimal possible level (min_j0)==
+==coderef==
+const int min_j0;
+====
+The minimal level the constructions can be realized for.
+
+==subsection: The minimal level to be used (j0)==
+==coderef==
+const int j0;
+====
+The minimal level to be used during the lifetime of the MRA. May be larger than
+[min_j0].
+
+==section: Notes for Developers==
+
+==subsection: alpha and beta==
+The defintions of [$\alpha_{r,m}$] and [$\beta_{r,m}$] are according to the book
+and NOT the original paper [DKU2] i.e. the roles of [$\alpha_{r,m}$] respectively [$\tilde\alpha_{r,m}$] are swapped. The same holds for [$\beta_{r,m}$]  and [$\tilde\beta_{r,m}$]. The calculations are straight
+forward according to [DKU2] 5.1.
+
