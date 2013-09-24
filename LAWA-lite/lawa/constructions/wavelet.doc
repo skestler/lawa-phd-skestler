@@ -1,0 +1,31 @@
+==title:The root class for all B-spline wavelets==
+The root class for all B-spline wavelet types used in [LAWA].
+This class is just empty since all implemented types of B-spline wavelets are
+specializations of it. The distinction between different B-spline wavelet types
+is realized by template parameters.
+
+==section: Template parameters==
+The declaration of [Wavelet] reads
+==code.cc==
+template <typename T,
+          FunctionSide Side,
+          DomainType Domain,
+          Construction Cons=CDF>
+struct Wavelet;
+====
+with template parameters
+==list:begin==
+->[T]:    the (numerical) element type (e.g. double)
+->[Type]:    the kind of wavelet ([Primal] or [Dual])
+->[Domain]:    the domain (e.g. [R], [Interval])
+->[Cons]:    the underlying construction, by default [CDF] is chosen.
+==list:end==
+
+==section: Specializations of the Wavelet class==
+The available realizations of B-spline wavelets can be found here:
+
+==toc:realline/primal/[wavelet]==
+==toc:realline/dual/[wavelet]==
+==toc:interval/dku/[wavelet]==
+==toc:interval/primbs/[wavelet]==
+==toc:interval/dijkema/[wavelet]==

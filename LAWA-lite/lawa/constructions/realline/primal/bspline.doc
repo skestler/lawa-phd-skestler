@@ -1,0 +1,194 @@
+==title:B-splines on the real line==
+
+The class realizing B-splines on the real line is a specialization of the general {@lawa/bspline}{[BSpline]} class. The signature reads
+==code.cc==
+template <typename T>
+    class Bspline<T,Primal,R,CDF>;
+====
+with [FunctionSide=Primal], [DomainType=R] and [Construction=CDF] as fixed template parameters. You easily see from the signature that the B-splines will play the role of primal scaling functions when we deal with MRAs and wavelets later on.
+
+
+[Note]: Since [CDF] is set as default template argument in the root class we can actually omit it here. Currently [CDF] is also the only construction realized so far for the real line.
+
+
+One particular B-spline is (completely) characterized by the following properties:
+==list:begin==
+->[d]:    the order of the B-spline.
+->[j]:    the level the B-splines lives on.
+->[k]:    the translation of the B-spline.
+->[deriv]:     the [deriv]th derivative of the B-spline.
+==list:end==
+The B-spline is constructed from the parameters [d] and [deriv] as the [deriv]th derivative of [$N_d$] i.e. as (derivative of) the centralized cardinal B-spline. When we deal with multilevel methods we use scaled ([j]) and shifted ([k]) versions of [$N_d$]. Most often we will use [j] and [k] as kind of iterator, e.g. we iterate over all shifted B-splines on level [j].
+
+
+
+==section: Essential properties==
+
+==subsection: The support==
+For the centralized cardinal B-spline of order d we have the following support
+==latex==
+\supp\ {}_d\varphi = [-\lfloor\frac{d}{2}\rfloor,\lceil\frac{d}{2}\rceil] =  [\frac{1}{2}(-d+\mu(d)),\frac{1}{2}(d+\mu(d))]=: [\ell_1,\ell_2].
+====
+For the scaled and translated version we yield
+==latex==
+\supp\ {}_d\varphi_{[j,k]} = 2^{-j}[\ell_1+k,\ell_2+k].
+====
+
+==section: Essential algorithms==
+
+==subsection: Point evaluation for centralized cardinal B-splines==
+Centralized cardinal B-spline means [j]==[k]==[deriv]==0.
+
+For cardinal B-splines we have the explicit representation (as shown in the book):
+==latex==
+$$N_d(x) = \frac{1}{(d-1)!} \sum_{k=0}^d (-1)^k {d\choose k}
+(x-k)_+^{d-1}.$$
+====
+This formula is not realized in [LAWA] one-to-one since it uses the [$(\cdot)_+$]-function. For a
+realization the following version for centralized B-splines is much more efficient (and elegant):
+==latex==
+\begin{equation}
+N_d(x) = \frac{1}{(d-1)!} \sum_{k=0}^{\lfloor\frac{d}{2}-|x|\rfloor} (-1)^k {d\choose k}
+(\frac{d}{2}-|x|-k)^{d-1}.\tag{*}
+\end{equation}
+====
+
+==subsection: Point evaluation for derivatives of cardinal B-splines==
+Derivatives of cardinal B-splines satisfy (as again listed in the book)
+==latex==
+$${\frac{d}{dx}}{}_{d}\varphi (x)= {}_{d-1}\varphi (x+\mu(d-1))-{}_{d-1}\varphi (x-\mu(d)).$$
+====
+Theoretically this recursive relation is very nice, but for a realization again it is more practical to utilize centralized B-splines and use the derivatives of (*) to calcualte the [m]th derivative of [$N_d$]:
+==latex==
+\begin{equation*}
+N_d^{(m)}(x) = \frac{1}{(d-1-m)!} \sum_{k=0}^{\lfloor\frac{d}{2}-|x|\rfloor} (-1)^k\ \text{sgn}(x)(-1)^m {d\choose k}
+(\frac{d}{2}-|x|-k)^{d-1-m}.
+\end{equation*}
+====
+The realization is straight forward except for the factor -1 or 1 inside the sum. We look at the parts [$(-1)^k,\ \mathrm{sgn}(x)$] and [$(-1)^m $] separately:
+==latex==
+\tiny
+\begin{tabular}{r|r|r|r}
+k is odd & $x>0$ & m is odd   & factor \\ \hline
+true   &  false  &  true   &   1  \\ \hline
+true   &  true   &  false  &   1  \\ \hline
+false  &  false  &  false  &   1  \\ \hline
+false  &  true   &  true   &   1  \\ \hline
+true   &  true   &  true   &  -1  \\ \hline
+true   &  false  &  false  &  -1  \\ \hline
+false  &  false  &  true   &  -1  \\ \hline
+false  &  true   &  false  &  -1  \\ \hline
+\end{tabular}
+====
+
+After some agonizing one can compress this conditions like this: we yield -1 iff:
+==list:begin==
+->[k is odd]: [x>0] and [m is odd] yield the same value
+->[k is even]: [x>0] and [m is odd] yield different values
+==list:end==
+
+and compress this again to: [k is odd] yields the same value as ([x>0] and [m is odd]).
+In terms of C++ this is:
+==code.cc==
+(k&1)==( (x>0)&&(m&1) )
+====
+
+==subsection: The singular support==
+Since a B-spline of order [d] is built up of [d] polynomial pieces, the singular support is [linspace(l1,l2,d+1)].
+
+==subsection: The polynomial order==
+Obviously the polynomial order of the B-spline is determined by [d]-[deriv].
+
+==section: Constructors==
+The least one has to provide when allocating a B-spline object is the order of the B-spline [d]. The other parameter [deriv] (the derivative) is assumed to be zero if omitted i.e. we yield the centralized cardinal B-spline then.
+
+==subsection: Constructs a B-spline (given: order)==
+==coderef==
+BSpline(int _d);
+====
+Constructs the centralized cardinal B-spline of order [_d].
+
+==subsection: Constructs a B-spline (given: order, derivative)==
+==coderef==
+BSpline(int _d, int _deriv);
+====
+Constructs the [_deriv]th derivative of the centralized cardinal B-spline of order [_d].
+
+
+
+==section: Operators==
+
+==subsection: point evaluation (given: x, level, translation)==
+==coderef==
+T
+operator()(T x, int j, int k) const;
+====
+Evaluates the (derivative of the) B-spline on level [j] with translation [k] at [x].
+
+
+
+==section: Methods==
+
+==subsection: The support of the B-spline (given: level, translation)==
+==coderef==
+Support<T>
+support(int j, int k) const;
+====
+Returns the support of the B-spline on level [j] with translation [k].
+
+==subsection: The singular support of the B-spline (given: level, translation)==
+==coderef==
+DenseVector<Array<T> >
+singularSupport(int j, int k) const;
+====
+Returns the {@concepts/singularsupport}{singular support} of the B-spline on level [j] with translation [k].
+
+==subsection: The width of each polynomial piece (given: j)==
+==coderef==
+T
+tic(int j) const;
+====
+Returns the width of each polynomial piece of the B-spline on level [j].
+
+==section: Public Member Variables==
+==code.cc==
+const int d, mu, deriv, polynomialOrder;
+const int l1, l2;
+const DenseVector<Array<T> > a;
+====
+
+==subsection: the order of the B-spline  (d)==
+==code.cc==
+const int d;
+====
+[d] is the order of the B-spline (e.g. d==2 for piecewise linear B-splines). Notice that [d] is a constant during the lifetime of the object.
+
+==subsection: the "shift from symmetry"  (mu)#mu==
+==code.cc==
+const int mu;
+====
+We use [cardinal centralized B-splines] i.e. they are symmetric around [$x=0$] for even [d] and around [$x=\frac{1}{2}$] for odd [d]. Thus we define [$\mu(d) := d\ \text{mod}\ 2$] and yield [${}_d\varphi(x+\mu(d)) = {}_d\varphi(-x)$]. We will need this variable [mu] in many cases when we deal with this "shifted symmetry". Since [d] is a constant [mu] is as well.
+
+==subsection: the derivative of the B-spline  (deriv)==
+==code.cc==
+const int deriv;
+====
+The object represents the [deriv]th derivative of the B-spline. For practical reasons only derivatives less than the [d]th derivative are allowed. Notice that [deriv] is a constant during the lifetime of the object.
+
+==subsection: the polynomial order of the B-spline  (polynomialOrder)==
+==code.cc==
+const int polynomialOrder;
+====
+The polynomial order of the B-spline, i.e the highest degree power in its polynomial representation. Notice that [polynomialOrder] is a constant during the lifetime of the object.
+
+==subsection: the support of the B-spline  (l1,l2)==
+==code.cc==
+const int l1, l2;
+====
+The support of the centralized cardinal B-spline. Notice that [l1] and [l2] are constants during the lifetime of the object.
+
+==subsection: the refinement coefficients of the B-spline  (a)==
+==code.cc==
+const DenseVector<Array<T> > a;
+====
+The B-spline is a refinable function with finite mask [$\mathbf{a}=(a_k)_{\ell_1\leq k\leq\ell_2} $]. These refinement coefficients [$a_k$] are stored in the vector [a] with corresponding range  [$(\ell_1,\ \ell_2)$]. Notice that [a] is a constant during the lifetime of the object.

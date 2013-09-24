@@ -1,0 +1,245 @@
+/*
+  LAWA - Library for Adaptive Wavelet Applications.
+  Copyright (C) 2008,2009  Mario Rometsch, Alexander Stippler.
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
+
+#include <cassert>
+#include <cmath>
+
+#include <flens/flens.h>
+#include <lawa/evaluate.h>
+#include <lawa/mathtools.h>
+#include <lawa/unitbasis.h>
+
+namespace lawa {
+    
+template <typename T>
+T
+_eval_primal_bspline_primbs(int d, T x, int j, int k, int deriv);
+
+template <typename T>
+struct _EvaluateBSpline<T,Primal,Interval,Primbs>
+{
+    static T
+    eval(const BSpline<T,Primal,Interval,Primbs> &phi, T x, int j, int k, int deriv)
+    {
+        assert(x>=0.0);
+        assert(x<=1.0);
+        assert(k>=1);
+        assert(k<=pow2i(j)+phi.mra.d-1);
+
+        return _eval_primal_bspline_primbs(phi.mra.d, x, j, k, deriv);
+    }
+
+    static DenseVector<Array<T> >
+    eval(const BSpline<T,Primal,Interval,Primbs> &phi,
+         const DenseVector<Array<T> > &x, int j, int k, int deriv)
+    {
+        assert(k>=1);
+        assert(k<=pow2i(j)+phi.mra.d-1);
+
+        return _eval_primal_bspline_primbs(phi.mra.d, x, j, k, deriv);
+    }
+};
+
+template <typename T>
+struct _EvaluateBSpline<T,Dual,Interval,Primbs>
+{
+    static T
+    eval(const BSpline<T,Dual,Interval,Primbs> &phi_, T x, int j, int k, int deriv)
+    {
+        assert(0);
+    }
+};
+
+template <typename T>
+struct _EvaluateWavelet<T,Primal,Interval,Primbs>
+{
+    static T
+    eval(const Wavelet<T,Primal,Interval,Primbs> &psi, T x, int j, int k, int deriv)
+    {
+        assert(k>=psi.basis.rangeJ(j).firstIndex());
+        assert(k<=psi.basis.rangeJ(j).lastIndex());
+
+        const UnitBasis<T,Primbs> &basis = psi.basis;
+
+        T ret = 0.;
+
+        IntervalPart part;
+        const typename DenseVector<Array<T> >::ConstView coeffs = basis.M1(j,_,k,part);
+
+        for (int r=coeffs.firstIndex(); r<=coeffs.lastIndex(); ++r) {
+            ret += coeffs(r) * evaluate(basis.phi,x,j+1,r,deriv);
+        }
+        return ret;
+    }
+
+    static DenseVector<Array<T> >
+    eval(const Wavelet<T,Primal,Interval,Primbs> &psi,
+         const DenseVector<Array<T> > &x, int j, int k, int deriv)
+    {
+        assert(k>=psi.basis.rangeJ(j).firstIndex());
+        assert(k<=psi.basis.rangeJ(j).lastIndex());
+
+        const UnitBasis<T,Primbs> &basis = psi.basis;
+
+        DenseVector<Array<T> > ret(x.range());
+
+        IntervalPart part;
+        const typename DenseVector<Array<T> >::ConstView coeffs = basis.M1(j,_,k,part);
+
+        for (int r=coeffs.firstIndex(); r<=coeffs.lastIndex(); ++r) {
+            ret += coeffs(r) * evaluate(basis.phi,x,j+1,r,deriv);
+        }
+        return ret;
+    }
+};
+
+template <typename T>
+struct _EvaluateWavelet<T,Dual,Interval,Primbs>
+{
+    static T
+    eval(const Wavelet<T,Dual,Interval,Primbs> &psi_,
+         T x, int j, int k, int deriv)
+    {
+        assert(0);
+    }
+};
+
+//------------------------------------------------------------------------------
+
+template <typename T>
+T
+_eval_primal_bspline_primbs(int d, T x, int j, int k, int deriv)
+{
+    assert(x>=0.0);
+    assert(x<=1.0);
+    assert(deriv>=0);
+    
+    if (deriv>=d) {
+        return 0;
+    }
+    
+    if (deriv==0) {
+        // needed for calculation of derivatives (otherwise assertion would be correct). 
+        if ((k>pow2i(j)+d-1) || (k<1)) {
+            return 0;
+        }
+
+        T twoj = pow2i(j); 
+        x *= twoj;
+        int pos = ifloor(x) - (x==twoj);
+        // we are not inside the support.
+        if ((pos<k-d) || (pos>k-1)) {
+            return 0;
+        }
+
+        Array<T> values(d,0);
+        // initialize correct 'slot'.
+        if ((pos<=k) && (pos>=k-d)) {
+            values(pos-(k-d)) = 1.;
+        }
+
+        // utilizing left multiplicities.
+        if (k<d) {
+            for (int m=2; m<=d; ++m) {
+                for (int i=0; i<=d-m; ++i) {
+                    if (m+i+k-1>d) {
+                        values(i) = (x-std::max(0,i+k-d))*values(i) / (m+i+k-1-d-std::max(k+i-d,0));                    
+                    }
+                    if (m+i+k>d) {
+                        values(i) += (m+i+k-d-x)*values(i+1) / (m+i+k-d-std::max(k+i+1-d,0));                    
+                    }
+                }
+            }
+            return pow2ih(j)*values(0);
+        }
+
+        // utilizing right multiplicities.
+        int t = twoj;
+        if (k>t) {
+            for (int m=2; m<=d; ++m) {
+                for (int i=0; i<=d-m; ++i) {
+                    if (k+i-d<t) {
+                        values(i) = (x-(i+k-d))*values(i) / (std::min(m+i+k-1-d,t)-(k+i-d));                    
+                    }
+                    if (k+i+1-d<t) {
+                        values(i) += (std::min(t,m+i+k-d)-x)*values(i+1) / (std::min(t,m+i+k-d)-(k+i+1-d));                    
+                    }
+                }
+            }
+            return pow2ih(j)*values(0);
+        }
+
+        // 'inner' B-Splines.
+        t = k-d;
+        for (int m=2; m<=d; ++m) {
+            for (int i=0; i<=d-m; ++i) {
+                values(i) =  ((x-(t+i))*values(i) + ((t+m+i)-x)*values(i+1))/(m-1);
+            }
+        }
+        return pow2ih(j)*values(0);
+    } else {
+        assert(k>=1);
+        assert(k<=pow2i(j)+d-1);
+
+        T value = 0.;
+
+        T twomj = pow2i(-j);
+        T a=twomj*(k-1), b=twomj*(k), c=twomj*(k-d), e=twomj*(k-d+1);
+        if (k<=d) {
+            c = 0;
+        }
+        if (k+d>=pow2i(j)+d) {
+            b = 1.;
+        }
+        if (k+d-1<=d) {
+            a = 0.;
+        }
+        if (k+d-1>=pow2i(j)+d) {
+            a = 1.;
+        }
+        if (k+1<=d) {
+            e = 0.;
+        }
+
+        // remark: the index k is shifted by -1 since for d-1 the implicit knot
+        //         vector is implicitely shifted to the left by one.
+        if (a!=c) {
+            value  = _eval_primal_bspline_primbs(d-1,x,j,k-1,deriv-1)   / (a-c);                    
+        }
+        if (b!=e) {
+            value -= _eval_primal_bspline_primbs(d-1,x,j,k,deriv-1) / (b-e);                    
+        }
+
+        return (d-1)*value;
+    }
+}
+
+template <typename T>
+DenseVector<Array<T> >
+_eval_primal_bspline_primbs(int d, const DenseVector<Array<T> > &x, int j,
+                            int k, int deriv)
+{
+    DenseVector<Array<T> > ret(x.range());
+    for (int i=x.firstIndex(); i<=x.lastIndex(); ++i) {
+        ret(i)=_eval_primal_bspline_primbs(d,x(i),j,k,deriv);
+    }
+    return ret;
+}
+
+} // namespace lawa

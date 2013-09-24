@@ -1,0 +1,82 @@
+\documentclass[11pt, fleqn]{article}
+
+\usepackage{amsmath}
+\usepackage{multirow}
+
+\begin{document}
+
+\title{Space-Time Preconditioners}
+\author{}
+\date{}
+\maketitle
+
+\noindent Consider Riesz bases for the spaces
+\begin{align*}
+\mathcal{X} &:= (L_{2}(0,T) \otimes V) \cap ( H^{1}(0,T) \otimes V'), \\
+\mathcal{Y} &:= (L_{2}(0,T) \otimes V),
+\end{align*}
+where $V = H^{1}$. \\
+
+\noindent The appropriate scaling of a basis function $bf(t,x) := \theta(t)  \sigma(x)$ is then as follows:
+\begin{itemize}
+\item in $\mathcal X$: \[ \text{RightPreconditioner2D} = \frac{1}{\sqrt{\Vert \theta \Vert_{L_{2}}^{2} \Vert \sigma \Vert_{H^{1}}^{2} + \Vert \theta \Vert_{H^{1}}^{2} \Vert \sigma \Vert_{H^{-1}}^{2}}} \]
+\item in $\mathcal Y$: \[ \text{LeftPreconditioner2D} = \frac{1}{\sqrt{\Vert \theta \Vert_{L_{2}}^{2} \Vert \sigma \Vert_{H^{1}}^{2} }} \]
+\end{itemize}
+See also \cite{SchwabStevenson}. \\
+
+\noindent The required norms can be computed in different ways. The different possibilites are presented for the space part $\sigma(x)$ of the basis function, but apply to the time part $\theta(t)$ as well.
+\begin{itemize}
+\item {\bf $\mathbf{L_{2}}$-Norm}:
+\begin{enumerate}\renewcommand{\labelenumi}{(\roman{enumi})}
+\item Normalization in $L_{2}$ {\bf [N]}: \[\Vert \sigma \Vert_{L_{2}}^{2} = 1\]
+\item Integral {\bf [I]}: \[\Vert \sigma \Vert_{L_{2}}^{2} = \int_{\Omega} \sigma^{2}(x) dx\]
+\end{enumerate}
+
+\item {\bf $\mathbf{H^{1}}$-Norm}:
+\begin{enumerate}\renewcommand{\labelenumi}{(\roman{enumi})}
+\item Scaling using normalization in $L_{2}$ {\bf [Sc\_N]}: \[\Vert \sigma \Vert_{H^{1}}^{2} =  2^{2j} \cdot \Vert \sigma \Vert_{L_{2}}^{2} =  2^{2j} \cdot 1\]
+\item Scaling using integral {\bf [Sc\_I]}: \[\Vert \sigma \Vert_{H^{1}}^{2} =  2^{2j} \cdot \Vert \sigma \Vert_{L_{2}}^{2} = 2^{2j}\int_{\Omega} \sigma^{2}(x) dx\]
+\item Integral {\bf [I]}: \[\Vert \sigma \Vert_{H^{1}}^{2} = \int_{\Omega} \sigma^{2}(x) dx +\int_{\Omega} \sigma^{2}_{x}(x) dx \]
+\end{enumerate}
+
+\item {\bf $\mathbf{H^{-1}}$-Norm}:
+\begin{enumerate}\renewcommand{\labelenumi}{(\roman{enumi})}
+\item Scaling using normalization in $L_{2}$ {\bf [Sc\_N]}: \[\Vert \sigma \Vert_{H^{-1}}^{2} =  2^{-2j} \cdot \Vert \sigma \Vert_{L_{2}}^{2} =  2^{-2j} \cdot 1\]
+\item Scaling using $L_{2}$-Integral {\bf [Sc\_$L_{2}$I]}: \[\Vert \sigma \Vert_{H^{-1}}^{2} =  2^{-2j} \cdot \Vert \sigma \Vert_{L_{2}}^{2} = 2^{-2j}\int_{\Omega} \sigma^{2}(x) dx\]
+\item Scaling using $H^{1}$-Integral {\bf [Sc\_$H^{1}$I]}: \[\Vert \sigma \Vert_{H^{-1}}^{2} =  2^{-2j} \cdot \Vert \sigma \Vert_{L_{2}}^{2} = 2^{-4j} \left(\int_{\Omega} \sigma^{2}(x) dx + \int_{\Omega} \sigma^{2}_{x}(x) dx \right)\]
+\item Duality Properties {\bf [D]}: \[\Vert \sigma \Vert_{H^{-1}}^{2} \simeq \frac{1}{\Vert \sigma \Vert_{H^{1}}^{2}} = \frac{1}{\int_{\Omega} \sigma^{2}(x) dx + \int_{\Omega} \sigma^{2}_{x}(x) dx}\]
+\end{enumerate}
+
+\end{itemize}
+
+\ \\
+\noindent
+The following tables are overviews over the implemented combinations of norm calculations.\\[2ex]
+\begin{tabular}{l|c|c}
+\multirow{2}{*}{{\bf LeftNormPreconditioners}}& {Time} & {Space} \\
+& $L_{2}$ & $H^{1}$ \\
+\hline
+LeftNormPreconditioner2D & \bf{I} & {\bf I}
+\end{tabular}
+\ \\[2ex]
+\begin{tabular}{l|cc|cc}
+\multirow{2}{*}{{\bf RightNormPreconditioners}}& \multicolumn{2}{c|}{Time} & \multicolumn{2}{c}{Space} \\
+& $L_{2}$ & $H^{1}$ & $H^{1}$ & $H^{-1}$\\
+\hline
+(not working) & {\bf N}& {\bf I} & {\bf I}& {\bf Sc\_N}\\
+RightNormPreconditioner2D & {\bf N}& {\bf I} & {\bf I}& {\bf Sc\_$L_{2}$I}\\
+RightNormPreconditioner2D\_a & {\bf I}& {\bf I} & {\bf I}& {\bf Sc\_$L_{2}$I}\\
+RightNormPreconditioner2D\_b & {\bf I}& {\bf I} & {\bf I}& {\bf D}\\
+RightNormPreconditioner2D\_c & {\bf I}& {\bf Sc\_I} & {\bf I}& {\bf D}
+\end{tabular}
+
+
+
+\begin{thebibliography}{Schwab} 
+\bibitem[Schwab, Stevenson, 2009]{SchwabStevenson}
+C.~Schwab and R.~Stevenson. 
+\newblock {\em Space-time adaptive wavelet methdos for parabolic evolution problems}. 
+\newblock Math.Comp., 78 (267), pp. 1293-1318 (2009)
+
+\end{thebibliography}
+\end{document}

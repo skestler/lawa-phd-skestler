@@ -1,0 +1,37 @@
+==title:Scaling functions on the real line==
+
+A function [$\varphi\in L_2(\R)$] which satisfies the follwing recursion formula
+
+==latex==
+\varphi(x) = \sum\limits_{k\in\Z}a_k\varphi(2x-k),\quad x\in\R \ a.e.
+====
+
+for some coefficients [$a_k\in\R,\ k\in\Z$] is called [refinable function], [scaling function] or [generator] of an MRA. The coefficients [$a_k$] are also called [refinement coefficients] of [$\varphi$].
+
+In [LAWA] we mostly restrict ourselves to B-splines and their duals as scaling functions, not only for the real line but also for more complicated domains. We explicitely use [centralized cardinal B-splines] [$N_d$] and the dual scaling functions associated to B-splines  [$N_{d,\tilde{d}}$] (following the construction by [CDF]).
+
+==section:Important note on the naming convention#Note==
+When we realize the mathematical concepts in C++ we use slightly incorrect notation on purpose. E.g. we will have the following types on the real line to use scaling functions:
+
+==code.cc==
+1    BSpline<double,Primal,R,CDF> phi(2);
+2    BSpline<double,Dual,R,CDF>   phi_(2,4);
+====
+
+In line 1 we allocate an object of type [BSpline] with template paramters double,Primal,R,CDF suggesting the following reading: "object phi is a primal B-spline with domain [$\R$] following the CDF construction (with element type double)". This is all ok. (Though it is unneccesary to classify the B-spline as primal scaling function since this is obvious).
+
+But in line 2 when we use the template parameter Dual instead of Primal this could be read as: "object phi_ is a dual B-spline with domain [$\R$] following the CDF construction (with element type double)". And we do not have a dual B-spline here - in fact not at all a B-spline - but a dual scaling function associated to a B-spline.
+That is where we are "slightly incorrect".
+
+For the realization it is much more convenient to treat primal and dual scaling functions analogously - therefor this abuse of notation. You may even notice that we use the notion "dual B-spline" in this documentation.
+
+==section: Realizations of primal and dual scaling functions==
+
+Starting point for all B-spline realizations is the root class [BSpline] which is something similar to an abstract base class.
+
+==toc:../[bspline]==
+
+All concrete implementations are specializations of this template class.
+
+==toc:primal/[bspline]==
+==toc:dual/[bspline]==

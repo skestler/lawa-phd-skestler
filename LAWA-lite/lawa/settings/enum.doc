@@ -1,0 +1,65 @@
+==title:Enumeration types used in LAWA==
+
+==section:FunctionSide#FunctionSide==
+Enumeration type to differentiate between primal and dual B-splines/wavelets.
+We are open for suggestions concerning the typename [FunctionSide] ;-).
+==code:.cc==
+enum FunctionSide {
+    Primal,
+    Dual
+};
+====
+
+==section:DomainType#DomainType==
+Enumeration Type specifying the used domain.
+==code.cc==
+enum DomainType {
+    Periodic,
+    R,
+    Interval
+};
+====
+==list:begin==
+->[Periodic]:  the interval \[0,1\] with periodic boundary conditions.
+->[R]:    the whole real line.
+->[Interval]:  the interval \[0,1\] (but not periodic boundary conditions).
+==list:end==
+
+==section:XType#XType==
+An enumeration type we did not yet find a suitable name, so it's called XType so far. Intented to distinguish between B-splines and wavelets. Someone an idea for a name?
+==code.cc==
+enum XType {
+    XBSpline,
+    XWavelet
+};
+====
+
+==section:Construction#Construction==
+An enumeration to distinguish between different constructions of B-splines/wavelets.
+==code.cc==
+enum Construction {
+    CDF,
+    AnyInterval,
+    DKU,
+    Primbs,
+    Dijkema
+};
+====
+==list:begin==
+->[CDF]:  the construction by Cohen, Daubechies, Faveau (on the real line).
+->[AnyInterval]:    Any construction (out of [DKU, Primbs, Dijkema]) on the interval.
+->[DKU]:  the construction by Dahmen, Kunoth, Urban.
+->[Primbs]:    the construction by Primbs.
+->[Dijkema]:    the construction by Dijkema.
+==list:end==
+
+==section:BoundaryCondition#BoundaryCondition==
+An enumeration listing the different boundary conditions available for
+interval bases. At the moment only homogenuous Dirichlet boundary conditions
+are realized.
+==code.cc==
+enum BoundaryCondition {
+    NoBC = 0,
+    DirichletBC = 1,
+};
+====
