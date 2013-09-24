@@ -1,0 +1,91 @@
+TARGET = $(shell uname)
+COMPILER = gcc
+BLASLAPACK = platform
+
+ifeq ($(TARGET),Darwin)
+  CXXDYLIB  = -dynamiclib
+  DYLIB_EXT = dylib
+  ifeq ($(COMPILER),gcc)
+    CC  = gcc
+    CXX = g++
+  endif
+  ifeq ($(COMPILER),icc)
+    CC  = icc
+    CXX = icpc
+  endif
+  ifeq ($(COMPILER),clang)
+    CC  = clang
+    CXX = clang++
+  endif
+  ifeq ($(BLASLAPACK),platform)
+    CPPFLAGS += -DWITH_VECLIB
+    LDFLAGS  += -framework Accelerate
+  endif
+endif
+
+ifeq ($(TARGET),Linux)
+  CXXDYLIB  = -shared
+  DYLIB_EXT = so
+  ifeq ($(COMPILER),gcc)
+    CC  = gcc
+    CXX = g++
+    ifeq ($(BLASLAPACK),platform)
+      CPPFLAGS += -DWITH_ATLAS -DHAVE_CBLAS -I/usr/include
+      LIBS     += -llapack -lblas -lmpfr -lgmpxx -lgmp
+      LDFLAGS  += -L/usr/lib $(LIBS)
+    endif
+  endif
+endif
+
+
+# compilation modes ------------------------------------------------------------
+
+#HASHTYPE = -DGNUCXX
+#HASHTYPE = -DBOOST
+HASHTYPE = -DTRONE -DBOOST_HAS_TR1_TUPLE
+
+# --- debug mode -----------------------
+DEBUGLAWA += -DCHECK_INTERVAL_CONSTRUCTION
+DEBUGMODE = -g -DDEBUG -D_GLIBCXX_DEBUG_PEDANTIC=1 $(DEBUGLAWA) $(HASHTYPE) \
+            -O2 -Wfatal-errors -pedantic -Wextra \
+            -fPIC
+
+# --- release mode ----------------------
+RELEASEMODE = -O3 -DNDEBUG $(HASHTYPE) -fPIC
+
+# --- profiling mode --------------------
+PROFILEMODE = -p -g -DNDEBUG $(HASHTYPE)
+
+# --- select compilation-mode here by commenting / uncommenting
+#CXXFLAGS += $(DEBUGMODE)
+CXXFLAGS += $(RELEASEMODE)
+#CXXFLAGS += $(PROFILEMODE)
+
+#CPPFLAGS += -D_GLIBCXX_PERMIT_BACKWARD_HASH
+CPPFLAGS += -Wno-deprecated
+CPPFLAGS += -I$(FLENS_HOME) -I$(LAWA_HOME)
+
+ifdef BOOST_HOME
+  CPPFLAGS += -I$(BOOST_HOME)
+endif
+
+ifdef GMPFRXX_HOME
+   CPPFLAGS += -I$(GMPFRXX_HOME)
+   LDFLAGS += -L$(GMPFRXX_HOME) -lgmpfrxx
+endif
+
+ifdef MPREC_INC_HOME
+   CPPFLAGS += -I$(MPREC_INC_HOME)
+endif
+
+ifdef MPREC_LIB_HOME
+   LDFLAGS += -L$(MPREC_LIB_HOME) -lmpfr -lgmpxx -lgmp 
+endif
+
+ifdef GSL_INC_HOME
+  CPPFLAGS += -I$(GSL_INC_HOME)
+endif
+
+ifdef GSL_LIB_HOME
+  LDFLAGS += -L$(GSL_LIB_HOME) -lgsl
+endif
