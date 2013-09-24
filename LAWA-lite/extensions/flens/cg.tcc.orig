@@ -1,0 +1,268 @@
+/*
+  LAWA - Library for Adaptive Wavelet Applications.
+  Copyright (C) 2008,2009  Mario Rometsch, Alexander Stippler.
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
+
+#include <cassert>
+#include <limits>
+#include <iomanip>
+#include <fstream>
+#include <lawa/aux/densify.h>
+
+namespace lawa {
+
+template <typename MA, typename VX, typename VB>
+int
+cg(const MA &A, VX &x, const VB &b, typename _cg<VB>::T tol,
+   int maxIterations)
+{
+    typename _cg<VB>::T alpha, beta, rNormSquare, rNormSquarePrev;
+    typename _cg<VB>::AuxVector Ap, r, p;
+
+    if (x.length()!=A.numCols()) {
+        x.engine().resize(A.numCols());
+    }
+
+    r = A*x - b;
+    p = -1*r;
+    rNormSquare = r*r;
+    for (int k=1; k<=maxIterations; k++) {
+        #ifdef SOLVER_DEBUG
+            std::cerr << "k = " << k << ", rho = " << sqrt(rNormSquare)
+                << std::endl;
+        #endif
+        if (sqrt(rNormSquare)<=tol) {
+            return k-1;
+        }
+        Ap = A*p;
+        alpha = rNormSquare/(p * Ap);
+        x += alpha*p;
+        r += alpha*Ap;
+
+        rNormSquarePrev = rNormSquare;
+        rNormSquare = r*r;
+        beta = rNormSquare/rNormSquarePrev;
+        p = beta*p - r;
+    }
+    return maxIterations;
+}
+
+<<<<<<< HEAD
+template <typename MA, typename VX, typename VB, typename T>
+int
+test_cg(MA &A, VX &x, const VB &b, T tol, int maxIterations)
+{
+    T alpha, beta, rNormSquare, rNormSquarePrev;
+    VB Ap, r, p;
+/*
+    if (x.length()!=A.numCols()) {
+        x.engine().resize(A.numCols());
+    }
+*/
+    r = A*x - b;
+    p = r;
+    p *= -1.;
+    rNormSquare = r*r;
+    for (int k=1; k<=maxIterations; k++) {
+        #ifdef SOLVER_DEBUG
+            std::cerr << "k = " << k << ", rho = " << sqrt(rNormSquare)
+                << std::endl;
+        #endif
+        if (sqrt(rNormSquare)<=tol) {
+            return k-1;
+        }
+        std::cerr << "   Iteration " << k << ", performing marix-vector product..." << std::endl;
+        Ap = A*p;
+        std::cerr << "   Iteration " << k << ", finished marix-vector product..." << std::endl;
+        alpha = rNormSquare/(p * Ap);
+        x += alpha*p;
+        r += alpha*Ap;
+
+        rNormSquarePrev = rNormSquare;
+        rNormSquare = r*r;
+        beta = rNormSquare/rNormSquarePrev;
+        p = beta*p - r;
+    }
+    return maxIterations;
+}
+
+=======
+// Algorithm 8.4, Y. Saad: Iterative Methods for Sparse Linear Systems
+// for solving A^T A x= A^T b
+// (for over-determined systems)
+>>>>>>> rb
+template <typename MA, typename VX, typename VB>
+int
+cgls(const MA &A, VX &x, const VB &b, typename _cg<VB>::T tol,
+     int maxIterations)
+{
+    typename _cg<VB>::T alpha, beta, gammaPrev, gamma, b_norm;
+    typename _cg<VB>::AuxVector r, q, s, p;
+
+    assert(b.length()==A.numRows());
+
+    std::cerr << "   cgls: tol = " << tol << std::endl;
+    if (x.length()!=A.numCols()) {
+        x.engine().resize(A.numCols());
+    }
+    /*
+    for (int i=x.firstIndex(); i<=x.lastIndex(); ++i) {
+        x(i) = 0;
+    }
+    */
+
+    b_norm = b*b;
+    if (std::sqrt(b_norm) < 1e-15) {
+        for (int i=x.firstIndex(); i<=x.lastIndex(); ++i) {
+            x(i) = 0;
+        }
+        return 0;
+    }
+
+<<<<<<< HEAD
+    r = A*x;
+    r += (-1.)*b;
+    r *= -1.;
+    flens::blas::mv(cxxblas::Trans, typename _cg<VB>::T(1), A, r, typename _cg<VB>::T(0), s);
+=======
+    //r = b;
+    r = b-A*x;
+    
+    //flens::blas::mv(cxxblas::Trans, typename _cg<VB>::T(1), A, r, typename _cg<VB>::T(0), s);
+    
+    s = transpose(A)*r;
+>>>>>>> rb
+    p = s;
+    gammaPrev = s*s;
+#ifdef SOLVER_DEBUG
+    std::ofstream gammafile("CGLS_Convergence.txt");
+    gammafile << "# Norm(A'*r)^2  Norm(b-Ax)^2" << std::endl; 
+#endif
+    for (int k=1; k<=maxIterations; k++) {
+        #ifdef SOLVER_DEBUG
+            typename _cg<VB>::T res = r*r;
+            gammafile << sqrt(gammaPrev) << " " << sqrt(res) << std::endl;
+            std::cerr << "k = " << k << ", gamma = " << sqrt(gammaPrev)
+            << std::endl;
+        #endif
+        q = A*p;
+        alpha = gammaPrev/(q*q);
+        x +=   alpha *p;
+        r += (-alpha)*q;
+        flens::blas::mv(cxxblas::Trans, typename _cg<VB>::T(1), A, r, typename _cg<VB>::T(0), s);
+        gamma = s*s;
+        if (sqrt(gamma)<=tol) {
+            return k-1;
+        }
+        beta  = gamma/gammaPrev;
+        p *= beta;
+        p += s;
+        gammaPrev = gamma;
+    }
+#ifdef SOLVER_DEBUG
+    gammafile.close();
+#endif
+    return maxIterations;
+}
+
+
+// Algorithm 9.2, Y. Saad: Iterative Methods for Sparse Linear Systems
+// for solving Ax=b with P^T A P u = P^T b, u=P^{-1} x
+// Note the role of P and P^T is switched.
+// This algorithm uses split preconditioning defined as in
+// (6.2), K. Urban: Wavelet Methods for Elliptic PDEs
+// Also non-symmetric preconditioning is possible as mentioned in remark 6.2
+template <typename Prec, typename MA, typename VX, typename VB>
+int
+pcg(const Prec &P, const MA &A, VX &x, const VB &b,
+    typename _cg<VB>::T tol, int maxIterations)
+{
+    typename _cg<VB>::T pNormSquare, alpha, beta, rHatq, rHatqPrev;
+    typename _cg<VB>::AuxVector r, rHat, p, Ap;
+
+    if (x.length()!=A.numCols()) {
+        x.engine().resize(A.numCols());
+    }
+    r = b - A*x;
+    if(r*r == 0){
+        return 0;
+    }    
+    rHat = transpose(P)*r;
+    p = P*rHat;
+    rHatq = rHat*rHat;
+    for (int k=1; k<=maxIterations; k++) {
+        Ap = A*p;
+        alpha = rHatq/(Ap*p);
+        x += alpha*p;
+        rHat = rHat - alpha * transpose(P)*Ap;
+        rHatqPrev = rHatq;
+        rHatq =rHat*rHat;
+        beta = rHatq/rHatqPrev;
+        p *= beta;
+        p += P*rHat;
+        pNormSquare = p*p;
+        #ifdef SOLVER_DEBUG
+            std::cerr << "k = " << k << ", rho = " <<  sqrt(pNormSquare) 
+                << std::endl;
+        #endif
+        if (sqrt(pNormSquare)<=tol) {
+            return k-1;
+        }
+    }
+    return maxIterations;
+}
+
+/*
+template <typename Prec, typename MA, typename VX, typename VB>
+int
+pcg(const Prec &B, const MA &A, VX &x, const VB &b,
+    typename _cg<VB>::T tol, int maxIterations)
+{
+    typename _cg<VB>::T pNormSquare, alpha, beta, rq, rqPrev;
+    typename _cg<VB>::AuxVector r, q, p, Ap;
+
+    r = A*x - b;
+    q = B*r;
+
+    p = q;
+    // TODO: next line results in an error with T = long double. WHY???
+    // p = -q;
+    p *= -1;
+    rq = r*q;
+
+    for (int k=1; k<=maxIterations; k++) {
+        pNormSquare = p*p;
+        if (sqrt(pNormSquare)<tol) {
+            return k-1;
+        }
+        Ap = A*p;
+        alpha = rq/(p*Ap);
+        x += alpha*p;
+
+        r += alpha*Ap;
+        q = B*r;
+
+        rqPrev = rq;
+        rq = r*q;
+        beta = rq/rqPrev;
+        p = beta*p - q;
+    }
+    return maxIterations;
+}
+*/
+} // namespace lawa
+
