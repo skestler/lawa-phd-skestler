@@ -1,0 +1,134 @@
+==title:Dual biorthogonal B-spline wavelets on the real line==
+
+The class realizing dual B-spline wavelets on the real line is a specialization of the general {@lawa/wavelet}{[Wavelet]} class. The signature reads
+==code.cc==
+template <typename T>
+    class Wavelet<T,Dual,R,CDF>;
+====
+with [FunctionSide=Dual], [DomainType=R] and [Construction=CDF] as fixed template parameters.
+
+One particular dual B-spline wavelet is (completely) characterized by the following properties:
+==list:begin==
+->[d,d_]:    [d] and [d_] select the corresponding B-Spline and dual scaling function associated to the wavelet.
+->[j]:    the level the wavelet lives on.
+->[k]:    the translation of the wavelet.
+==list:end==
+The dual B-spline wavelet [${}_{d,\td}\tilde\psi$] is constructed from the parameters [d] and [d_]. When we deal with multilevel methods we use scaled
+ ([j]) and shifted ([k]) versions of [${}_{d,\td}\tilde\psi$]. Most often we will use [j] and [k] as kind of iterator, e.g. we iterate over all shifted dual
+ B-spline wavelets [${}_{d,\td}\tilde\psi$] on level [j].
+
+==section: Essential properties==
+
+==subsection: The refinement coefficients==
+The refinement coefficients are determined by the refinement coefficients of the
+corresponding B-spline in the following way
+==latex==
+$$\tilde{b}_k = (-1)^k a_{1-k}$$
+====
+==subsection: The support==
+The support of [${}_{d,\td}\tilde\psi$] can be derived from the representation
+==latex==
+\begin{equation*}
+\tilde\psi(x) := \sum_{k\in\Z}\tilde{b}_k\tilde\varphi(2x-k)\tag{*}
+\end{equation*}
+====
+The factor [$\tilde{b}_k$] can only be nonzero for [$k\in[1-\frac{1}{2}(\mu(d)+d), 1-\frac{1}{2}(\mu(d)-d)]$].
+Using this range we yield nonzero for the scaling function iff
+[$(2x-k)\in\supp\ \tilde\varphi$]. So we get
+==list:begin==
+->[left border:] [$2x-1+\frac{1}{2}(\mu(d)+d) \geq \frac{1}{2}(\mu(d)-d)-\td+1$]
+->[right border:] [$2x-1+\frac{1}{2}(\mu(d)-d) \leq \frac{1}{2}(\mu(d)+d)+\td-1$]
+==list:end==
+Simplifying this yields
+==latex==
+\supp\ {}_{d,\td}\tilde\psi = [\frac{1}{2}(2-(d+\td),\frac{1}{2}(d+\td)]=: [\tilde\ell_1,\tilde\ell_2].
+====
+For the scaled and translated version we yield
+==latex==
+\supp\ {}_{d,\td}\tilde\psi_{[j,k]} = 2^{-j}[\tilde\ell_1+k,\tilde\ell_2+k].
+====
+
+==subsection: Point evaluation==
+As for B-splines we have the analogous relation
+==latex==
+$$\tilde\psi_{[j,k]} := 2^{j/2}\tilde\psi(2^jx-k)$$
+====
+and utilizing (*) again we already have a straight forward formula to evaluate
+dual wavelets.
+
+==section: Constructors==
+
+==subsection: Constructs a dual B-spline wavelet (given: d,d_)==
+==coderef==
+Wavelet(int _d, int _d_);
+====
+Constructs the dual B-spline wavelet [${}_{d,\td}\tilde\psi$].
+
+==subsection: Constructs a dual B-spline wavelet (given: phi,phi_)==
+==coderef==
+Wavelet(const BSpline<T,Primal,R,CDF> &_phi,
+        const BSpline<T,Dual,R,CDF> &_phi_);
+====
+Constructs the dual B-spline wavelet [${}_{d,\td}\tilde\psi$].
+
+==section: Operators==
+
+==subsection: point evaluation (given: x, level, translation)==
+==coderef==
+T
+operator()(T x, int j, int k) const;
+====
+Evaluates the wavelet on level [j] with translation [k] at [x].
+
+==section: Member functions==
+
+==subsection: The support of the wavelet (given: level, translation)==
+==coderef==
+Support<T>
+support(int j, int k) const;
+====
+Returns the support of the wavelet on level [j] with translation [k].
+
+==section: Public Member Variables==
+
+==code.cc==
+const int d, d_, mu;
+const int l1_, l2_;
+const DenseVector<Array<T> > b;
+const BSpline<T,Primal,R,CDF> phi,
+      BSpline<T,Dual,R,CDF> phi_;
+====
+
+==subsection: the specific wavelet  (d,d_)==
+==code.cc==
+const int d, d_;
+====
+[d] and [d_] select the dual B-spline wavelet [${}_{d,\td}\tilde\psi$]. Notice that [d] and [d_] are constants during the lifetime of the object.
+
+==subsection: the "shift from symmetry"  (mu)==
+==code.cc==
+const int mu;
+====
+The wavelets are based on [cardinal centralized B-splines] which are symmetric around [$x=0$] for even [d] and around [$x=\frac{1}{2}$] for odd [d]. Thus we define [$\mu(d) := d\ \text{mod}\ 2$] and yield [${}_d\varphi(x+\mu(d)) = {}_d\varphi(-x)$]. We will need this variable [mu] in many cases when we deal with this "shifted symmetry". Since [d] is a constant [mu] is as well.
+
+==subsection: the support of the wavelet  (l1_,l2_)==
+==code.cc==
+const int l1_, l2_;
+====
+The boundaries of the support of the wavelet. Notice that [l1_] and [l2_] are constants during the lifetime of the object.
+
+==subsection: the refinement coefficients of the wavelet  (b)==
+==code.cc==
+const DenseVector<Array<T> > b_;
+====
+The wavelet is a refinable function with finite mask [$\mathbf{\tilde{b}}=(\tilde{b}_k)_{\tilde\ell_1\leq k\leq\tilde\ell_2} $].
+These refinement coefficients [$\tilde{b}_k$] are stored in the vector [b_] with
+corresponding range  [$(\tilde\ell_1,\ \tilde\ell_2)$]. Notice that [b_] is a constant during the lifetime of the object.
+
+==subsection: the underlying scaling functions (phi, phi_)==
+==code.cc==
+const BSpline<T,Primal,R,CDF> phi,
+      BSpline<T,Dual,R,CDF> phi_;
+====
+The underlying scaling functions [phi] and [phi_] from which the wavelet is constructed.
+

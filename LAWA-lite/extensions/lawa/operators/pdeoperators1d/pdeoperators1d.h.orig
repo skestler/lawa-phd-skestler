@@ -1,0 +1,12 @@
+#include <lawa/operators/pdeoperators1d/convectionoperator1d.h>
+#include <lawa/operators/pdeoperators1d/helmholtzoperator1d.h>
+#include <lawa/operators/pdeoperators1d/identityoperator1d.h>
+#include <lawa/operators/pdeoperators1d/laplaceoperator1d.h>
+#include <lawa/operators/pdeoperators1d/pdeconstcoeffoperator1d.h>
+#include <lawa/operators/pdeoperators1d/pdenonconstcoeffoperator1d.h>
+<<<<<<< HEAD
+#include <lawa/operators/pdeoperators1d/weightedL2scalarproduct1d.h>
+=======
+#include <lawa/operators/pdeoperators1d/weightedidentityoperator1d.h>
+#include <lawa/operators/pdeoperators1d/weightedlaplaceoperator1d.h>
+>>>>>>> rb

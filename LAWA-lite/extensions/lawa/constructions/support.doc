@@ -1,0 +1,96 @@
+==title: The class Support==
+
+In [LAWA] a (one-dimensional) support is realized as an object of the class [Support\&lt;T\&gt;]. It stands for a closed interval [$[\ell_1,\ell_2]$]. Every nonempty support fulfills [$\ell_1\leq\ell_2$] and thus has nonnegative length. An empty support (by convention) is characterized by [$\ell_1>\ell_2$].
+
+==section:Constructors==
+
+==subsection: Constructs an empty support==
+==code.cc==
+Support();
+====
+Constructs an empty support. Characterized by [$\ell_1>\ell_2$] resulting in a support of negative length.
+
+==subsection: Constructs a support [a,b]==
+==code.cc==
+Support(const T &a, const T &b);
+====
+Constructs the support S=\[a,b\]. Assumes [a] less or equal [b].
+
+==section:Member functions==
+
+==subsection: the length of the support==
+==code.cc==
+T
+length() const;
+====
+Returns the length of the support i.e. [$\ell_2-\ell_1$].
+
+==section: Public Member Variables==
+
+==subsection: the borders of the support (l1,l2)==
+==code.cc==
+T l1, l2;
+====
+The boundaries of the support. [l1] = [$\ell_1$] and [l2] = [$\ell_2$].
+
+==section: Functions operating on supports==
+
+==subsection: Does a point x lie in the support?==
+==code.cc==
+template <typename T>
+    bool
+    inner(T x, const Support<T> &supp);
+====
+Returns true if [$x\in(\ell_1,\ell_2)$] false otherwise.
+
+==subsection: Do two supports overlap?==
+==code.cc==
+template <typename T>
+    T
+    overlap(const Support<T> &supp1, const Support<T> &supp2);
+====
+Returns the size of the overlapping part of [supp1] and [supp2]. Negative return
+values mean no overlapping (and give the distance).
+
+==subsection: Do two supports overlap and if, where?==
+==code.cc==
+template <typename T>
+    T
+    overlap(const Support<T> &supp1, const Support<T> &supp2, Support<T> &common);
+====
+Returns the size of the overlapping part of [supp1] and [supp2]. Negative return
+values mean no overlapping (and give the distance). Additionaly [common] will be
+set to the shared support of [supp1] and [supp2].
+
+==subsection: the distance between two supports==
+==code.cc==
+template <typename T>
+    T
+    distance(const Support<T> &supp1, const Support<T> &supp2);
+====
+Returns the distance between [supp1] and [supp2]. If [supp1] and [supp2] overlap
+in at least one point, the result is negative (size of overlap).
+
+==subsection: getting a shifted support==
+==code.cc==
+template <typename T, typename S>
+    Support<T>
+    operator+(const Support<T> &supp, S shift);
+====
+[supp+shift] returns a support which has the support of [supp] shifted by amount [shift] i.e. both boudaries are translated by [shift].
+
+==subsection: getting a scaled support==
+==code.cc==
+template <typename S, typename T>
+    Support<T>
+    operator*(S factor, const Support<T> &supp);
+====
+[factor*supp] returns a support which is a scaled version of [supp] i.e. both boundaries are scaled by [factor].
+
+==subsection: print the support==
+==code.cc==
+template <typename T>
+    std::ostream &
+    operator<<(std::ostream &out, const Support<T> &supp);
+====
+Prints the support [supp] to the stream [out].

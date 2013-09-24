@@ -1,0 +1,125 @@
+==title: refinement matrices for the interval==
+
+The class realizing refinement matrices on the interval is
+ a specialization of the general {@lawa/refinementmatrix}{[RefinementMatrix]} class. The signature reads
+==code.cc==
+template <typename T,
+          Construction Cons>
+    class RefinementMatrix<T, Interval, Cons>;
+====
+==section: Structure of refinement matrices==
+Independent of the specific construction at hand all refinement matrices on the interval share some block-band-block structure:
+==latex==
+\begin{equation}
+\label{DKU2-4.1.23}
+  M :=  \def\arraystretch{1.5}
+  \begin{array}{|c|c|c|}
+    \hline
+    \raisebox{-2ex}{block} & \multicolumn{2}{c|}{}\\
+    \cline{2-2}
+    && \\
+    \cline{1-1}
+    & \vline height 5ex depth 4ex width 0pt \quad
+          band\quad & \\
+    \cline{3-3}
+    && \\
+    \cline{2-2}
+    \multicolumn{2}{|c|}{} & \raisebox{2ex}{block} \\
+    \hline
+  \end{array}
+\qquad \in \R^{m \times n}.
+\end{equation}
+====
+where block stands for a dense block and band for a vector repeated "along" the diagonal.
+
+==section: Constructors==
+==subsection: Construct an empty Object (default constructor)==
+==code.cc==
+RefinementMatrix();
+====
+The default constructor is there only for practical reasons (to be able to use objects of this type as members and initialize later on).
+==subsection: Construct from block, band, block and level==
+==code.cc==
+RefinementMatrix(const GeMatrix<FullStorage<T, ColMajor> > &_Left,
+                 const GeMatrix<FullStorage<T, ColMajor> > &_Right,
+                 const DenseVector<Array<T> > &_band,
+                 int _j0);
+====
+Constructs a refinement matrix on level [_j0] from its ingredients: upper left block [_Left], lower right block [_Right] and inner band [_band].
+
+==section: Operators==
+==subsection: Access one column of the matrix==
+==code.cc==
+const typename DenseVector<Array<T> >::ConstView
+operator()(int j, const Underscore<int> &u, int col) const;
+====
+
+==section: Member functions==
+==subsection: The row range on level j==
+==code.cc==
+Range<int>
+rows(int j) const;
+====
+
+==subsection: The column range on level j==
+==code.cc==
+Range<int>
+cols(int j) const;
+====
+
+==subsection: The number of rows on level j==
+==code.cc==
+int
+numRows(int j) const;
+====
+
+==subsection: The number of columns on level j==
+==code.cc==
+int
+numCols(int j) const;
+====
+
+==subsection: the first row index (on level j)==
+==code.cc==
+int
+firstRow(int j) const;
+====
+
+==subsection: the last row index on level j==
+==code.cc==
+int
+lastRow(int j) const;
+====
+
+==subsection: the first column index (on level j)==
+==code.cc==
+int
+firstCol(int j) const;
+====
+
+==subsection: the last column index on level j==
+==code.cc==
+int
+lastCol(int j) const;
+====
+
+==section: Public Member Variables==
+==code.cc==
+const GeMatrix<FullStorage<T, ColMajor> > Left, Right;
+const DenseVector<Array<T> > band;
+const int j0;
+====
+
+==subsection: The boundary blocks (Left, Right)==
+==code.cc==
+const GeMatrix<FullStorage<T, ColMajor> > Left, Right;
+====
+
+==subsection: The inner band (band)==
+==code.cc==
+const DenseVector<Array<T> > band;
+====
+==subsection: The initial level (j0)==
+==code.cc==
+const int j0;
+====
