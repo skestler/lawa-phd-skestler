@@ -12,7 +12,7 @@
 using namespace std;
 using namespace lawa;
 
-typedef long double T;
+typedef double T;
 typedef flens::GeMatrix<flens::FullStorage<T, cxxblas::ColMajor> >  FullColMatrixT;
 typedef flens::SparseGeMatrix<flens::CRS<T,flens::CRS_General> >    SparseMatrixT;
 typedef flens::DiagonalMatrix<T>                                    DiagonalMatrixT;
@@ -35,8 +35,8 @@ const ProcessType1D  processtype  = CGMYe;
  * Process parameters for CGMY: r = 0.1, C = 1, G = M = 5, Y =0.1    6.353404 (put)
  */
 
-//typedef Basis<T,Primal,Interval,Dijkema>                      Basis1D;
-typedef Basis<T,Orthogonal,Interval,Multi>                      Basis1D;
+typedef Basis<T,Primal,Interval,Dijkema>                      Basis1D;
+//typedef Basis<T,Orthogonal,Interval,Multi>                      Basis1D;
 
 typedef Integral<Gauss,Basis1D,Basis1D>                         IntegralBasis1DBasis1D;
 typedef IntegralF<Gauss,Basis1D>                                IntegralFBasis1D;
@@ -124,7 +124,6 @@ main(int argc, char *argv[])
     Basis1D                 basis(d,j0);
     basis.enforceBoundaryCondition<DirichletBC>();
 
-
     int                             order=20;
     Option1D<T,optiontype>  option(optionparameters);
 
@@ -144,7 +143,7 @@ main(int argc, char *argv[])
     }
     std::ofstream convfile(filename.str().c_str());
 
-    for (int J=0; J<=j_max; ++J) {
+    for (int J=j0; J<=j_max; ++J) {
 
         Timer time;
         time.start();
