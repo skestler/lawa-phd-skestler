@@ -68,11 +68,16 @@
 
 
 
-<h3 class="doc">
-Tutorial 1: Poisson Equation in 1D</h3>
+<h2 class="doc">
+Tutorial 3: Poisson Equation in 1D</h2>
 
 <p >
-     As a starting point we use the <i>Poisson equation</i> on the unit interval with  <i>Dirichlet boundary conditions</i>, i.e. we consider the following equation:</p>\[\begin{cases}\ \ \phantom{u(0)=}-u'' & =  f \ \text{on}\ (0,1) \\\ \ u(0) = u(1) & = 0 \\\end{cases}\]<p >
+     As a starting point we use the <i>Poisson equation</i> on the unit interval with  <i>Dirichlet boundary conditions</i>, i.e. we consider the following equation:</p>\[\begin{cases}\ \ \phantom{u(0)=}-u'' & =  f \ \text{on}\ (0,1) \\\ \ u(0) = u(1) & = 0 \\\end{cases}\]
+
+<h3 class="doc">
+Source code</h3>
+
+<p >
      The solution is obtained using a uniform Wavelet-Galerkin method utilizing a  diagonal preconditioner. This results in the following code:</p><div class="code">
 <div class="code_title">
 <a class="code" href="../../download/tutorials/examples/poisson1d.cpp">
@@ -80,106 +85,221 @@ tutorials/examples/poisson1d.cpp
 </a>
 </div><!-- Blub -->
 <div class="code_content"><span class="code_content">
-<!-- CodeLine     1 --><span style="color:#8080ff">/*</span><span style="color:#8080ff">&nbsp;POISSON PROBLEM 1D</span><br>
-<!-- CodeLine     2 --><span style="color:#8080ff">&nbsp;*</span><br>
-<!-- CodeLine     3 --><span style="color:#8080ff">&nbsp;*&nbsp;&nbsp;This example calculates a poisson problem with constant forcing f on the&nbsp;</span><br>
-<!-- CodeLine     4 --><span style="color:#8080ff">&nbsp;*&nbsp;&nbsp;one-dimensional domain [0,1], i.e.</span><br>
-<!-- CodeLine     5 --><span style="color:#8080ff">&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- u'' = f on (0,1) , u(0) = u(1) = 0.</span><br>
-<!-- CodeLine     6 --><span style="color:#8080ff">&nbsp;*&nbsp;&nbsp;The solution is obtained using a uniform Wavelet-Galerkin method with a</span><br>
-<!-- CodeLine     7 --><span style="color:#8080ff">&nbsp;*&nbsp;&nbsp;diagonal scaling preconditioner.</span><br>
-<!-- CodeLine     8 --><span style="color:#8080ff">&nbsp;</span><span style="color:#8080ff">*/</span><br>
-<!-- CodeLine     9 --><br>
-<!-- CodeLine    10 --><span style="color:#8080ff">/// First we simply include the general LAWA header `lawa/lawa.h` for simplicity, thus having</span><br>
-<!-- CodeLine    11 --><span style="color:#8080ff">/// all LAWA features available.</span><br>
-<!-- CodeLine    12 --><span style="color:#8080ff">/// All LAWA features reside in the namespace lawa, so we introduce the `namespace lawa` globally.</span><br>
-<!-- CodeLine    13 --><span style="color:#c000c0">#include&nbsp;</span><span style="color:#c00000">&lt;iostream&gt;</span><br>
-<!-- CodeLine    14 --><span style="color:#c000c0">#include&nbsp;</span><span style="color:#c00000">&lt;fstream&gt;</span><br>
-<!-- CodeLine    15 --><span style="color:#c000c0">#include&nbsp;</span><span style="color:#c00000">&lt;lawa/lawa.h&gt;</span><br>
-<!-- CodeLine    16 --><br>
-<!-- CodeLine    17 --><span style="color:#af5f00">using</span>&nbsp;<span style="color:#008000">namespace</span>&nbsp;std;<br>
-<!-- CodeLine    18 --><span style="color:#af5f00">using</span>&nbsp;<span style="color:#008000">namespace</span>&nbsp;lawa;<br>
-<!-- CodeLine    19 --><br>
-<!-- CodeLine    20 --><span style="color:#8080ff">/// Several typedefs for notational convenience.</span><br>
-<!-- CodeLine    21 --><br>
-<!-- CodeLine    22 --><span style="color:#8080ff">///&nbsp;&nbsp;Typedefs for Flens data types:</span><br>
-<!-- CodeLine    23 --><span style="color:#008000">typedef</span>&nbsp;<span style="color:#008000">double</span>&nbsp;T;<br>
-<!-- CodeLine    24 --><span style="color:#008000">typedef</span>&nbsp;flens::GeMatrix&lt;flens::FullStorage&lt;T, cxxblas::ColMajor&gt; &gt;&nbsp;&nbsp;FullColMatrixT;<br>
-<!-- CodeLine    25 --><span style="color:#008000">typedef</span>&nbsp;flens::SparseGeMatrix&lt;flens::CRS&lt;T,flens::CRS_General&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;SparseMatrixT;<br>
-<!-- CodeLine    26 --><span style="color:#008000">typedef</span>&nbsp;flens::DiagonalMatrix&lt;T&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DiagonalMatrixT;<br>
-<!-- CodeLine    27 --><span style="color:#008000">typedef</span>&nbsp;flens::DenseVector&lt;flens::Array&lt;T&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT;<br>
-<!-- CodeLine    28 --><br>
-<!-- CodeLine    29 --><span style="color:#8080ff">///&nbsp;&nbsp;Typedefs for problem components:</span><br>
-<!-- CodeLine    30 --><span style="color:#8080ff">///&nbsp;&nbsp;&nbsp;&nbsp; Primal Basis over an interval, using Dijkema construction</span><br>
-<!-- CodeLine    31 --><span style="color:#008000">typedef</span>&nbsp;Basis&lt;T, Primal, Interval, Dijkema&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PrimalBasis;<br>
-<!-- CodeLine    32 --><span style="color:#8080ff">///&nbsp;&nbsp;&nbsp;&nbsp; HelmholtzOperator in 1D, i.e. for $a(v,u) = \int(v_x \cdot u_x) + c \cdot \int(v \cdot u)$</span><br>
-<!-- CodeLine    33 --><span style="color:#008000">typedef</span>&nbsp;HelmholtzOperator1D&lt;T, PrimalBasis&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HelmholtzOp;<br>
-<!-- CodeLine    34 --><span style="color:#8080ff">///&nbsp;&nbsp;&nbsp;&nbsp; Preconditioner: diagonal scaling with norm of operator</span><br>
-<!-- CodeLine    35 --><span style="color:#008000">typedef</span>&nbsp;DiagonalMatrixPreconditioner1D&lt;T, PrimalBasis, HelmholtzOp&gt; DiagonalPrec;<br>
-<!-- CodeLine    36 --><span style="color:#8080ff">///&nbsp;&nbsp;&nbsp;&nbsp; Right Hand Side (RHS): basic 1D class for rhs integrals of the form $\int(f \cdot v)$,</span><br>
-<!-- CodeLine    37 --><span style="color:#8080ff">///&nbsp;&nbsp;&nbsp;&nbsp; possibly with additional peak contributions (not needed here)</span><br>
-<!-- CodeLine    38 --><span style="color:#008000">typedef</span>&nbsp;RHSWithPeaks1D&lt;T, PrimalBasis&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rhs;<br>
-<!-- CodeLine    39 --><br>
-<!-- CodeLine    40 --><span style="color:#8080ff">/// Forcing function of the form `T f(T x)` - here a constant function</span><br>
-<!-- CodeLine    41 -->T<br>
-<!-- CodeLine    42 -->rhs_f(T&nbsp;<span style="color:#8080ff">/*</span><span style="color:#8080ff">x</span><span style="color:#8080ff">*/</span>)<br>
-<!-- CodeLine    43 -->{<br>
-<!-- CodeLine    44 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">return</span>&nbsp;<span style="color:#c00000">1.</span>;<br>
+<!-- CodeLine     1 --><span style="color:#8080ff">/*</span><br>
+<!-- CodeLine     2 --><span style="color:#8080ff">&nbsp;* POISSON PROBLEM 1D</span><br>
+<!-- CodeLine     3 --><span style="color:#8080ff">&nbsp;*</span><br>
+<!-- CodeLine     4 --><span style="color:#8080ff">&nbsp;*&nbsp;&nbsp;This example calculates a poisson problem with constant forcing f on the&nbsp;</span><br>
+<!-- CodeLine     5 --><span style="color:#8080ff">&nbsp;*&nbsp;&nbsp;one-dimensional domain [0,1], i.e.</span><br>
+<!-- CodeLine     6 --><span style="color:#8080ff">&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- u'' = f on (0,1) , u(0) = u(1) = 0.</span><br>
+<!-- CodeLine     7 --><span style="color:#8080ff">&nbsp;*&nbsp;&nbsp;The solution is obtained using a uniform Wavelet-Galerkin method with a</span><br>
+<!-- CodeLine     8 --><span style="color:#8080ff">&nbsp;*&nbsp;&nbsp;diagonal scaling preconditioner.</span><br>
+<!-- CodeLine     9 --><span style="color:#8080ff">&nbsp;</span><span style="color:#8080ff">*/</span><br>
+<!-- CodeLine    10 --><br>
+<!-- CodeLine    11 --><span style="color:#c000c0">#include&nbsp;</span><span style="color:#c00000">&lt;iostream&gt;</span><br>
+<!-- CodeLine    12 --><span style="color:#c000c0">#include&nbsp;</span><span style="color:#c00000">&lt;fstream&gt;</span><br>
+<!-- CodeLine    13 --><span style="color:#c000c0">#include&nbsp;</span><span style="color:#c00000">&lt;lawa/lawa.h&gt;</span><br>
+<!-- CodeLine    14 --><br>
+<!-- CodeLine    15 --><span style="color:#af5f00">using</span>&nbsp;<span style="color:#008000">namespace</span>&nbsp;std;<br>
+<!-- CodeLine    16 --><span style="color:#af5f00">using</span>&nbsp;<span style="color:#008000">namespace</span>&nbsp;lawa;<br>
+<!-- CodeLine    17 --><br>
+<!-- CodeLine    18 --><br>
+<!-- CodeLine    19 --><span style="color:#008000">typedef</span>&nbsp;<span style="color:#008000">double</span>&nbsp;T;<br>
+<!-- CodeLine    20 --><span style="color:#008000">typedef</span>&nbsp;flens::GeMatrix&lt;flens::FullStorage&lt;T, cxxblas::ColMajor&gt; &gt;&nbsp;&nbsp;FullColMatrixT;<br>
+<!-- CodeLine    21 --><span style="color:#008000">typedef</span>&nbsp;flens::SparseGeMatrix&lt;flens::CRS&lt;T,flens::CRS_General&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;SparseMatrixT;<br>
+<!-- CodeLine    22 --><span style="color:#008000">typedef</span>&nbsp;flens::DiagonalMatrix&lt;T&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DiagonalMatrixT;<br>
+<!-- CodeLine    23 --><span style="color:#008000">typedef</span>&nbsp;flens::DenseVector&lt;flens::Array&lt;T&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT;<br>
+<!-- CodeLine    24 --><br>
+<!-- CodeLine    25 --><span style="color:#008000">typedef</span>&nbsp;Basis&lt;T, Primal, Interval, Dijkema&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PrimalBasis;<br>
+<!-- CodeLine    26 --><span style="color:#008000">typedef</span>&nbsp;HelmholtzOperator1D&lt;T, PrimalBasis&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HelmholtzOp;<br>
+<!-- CodeLine    27 --><span style="color:#008000">typedef</span>&nbsp;DiagonalMatrixPreconditioner1D&lt;T, PrimalBasis, HelmholtzOp&gt; DiagonalPrec;<br>
+<!-- CodeLine    28 --><span style="color:#008000">typedef</span>&nbsp;RHSWithPeaks1D&lt;T, PrimalBasis&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rhs;<br>
+<!-- CodeLine    29 --><br>
+<!-- CodeLine    30 -->T<br>
+<!-- CodeLine    31 -->rhs_f(T&nbsp;<span style="color:#8080ff">/*</span><span style="color:#8080ff">x</span><span style="color:#8080ff">*/</span>)<br>
+<!-- CodeLine    32 -->{<br>
+<!-- CodeLine    33 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">return</span>&nbsp;<span style="color:#c00000">1.</span>;<br>
+<!-- CodeLine    34 -->}<br>
+<!-- CodeLine    35 --><br>
+<!-- CodeLine    36 --><span style="color:#008000">void</span><br>
+<!-- CodeLine    37 -->printU(<span style="color:#008000">const</span>&nbsp;DenseVectorT u,&nbsp;<span style="color:#008000">const</span>&nbsp;PrimalBasis&amp; basis,&nbsp;<span style="color:#008000">const</span>&nbsp;<span style="color:#008000">int</span>&nbsp;J,&nbsp;<br>
+<!-- CodeLine    38 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">const</span>&nbsp;<span style="color:#008000">char</span>* filename,&nbsp;<span style="color:#008000">const</span>&nbsp;<span style="color:#008000">double</span>&nbsp;deltaX=<span style="color:#c00000">1.</span>/<span style="color:#c00000">128.</span>)<br>
+<!-- CodeLine    39 -->{<br>
+<!-- CodeLine    40 -->&nbsp;&nbsp;&nbsp;&nbsp;ofstream file(filename);<br>
+<!-- CodeLine    41 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>(<span style="color:#008000">double</span>&nbsp;x =&nbsp;<span style="color:#c00000">0</span>; x &lt;=&nbsp;<span style="color:#c00000">1.</span>; x += deltaX){<br>
+<!-- CodeLine    42 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file &lt;&lt; x &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span>&nbsp;&lt;&lt; evaluate(basis,J, u, x,&nbsp;<span style="color:#c00000">0</span>) &lt;&lt; endl;&nbsp;<br>
+<!-- CodeLine    43 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    44 -->&nbsp;&nbsp;&nbsp;&nbsp;file.close();<br>
 <!-- CodeLine    45 -->}<br>
 <!-- CodeLine    46 --><br>
-<!-- CodeLine    47 --><span style="color:#8080ff">/// Auxiliary function to print solution values, generates `.txt`-file with</span><br>
-<!-- CodeLine    48 --><span style="color:#8080ff">/// columns: `x u(x)`</span><br>
-<!-- CodeLine    49 --><span style="color:#008000">void</span><br>
-<!-- CodeLine    50 -->printU(<span style="color:#008000">const</span>&nbsp;DenseVectorT u,&nbsp;<span style="color:#008000">const</span>&nbsp;PrimalBasis&amp; basis,&nbsp;<span style="color:#008000">const</span>&nbsp;<span style="color:#008000">int</span>&nbsp;J,&nbsp;<br>
-<!-- CodeLine    51 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">const</span>&nbsp;<span style="color:#008000">char</span>* filename,&nbsp;<span style="color:#008000">const</span>&nbsp;<span style="color:#008000">double</span>&nbsp;deltaX=<span style="color:#c00000">1.</span>/<span style="color:#c00000">128.</span>)<br>
-<!-- CodeLine    52 -->{<br>
-<!-- CodeLine    53 -->&nbsp;&nbsp;&nbsp;&nbsp;ofstream file(filename);<br>
-<!-- CodeLine    54 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>(<span style="color:#008000">double</span>&nbsp;x =&nbsp;<span style="color:#c00000">0</span>; x &lt;=&nbsp;<span style="color:#c00000">1.</span>; x += deltaX){<br>
-<!-- CodeLine    55 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file &lt;&lt; x &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span>&nbsp;&lt;&lt; evaluate(basis,J, u, x,&nbsp;<span style="color:#c00000">0</span>) &lt;&lt; endl;&nbsp;<br>
-<!-- CodeLine    56 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
-<!-- CodeLine    57 -->&nbsp;&nbsp;&nbsp;&nbsp;file.close();<br>
-<!-- CodeLine    58 -->}<br>
-<!-- CodeLine    59 --><br>
-<!-- CodeLine    60 --><span style="color:#008000">int</span>&nbsp;main()<br>
-<!-- CodeLine    61 -->{<br>
-<!-- CodeLine    62 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">/// wavelet basis parameters:&nbsp;</span><br>
-<!-- CodeLine    63 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;d =&nbsp;<span style="color:#c00000">2</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// (d,d_)-wavelets</span><br>
-<!-- CodeLine    64 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;d_ =&nbsp;<span style="color:#c00000">2</span>;<br>
-<!-- CodeLine    65 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;j0 =&nbsp;<span style="color:#c00000">2</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// minimal level</span><br>
-<!-- CodeLine    66 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;J =&nbsp;<span style="color:#c00000">5</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// maximal level</span><br>
-<!-- CodeLine    67 -->&nbsp;&nbsp;&nbsp;&nbsp;<br>
-<!-- CodeLine    68 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">/// Basis initialization, using Dirichlet boundary conditions</span><br>
-<!-- CodeLine    69 -->&nbsp;&nbsp;&nbsp;&nbsp;PrimalBasis basis(d, d_, j0);<br>
-<!-- CodeLine    70 -->&nbsp;&nbsp;&nbsp;&nbsp;basis.enforceBoundaryCondition&lt;DirichletBC&gt;();<br>
+<!-- CodeLine    47 --><span style="color:#008000">int</span>&nbsp;main()<br>
+<!-- CodeLine    48 -->{<br>
+<!-- CodeLine    49 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;d =&nbsp;<span style="color:#c00000">2</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// (d,d_)-wavelets</span><br>
+<!-- CodeLine    50 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;d_ =&nbsp;<span style="color:#c00000">2</span>;<br>
+<!-- CodeLine    51 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;j0 =&nbsp;<span style="color:#c00000">2</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// minimal level</span><br>
+<!-- CodeLine    52 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;J =&nbsp;<span style="color:#c00000">5</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// maximal level</span><br>
+<!-- CodeLine    53 -->&nbsp;&nbsp;&nbsp;&nbsp;<br>
+<!-- CodeLine    54 -->&nbsp;&nbsp;&nbsp;&nbsp;PrimalBasis basis(d, d_, j0);<br>
+<!-- CodeLine    55 -->&nbsp;&nbsp;&nbsp;&nbsp;basis.enforceBoundaryCondition&lt;DirichletBC&gt;();<br>
+<!-- CodeLine    56 -->&nbsp;&nbsp;&nbsp;&nbsp;<br>
+<!-- CodeLine    57 -->&nbsp;&nbsp;&nbsp;&nbsp;HelmholtzOp&nbsp;&nbsp;a(basis,&nbsp;<span style="color:#c00000">0</span>);<br>
+<!-- CodeLine    58 -->&nbsp;&nbsp;&nbsp;&nbsp;DiagonalPrec p(a);<br>
+<!-- CodeLine    59 -->&nbsp;&nbsp;&nbsp;&nbsp;<br>
+<!-- CodeLine    60 -->&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT singPts;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// singular points of the rhs forcing function: here none</span><br>
+<!-- CodeLine    61 -->&nbsp;&nbsp;&nbsp;&nbsp;FullColMatrixT deltas;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// peaks (and corresponding scaling coefficients): here none</span><br>
+<!-- CodeLine    62 -->&nbsp;&nbsp;&nbsp;&nbsp;Function&lt;T&gt; F(rhs_f, singPts);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// Function object (wraps a function and its singular points)</span><br>
+<!-- CodeLine    63 -->&nbsp;&nbsp;&nbsp;&nbsp;Rhs rhs(basis, F, deltas,&nbsp;<span style="color:#c00000">4</span>,&nbsp;<span style="color:#c00000">false</span>,&nbsp;<span style="color:#c00000">true</span>);&nbsp;<span style="color:#8080ff">// RHS: specify integration order for Gauss quadrature (here: 4) and</span><br>
+<!-- CodeLine    64 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if there are singular parts (false) and/or smooth parts (true)&nbsp;</span><br>
+<!-- CodeLine    65 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in the integral</span><br>
+<!-- CodeLine    66 -->&nbsp;&nbsp;&nbsp;&nbsp;<br>
+<!-- CodeLine    67 -->&nbsp;&nbsp;&nbsp;&nbsp;Assembler1D&lt;T, PrimalBasis&gt; assembler(basis);<br>
+<!-- CodeLine    68 -->&nbsp;&nbsp;&nbsp;&nbsp;SparseMatrixT&nbsp;&nbsp; A = assembler.assembleStiffnessMatrix(a, J);<br>
+<!-- CodeLine    69 -->&nbsp;&nbsp;&nbsp;&nbsp;DiagonalMatrixT P = assembler.assemblePreconditioner(p, J);<br>
+<!-- CodeLine    70 -->&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT&nbsp;&nbsp;&nbsp;&nbsp;f = assembler.assembleRHS(rhs, J);<br>
 <!-- CodeLine    71 -->&nbsp;&nbsp;&nbsp;&nbsp;<br>
-<!-- CodeLine    72 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">/// Operator initialization</span><br>
-<!-- CodeLine    73 -->&nbsp;&nbsp;&nbsp;&nbsp;HelmholtzOp&nbsp;&nbsp;a(basis,&nbsp;<span style="color:#c00000">0</span>);<br>
-<!-- CodeLine    74 -->&nbsp;&nbsp;&nbsp;&nbsp;DiagonalPrec p(a);<br>
+<!-- CodeLine    72 -->&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT u(basis.mra.rangeI(J));<br>
+<!-- CodeLine    73 -->&nbsp;&nbsp;&nbsp;&nbsp;<br>
+<!-- CodeLine    74 -->&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt; pcg(P, A, u, f) &lt;&lt;&nbsp;<span style="color:#c00000">&quot; pcg iterations&quot;</span>&nbsp;&lt;&lt; endl;<br>
 <!-- CodeLine    75 -->&nbsp;&nbsp;&nbsp;&nbsp;<br>
-<!-- CodeLine    76 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">/// Righthandside initialization</span><br>
-<!-- CodeLine    77 -->&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT singPts;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// singular points of the rhs forcing function: here none</span><br>
-<!-- CodeLine    78 -->&nbsp;&nbsp;&nbsp;&nbsp;FullColMatrixT deltas;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// peaks (and corresponding scaling coefficients): here none</span><br>
-<!-- CodeLine    79 -->&nbsp;&nbsp;&nbsp;&nbsp;Function&lt;T&gt; F(rhs_f, singPts);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// Function object (wraps a function and its singular points)</span><br>
-<!-- CodeLine    80 -->&nbsp;&nbsp;&nbsp;&nbsp;Rhs rhs(basis, F, deltas,&nbsp;<span style="color:#c00000">4</span>,&nbsp;<span style="color:#c00000">false</span>,&nbsp;<span style="color:#c00000">true</span>);&nbsp;<span style="color:#8080ff">// RHS: specify integration order for Gauss quadrature (here: 4) and</span><br>
-<!-- CodeLine    81 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if there are singular parts (false) and/or smooth parts (true)&nbsp;</span><br>
-<!-- CodeLine    82 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in the integral</span><br>
-<!-- CodeLine    83 -->&nbsp;&nbsp;&nbsp;&nbsp;<br>
-<!-- CodeLine    84 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">/// Assembler: assemble the problem components</span><br>
-<!-- CodeLine    85 -->&nbsp;&nbsp;&nbsp;&nbsp;Assembler1D&lt;T, PrimalBasis&gt; assembler(basis);<br>
-<!-- CodeLine    86 -->&nbsp;&nbsp;&nbsp;&nbsp;SparseMatrixT&nbsp;&nbsp; A = assembler.assembleStiffnessMatrix(a, J);<br>
-<!-- CodeLine    87 -->&nbsp;&nbsp;&nbsp;&nbsp;DiagonalMatrixT P = assembler.assemblePreconditioner(p, J);<br>
-<!-- CodeLine    88 -->&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT&nbsp;&nbsp;&nbsp;&nbsp;f = assembler.assembleRHS(rhs, J);<br>
-<!-- CodeLine    89 -->&nbsp;&nbsp;&nbsp;&nbsp;<br>
-<!-- CodeLine    90 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">/// Initialize empty solution vector</span><br>
-<!-- CodeLine    91 -->&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT u(basis.mra.rangeI(J));<br>
-<!-- CodeLine    92 -->&nbsp;&nbsp;&nbsp;&nbsp;<br>
-<!-- CodeLine    93 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">/// Solve problem using pcg</span><br>
-<!-- CodeLine    94 -->&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt; pcg(P, A, u, f) &lt;&lt;&nbsp;<span style="color:#c00000">&quot; pcg iterations&quot;</span>&nbsp;&lt;&lt; endl;<br>
-<!-- CodeLine    95 -->&nbsp;&nbsp;&nbsp;&nbsp;<br>
-<!-- CodeLine    96 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">/// Print solution to file &quot;u.txt&quot;</span><br>
-<!-- CodeLine    97 -->&nbsp;&nbsp;&nbsp;&nbsp;printU(u, basis, J,&nbsp;<span style="color:#c00000">&quot;u.txt&quot;</span>);<br>
-<!-- CodeLine    98 -->&nbsp;&nbsp;&nbsp;&nbsp;<br>
-<!-- CodeLine    99 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">return</span>&nbsp;<span style="color:#c00000">0</span>;<br>
-<!-- CodeLine   100 -->}<br>
+<!-- CodeLine    76 -->&nbsp;&nbsp;&nbsp;&nbsp;printU(u, basis, J,&nbsp;<span style="color:#c00000">&quot;u.txt&quot;</span>);<br>
+<!-- CodeLine    77 -->&nbsp;&nbsp;&nbsp;&nbsp;<br>
+<!-- CodeLine    78 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">return</span>&nbsp;<span style="color:#c00000">0</span>;<br>
+<!-- CodeLine    79 -->}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+
+
+<h3 class="doc">
+Comments on the source code</h3>
+
+<p >
+     The documented source code now looks as follows:</p><p >
+     First we simply include the general LAWA header <tt>lawa/lawa.h</tt> for simplicity, thus having all LAWA features available. All LAWA features reside in the namespace lawa, so we introduce the <tt>namespace lawa</tt> globally.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#c000c0">#include&nbsp;</span><span style="color:#c00000">&lt;iostream&gt;</span><br>
+<!-- CodeLine     2 --><span style="color:#c000c0">#include&nbsp;</span><span style="color:#c00000">&lt;fstream&gt;</span><br>
+<!-- CodeLine     3 --><span style="color:#c000c0">#include&nbsp;</span><span style="color:#c00000">&lt;lawa/lawa.h&gt;</span><br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Several typedefs for notational convenience.</p><p >
+     Typedefs for Flens data types:</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;<span style="color:#008000">double</span>&nbsp;T;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;flens::GeMatrix&lt;flens::FullStorage&lt;T, cxxblas::ColMajor&gt; &gt;&nbsp;&nbsp;FullColMatrixT;<br>
+<!-- CodeLine     3 --><span style="color:#008000">typedef</span>&nbsp;flens::SparseGeMatrix&lt;flens::CRS&lt;T,flens::CRS_General&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;SparseMatrixT;<br>
+<!-- CodeLine     4 --><span style="color:#008000">typedef</span>&nbsp;flens::DiagonalMatrix&lt;T&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DiagonalMatrixT;<br>
+<!-- CodeLine     5 --><span style="color:#008000">typedef</span>&nbsp;flens::DenseVector&lt;flens::Array&lt;T&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Typedefs for problem components:</p><p >
+     Primal Basis over an interval, using Dijkema construction</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;Basis&lt;T, Primal, Interval, Dijkema&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PrimalBasis;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     HelmholtzOperator in 1D, i.e. for \(a(v,u) = \int(v_x \cdot u_x) + c \cdot \int(v \cdot u)\)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;HelmholtzOperator1D&lt;T, PrimalBasis&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HelmholtzOp;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Preconditioner: diagonal scaling with norm of operator</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;DiagonalMatrixPreconditioner1D&lt;T, PrimalBasis, HelmholtzOp&gt; DiagonalPrec;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Right Hand Side (RHS): basic 1D class for rhs integrals of the form \(\int(f \cdot v)\), possibly with additional peak contributions (not needed here)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;RHSWithPeaks1D&lt;T, PrimalBasis&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rhs;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Forcing function of the form <tt>T f(T x)</tt> - here a constant function</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->T<br>
+<!-- CodeLine     2 -->rhs_f(T&nbsp;<span style="color:#8080ff">/*</span><span style="color:#8080ff">x</span><span style="color:#8080ff">*/</span>)<br>
+<!-- CodeLine     3 -->{<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">return</span>&nbsp;<span style="color:#c00000">1.</span>;<br>
+<!-- CodeLine     5 -->}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Auxiliary function to print solution values, generates <tt>.txt</tt>-file with columns: <tt>x u(x)</tt></p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->printU(<span style="color:#008000">const</span>&nbsp;DenseVectorT u,&nbsp;<span style="color:#008000">const</span>&nbsp;PrimalBasis&amp; basis,&nbsp;<span style="color:#008000">const</span>&nbsp;<span style="color:#008000">int</span>&nbsp;J,&nbsp;<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">const</span>&nbsp;<span style="color:#008000">char</span>* filename,&nbsp;<span style="color:#008000">const</span>&nbsp;<span style="color:#008000">double</span>&nbsp;deltaX=<span style="color:#c00000">1.</span>/<span style="color:#c00000">128.</span>)<br>
+<!-- CodeLine     4 -->{<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;ofstream file(filename);<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>(<span style="color:#008000">double</span>&nbsp;x =&nbsp;<span style="color:#c00000">0</span>; x &lt;=&nbsp;<span style="color:#c00000">1.</span>; x += deltaX){<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file &lt;&lt; x &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span>&nbsp;&lt;&lt; evaluate(basis,J, u, x,&nbsp;<span style="color:#c00000">0</span>) &lt;&lt; endl;&nbsp;<br>
+<!-- CodeLine     8 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine     9 -->&nbsp;&nbsp;&nbsp;&nbsp;file.close();<br>
+<!-- CodeLine    10 -->}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     wavelet basis parameters: </p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;d =&nbsp;<span style="color:#c00000">2</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// (d,d_)-wavelets</span><br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;d_ =&nbsp;<span style="color:#c00000">2</span>;<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;j0 =&nbsp;<span style="color:#c00000">2</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// minimal level</span><br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;J =&nbsp;<span style="color:#c00000">5</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// maximal level</span><br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Basis initialization, using Dirichlet boundary conditions</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;PrimalBasis basis(d, d_, j0);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;basis.enforceBoundaryCondition&lt;DirichletBC&gt;();<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Operator initialization</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;HelmholtzOp&nbsp;&nbsp;a(basis,&nbsp;<span style="color:#c00000">0</span>);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;DiagonalPrec p(a);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Righthandside initialization</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT singPts;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// singular points of the rhs forcing function: here none</span><br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;FullColMatrixT deltas;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// peaks (and corresponding scaling coefficients): here none</span><br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;Function&lt;T&gt; F(rhs_f, singPts);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// Function object (wraps a function and its singular points)</span><br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;Rhs rhs(basis, F, deltas,&nbsp;<span style="color:#c00000">4</span>,&nbsp;<span style="color:#c00000">false</span>,&nbsp;<span style="color:#c00000">true</span>);&nbsp;<span style="color:#8080ff">// RHS: specify integration order for Gauss quadrature (here: 4) and</span><br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if there are singular parts (false) and/or smooth parts (true)&nbsp;</span><br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in the integral</span><br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Assembler: assemble the problem components</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;Assembler1D&lt;T, PrimalBasis&gt; assembler(basis);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;SparseMatrixT&nbsp;&nbsp; A = assembler.assembleStiffnessMatrix(a, J);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;DiagonalMatrixT P = assembler.assemblePreconditioner(p, J);<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT&nbsp;&nbsp;&nbsp;&nbsp;f = assembler.assembleRHS(rhs, J);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialize empty solution vector</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT u(basis.mra.rangeI(J));<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Solve problem using pcg</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt; pcg(P, A, u, f) &lt;&lt;&nbsp;<span style="color:#c00000">&quot; pcg iterations&quot;</span>&nbsp;&lt;&lt; endl;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Print solution to file &#8220;u.txt&#8221</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;printU(u, basis, J,&nbsp;<span style="color:#c00000">&quot;u.txt&quot;</span>);<br>
 </span></div><!--code_content-->
 </div><!-- code -->
 <!--

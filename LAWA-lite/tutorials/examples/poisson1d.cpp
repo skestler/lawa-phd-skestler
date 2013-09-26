@@ -1,4 +1,5 @@
-/* POISSON PROBLEM 1D
+/*
+ * POISSON PROBLEM 1D
  *
  *  This example calculates a poisson problem with constant forcing f on the 
  *  one-dimensional domain [0,1], i.e.
@@ -60,10 +61,10 @@ printU(const DenseVectorT u, const PrimalBasis& basis, const int J,
 int main()
 {
     /// wavelet basis parameters: 
-    int d = 2;          // (d,d_)-wavelets
+    int d = 2;      // (d,d_)-wavelets
     int d_ = 2;
-    int j0 = 2;         // minimal level
-    int J = 5;          // maximal level
+    int j0 = 2;     // minimal level
+    int J = 5;      // maximal level
     
     /// Basis initialization, using Dirichlet boundary conditions
     PrimalBasis basis(d, d_, j0);

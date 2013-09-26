@@ -1,0 +1,22 @@
+Tutorial 1: Plotting scaling functions and wavelets
+===================================================
+
+:document:  tutorials::examples::plotwavelets
+
+We start with simply plotting scaling functions $\phi_{j,k}$ and wavelets
+$\psi_{j,k}$ constituting a wavelet basis $\Psi = \Phi_{j_0} \cup
+\bigcup_{j=j_0}^{\infty} \Psi_j$ with minimal level $j_0$ on the interval.
+
+
+Source code
+-----------
+
+
+:import: tutorials/examples/plotwavelets.cpp [stripped]
+
+Comments on the source code
+---------------------------
+
+The documented source code now looks as follows:
+
+:import: tutorials/examples/plotwavelets.cpp [brief]

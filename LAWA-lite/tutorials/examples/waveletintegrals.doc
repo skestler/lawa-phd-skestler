@@ -1,0 +1,35 @@
+Tutorial 2: Wavelet integrals
+=============================
+
+:document:  tutorials::examples::waveletintegrals
+
+We are now coming to integrals involving wavelets. Here, we consider the following types:
+
+___ LATEX ________________
+\begin{align*}
+ & \int_{\Omega} \psi_{j_1,k_1}(x) \psi_{j_2,k_2}(x) dx \\
+ & \int_{\Omega} \psi_{j_1,k_1}(x) f(x) dx \\
+ & \int_{\Omega} a(x) \psi_{j_1,k_1}(x) \psi_{j_2,k_2}(x) dx
+\end{align*}
+___________________________
+
+Source code
+-----------
+
+Let us now show an exemplary documentation.
+
+:import: tutorials/examples/waveletintegrals.cpp [stripped]
+
+Comments on the source code
+---------------------------
+
+Next, we shall have a closer look at our example.
+
+:import: tutorials/examples/waveletintegrals.cpp [brief]
+
+Concluding remarks
+------------------
+
+For the sake of simplicity, we only consider wavelets here. However, the principle is the same for scaling function where we need to replace `XWavelet` by `XBSpline`.
+
+Observe that integration w.r.t. scaling functions and wavelets is a composed Gauss-Legendre quadrature where we only integrate from singular point to singular point. For this reason, the integration of $\int_{\Omega} \psi_{j_1,k_1}(x) \psi_{j_2,k_2}(x) dx$ can be obtained exactly. Required quadrature orders are selected automatically in dependence of the polynomial order of the wavelet / scaling function.

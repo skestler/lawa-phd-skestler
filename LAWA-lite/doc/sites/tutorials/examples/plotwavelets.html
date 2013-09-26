@@ -1,0 +1,229 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../../index.html">home</a></li>
+<li><a href="../../doc/license.html">license</a></li>
+<li><a href="../../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../../doc/features.html">lawa features</a></li>
+<li><a href="../../doc/highperformance.html">high performance</a></li>
+<li><a href="../../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../../doc/download.html">download</a></li>
+<li><a href="../../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+
+
+<h2 class="doc">
+Tutorial 1: Plotting scaling functions and wavelets</h2>
+
+<p >
+     We start with simply plotting scaling functions \(\phi_{j,k}\) and wavelets \(\psi_{j,k}\) constituting a wavelet basis \(\Psi = \Phi_{j_0} \cup \bigcup_{j=j_0}^{\infty} \Psi_j\) with minimal level \(j_0\) on the interval.</p>
+
+<h3 class="doc">
+Source code</h3>
+
+<div class="code">
+<div class="code_title">
+<a class="code" href="../../download/tutorials/examples/plotwavelets.cpp">
+tutorials/examples/plotwavelets.cpp
+</a>
+</div><!-- Blub -->
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#c000c0">#include&nbsp;</span><span style="color:#c00000">&lt;iostream&gt;</span><br>
+<!-- CodeLine     2 --><span style="color:#c000c0">#include&nbsp;</span><span style="color:#c00000">&lt;lawa/lawa.h&gt;</span><br>
+<!-- CodeLine     3 --><br>
+<!-- CodeLine     4 --><span style="color:#af5f00">using</span>&nbsp;<span style="color:#008000">namespace</span>&nbsp;std;<br>
+<!-- CodeLine     5 --><span style="color:#af5f00">using</span>&nbsp;<span style="color:#008000">namespace</span>&nbsp;lawa;<br>
+<!-- CodeLine     6 --><br>
+<!-- CodeLine     7 --><span style="color:#008000">typedef</span>&nbsp;<span style="color:#008000">double</span>&nbsp;T;<br>
+<!-- CodeLine     8 --><br>
+<!-- CodeLine     9 --><span style="color:#008000">typedef</span>&nbsp;Basis&lt;T,Primal,Interval,Dijkema&gt; Basis1D;<br>
+<!-- CodeLine    10 --><span style="color:#8080ff">//typedef Basis&lt;T,Orthogonal,Interval,Multi&gt; Basis1D;</span><br>
+<!-- CodeLine    11 --><br>
+<!-- CodeLine    12 --><br>
+<!-- CodeLine    13 --><span style="color:#008000">int</span>&nbsp;main (<span style="color:#008000">int</span>&nbsp;argc,&nbsp;<span style="color:#008000">char</span>&nbsp;*argv[]) {<br>
+<!-- CodeLine    14 --><br>
+<!-- CodeLine    15 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>(argc !=&nbsp;<span style="color:#c00000">5</span>){<br>
+<!-- CodeLine    16 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr &lt;&lt;&nbsp;<span style="color:#c00000">&quot;Usage: &quot;</span>&nbsp;&lt;&lt; argv[<span style="color:#c00000">0</span>] &lt;&lt;&nbsp;<span style="color:#c00000">&quot; d d_ j0 J&quot;</span>&nbsp;&lt;&lt; endl;<br>
+<!-- CodeLine    17 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(<span style="color:#c00000">1</span>);<br>
+<!-- CodeLine    18 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    19 --><br>
+<!-- CodeLine    20 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;d = atoi(argv[<span style="color:#c00000">1</span>]);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// polynomial order</span><br>
+<!-- CodeLine    21 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;d_ =atoi(argv[<span style="color:#c00000">2</span>]);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// vanishing moments</span><br>
+<!-- CodeLine    22 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;j0 = atoi(argv[<span style="color:#c00000">3</span>]);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// minimal level</span><br>
+<!-- CodeLine    23 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;J = atoi(argv[<span style="color:#c00000">4</span>]);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// maximum level</span><br>
+<!-- CodeLine    24 --><br>
+<!-- CodeLine    25 -->&nbsp;&nbsp;&nbsp;&nbsp;Basis1D basis(d,d_,j0);<br>
+<!-- CodeLine    26 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//Basis1D basis(d,j0);</span><br>
+<!-- CodeLine    27 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>&nbsp;(d&gt;<span style="color:#c00000">1</span>) basis.enforceBoundaryCondition&lt;DirichletBC&gt;();<br>
+<!-- CodeLine    28 --><br>
+<!-- CodeLine    29 -->&nbsp;&nbsp;&nbsp;&nbsp;T a =&nbsp;<span style="color:#c00000">0.</span>, b =&nbsp;<span style="color:#c00000">1.</span>;<br>
+<!-- CodeLine    30 --><br>
+<!-- CodeLine    31 -->&nbsp;&nbsp;&nbsp;&nbsp;ofstream plotfile_scaling(<span style="color:#c00000">&quot;scaling.txt&quot;</span>);<br>
+<!-- CodeLine    32 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(T x=a; x&lt;=b; x+=pow2i&lt;T&gt;(-<span style="color:#c00000">6</span>)) {<br>
+<!-- CodeLine    33 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plotfile_scaling &lt;&lt; x;<br>
+<!-- CodeLine    34 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(<span style="color:#008000">int</span>&nbsp;k=basis.mra.rangeI(j0).firstIndex(); k&lt;=basis.mra.rangeI(j0).lastIndex(); ++k) {<br>
+<!-- CodeLine    35 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T val = basis.generator(XBSpline)(x,j0,k,<span style="color:#c00000">0</span>);&nbsp;<span style="color:#8080ff">// = basis.mra.phi(x,j,k,0);</span><br>
+<!-- CodeLine    36 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plotfile_scaling &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span>&nbsp;&lt;&lt; val;<br>
+<!-- CodeLine    37 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    38 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plotfile_scaling &lt;&lt; endl;<br>
+<!-- CodeLine    39 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    40 --><br>
+<!-- CodeLine    41 -->&nbsp;&nbsp;&nbsp;&nbsp;ofstream plotfile_wavelet(<span style="color:#c00000">&quot;wavelet.txt&quot;</span>);<br>
+<!-- CodeLine    42 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(T x=a; x&lt;=b; x+=pow2i&lt;T&gt;(-<span style="color:#c00000">6</span>)) {<br>
+<!-- CodeLine    43 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plotfile_wavelet &lt;&lt; x;<br>
+<!-- CodeLine    44 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(<span style="color:#008000">int</span>&nbsp;j=j0; j&lt;=J-<span style="color:#c00000">1</span>; ++j) {<br>
+<!-- CodeLine    45 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(<span style="color:#008000">int</span>&nbsp;k=basis.rangeJ(j).firstIndex(); k&lt;=basis.rangeJ(j).lastIndex(); ++k) {<br>
+<!-- CodeLine    46 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T val = basis.generator(XWavelet)(x,j,k,<span style="color:#c00000">0</span>);&nbsp;&nbsp;<span style="color:#8080ff">// = basis.psi(x,j,k,0);</span><br>
+<!-- CodeLine    47 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plotfile_wavelet &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span>&nbsp;&lt;&lt; val;<br>
+<!-- CodeLine    48 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    49 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    50 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plotfile_wavelet &lt;&lt; endl;<br>
+<!-- CodeLine    51 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    52 --><br>
+<!-- CodeLine    53 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">return</span>&nbsp;<span style="color:#c00000">0</span>;<br>
+<!-- CodeLine    54 -->}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+
+
+<h3 class="doc">
+Comments on the source code</h3>
+
+<p >
+     The documented source code now looks as follows:</p><p >
+     First we simply include the general LAWA header <tt>lawa/lawa.h</tt> for simplicity, thus having all LAWA features available. All LAWA features reside in the namespace lawa, so we introduce the <tt>namespace lawa</tt> globally.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#c000c0">#include&nbsp;</span><span style="color:#c00000">&lt;iostream&gt;</span><br>
+<!-- CodeLine     2 --><span style="color:#c000c0">#include&nbsp;</span><span style="color:#c00000">&lt;lawa/lawa.h&gt;</span><br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Typedef for double precision</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;<span style="color:#008000">double</span>&nbsp;T;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Typedefs for basis constructions (here for <tt>Dijkema</tt> and <tt>Orthogonal</tt> basis constructions):</p><p >
+     Dijkema Basis over an interval</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;Basis&lt;T,Primal,Interval,Dijkema&gt; Basis1D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     L2 orthonormal Basis over an interval</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#8080ff">//typedef Basis&lt;T,Orthogonal,Interval,Multi&gt; Basis1D;</span><br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Wavelet basis parameters:</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;d = atoi(argv[<span style="color:#c00000">1</span>]);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// polynomial order</span><br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;d_ =atoi(argv[<span style="color:#c00000">2</span>]);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// vanishing moments</span><br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;j0 = atoi(argv[<span style="color:#c00000">3</span>]);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// minimal level</span><br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;J = atoi(argv[<span style="color:#c00000">4</span>]);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// maximum level</span><br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Plot scaling functions: Instead of the function call <tt>basis.generator(XBSpline)(x,j,k,0)</tt> we may also simply use <tt>basis.mra.phi(x,j,k,0)</tt></p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;ofstream plotfile_scaling(<span style="color:#c00000">&quot;scaling.txt&quot;</span>);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(T x=a; x&lt;=b; x+=pow2i&lt;T&gt;(-<span style="color:#c00000">6</span>)) {<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plotfile_scaling &lt;&lt; x;<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(<span style="color:#008000">int</span>&nbsp;k=basis.mra.rangeI(j0).firstIndex(); k&lt;=basis.mra.rangeI(j0).lastIndex(); ++k) {<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T val = basis.generator(XBSpline)(x,j0,k,<span style="color:#c00000">0</span>);&nbsp;<span style="color:#8080ff">// = basis.mra.phi(x,j,k,0);</span><br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plotfile_scaling &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span>&nbsp;&lt;&lt; val;<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine     8 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plotfile_scaling &lt;&lt; endl;<br>
+<!-- CodeLine     9 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Plot wavelets: Instead of the function call <tt>basis.generator(XWavelet)(x,j,k,0)</tt> we may also simply use <tt>basis.psi(x,j,k,0)</tt></p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;ofstream plotfile_wavelet(<span style="color:#c00000">&quot;wavelet.txt&quot;</span>);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(T x=a; x&lt;=b; x+=pow2i&lt;T&gt;(-<span style="color:#c00000">6</span>)) {<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plotfile_wavelet &lt;&lt; x;<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(<span style="color:#008000">int</span>&nbsp;j=j0; j&lt;=J-<span style="color:#c00000">1</span>; ++j) {<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(<span style="color:#008000">int</span>&nbsp;k=basis.rangeJ(j).firstIndex(); k&lt;=basis.rangeJ(j).lastIndex(); ++k) {<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T val = basis.generator(XWavelet)(x,j,k,<span style="color:#c00000">0</span>);&nbsp;&nbsp;<span style="color:#8080ff">// = basis.psi(x,j,k,0);</span><br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plotfile_wavelet &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span>&nbsp;&lt;&lt; val;<br>
+<!-- CodeLine     8 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine     9 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    10 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plotfile_wavelet &lt;&lt; endl;<br>
+<!-- CodeLine    11 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>

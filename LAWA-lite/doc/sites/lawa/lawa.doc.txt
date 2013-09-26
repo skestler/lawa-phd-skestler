@@ -16,8 +16,10 @@ steadily grow and bit by bit we will add adaptive stuff soon.
 Tutorials
 ---------
 
-- _Tutorial 1_:  __Poisson Equation in 1D__
-- _Tutorial 2_:  __Helmholtz Equation in 2D__
+- _Tutorial 1_:  __Plotting scaling functions and wavelets__
+- _Tutorial 2_:  __Wavelet integrals__
+- _Tutorial 3_:  __Poisson equation in 1D__
 
-:links: Poisson Equation in 1D -> tutorials::examples::poisson1d
-        Helmholtz Equation in 2D -> tutorials::examples::helmholtz2d
+:links: Plotting scaling functions and wavelets -> tutorials::examples::plotwavelets
+        Wavelet integrals -> tutorials::examples::waveletintegrals
+        Poisson equation in 1D -> tutorials::examples::poisson1d
