@@ -12,21 +12,27 @@
 using namespace std;
 using namespace lawa;
 
-typedef double T;
+///  Typedefs for precision. Important: `long double` is only available for $L_2$-
+///  orthonormal constructions!
+typedef /*long*/ double T;
+
+///  Typedefs for Flens data types:
 typedef flens::GeMatrix<flens::FullStorage<T, cxxblas::ColMajor> >  FullColMatrixT;
 typedef flens::SparseGeMatrix<flens::CRS<T,flens::CRS_General> >    SparseMatrixT;
 typedef flens::DiagonalMatrix<T>                                    DiagonalMatrixT;
 typedef flens::DenseVector<flens::Array<T> >                        DenseVectorT;
 
+///  Set up of the option parameters
 const OptionType1D optiontype = Put;
 T strike = 100.;
 T maturity = 1.;
 T S0 = 100.;
 OptionParameters1D<T,Put> optionparameters(strike, maturity, false);
 
+///  Definition of the process type
+const ProcessType1D  processtype  = CGMYe;
 //const ProcessType1D  processtype  = BlackScholes;
 //const ProcessType1D  processtype  = CGMY;
-const ProcessType1D  processtype  = CGMYe;
 
 /* Reference values for Europ. option from Fang & Oosterlee (2008) and Almendral & Oosterlee (2007)
  * Option parameters strike = 100, maturity = 1, SO = 100
@@ -35,23 +41,29 @@ const ProcessType1D  processtype  = CGMYe;
  * Process parameters for CGMY: r = 0.1, C = 1, G = M = 5, Y =0.1    6.353404 (put)
  */
 
+///  Typedefs for basis construction:
 typedef Basis<T,Primal,Interval,Dijkema>                      Basis1D;
 //typedef Basis<T,Orthogonal,Interval,Multi>                      Basis1D;
 
+///  Integral definitions:
 typedef Integral<Gauss,Basis1D,Basis1D>                         IntegralBasis1DBasis1D;
 typedef IntegralF<Gauss,Basis1D>                                IntegralFBasis1D;
 
+///  Operator definitions. The first one is required for the implementation of the $\theta$-scheme,
+///  the second one is the realization of the CGMY (or, as a special case, the Black-Scholes)
+///  operator.
 typedef IdentityOperator1D<T, Basis1D>                          ScalarProduct1D;
-
 typedef FinanceOperator1D<T, processtype, Basis1D>              FinanceOp;
 
+///  Definition for the right-hand side required for the barrier option approach.
 typedef OptionRHS1D<T, optiontype, processtype, Basis1D>        OptionRhs;
 
-// TimeStepping Methods
+///  Definition of the time stepping method
 typedef ThetaScheme1D_LTI<T, Basis1D, FinanceOp, OptionRhs>     ThetaStepScalarProduct1D;
 typedef TimeStepping<T, ThetaStepScalarProduct1D>               TimeStepperScalarProduct1D;
 
-
+///  Routine for the computation of the option pricing error arising from localization and
+///  discretization in space and time.
 template<typename T, OptionType1D OType, ProcessType1D PType, typename Basis>
 void
 ComputeL2ErrorAndPlotSolution(Option1D<T,OType> &option,
@@ -60,6 +72,8 @@ ComputeL2ErrorAndPlotSolution(Option1D<T,OType> &option,
                               const DenseVectorT &u0, T R1, T R2, bool excessToPayoff,
                               T &L2error, T &Linftyerror);
 
+///  Computation of the wavelet basis coefficients of the approximation of the initial condition
+///  (only required for barrier option approach).
 void
 getPu0(const Basis1D &basis, DenseVectorT &Pu0,  const Option1D<T,Put> &option, T R1, T R2, int J);
 
@@ -80,22 +94,27 @@ main(int argc, char *argv[])
         cerr << "usage: " << argv[0] << " j0 J R1 R2 excessToPayoff theta timesteps r sigma G M Y" << endl;
         exit(1);
     }
+    ///  Wavelet basis parameters
     int d=2, d_=2;
-    int j0         = atoi(argv[1]);
-    int j_max      = atoi(argv[2]);
+    int j0    = atoi(argv[1]);
+    int j_max = atoi(argv[2]);
 
+    ///  Localization parameters: Considered interval is $[-R_1,R_2]$ and the localization approach
+    ///  `etp = 0` (barrier option approach) and `etp = 1` (excess-to-payoff formulation).
     T   R1         = T(atof(argv[3]));
     T   R2         = T(atof(argv[4]));
     int etp        = atoi(argv[5]);
 
+    ///  Parameters for the $\theta$-time stepping method.
     T theta        = T(atof(argv[6]));
     int timesteps  = atoi(argv[7]);
 
-    T   r          = T(atof(argv[8]));
-    T   sigma      = T(atof(argv[9]));
-    T   G          = T(atof(argv[10]));
-    T   M          = T(atof(argv[11]));
-    T   Y          = T(atof(argv[12]));
+    ///  Parameters for the CGMY financial model
+    T   r     = T(atof(argv[8]));
+    T   sigma = T(atof(argv[9]));
+    T   G     = T(atof(argv[10]));
+    T   M     = T(atof(argv[11]));
+    T   Y     = T(atof(argv[12]));
 
     bool excessToPayoff   = (etp == 1) ? true : false;
 
@@ -107,21 +126,25 @@ main(int argc, char *argv[])
     //ProcessParameters1D<T,CGMY>           processparameters(0.1, 1., 5., 5., 0.1 );
     //ProcessParameters1D<T,CGMY>           processparameters(0.04, 1., 2.4, 4.5, 1.8 );
 
+    ///  Initialization of the CGMY model (here, extended with an additional diffusion term)
     ProcessParameters1D<T,CGMYe>          processparameters(r, 1., G, M, Y, sigma);
     //ProcessParameters1D<T,CGMYe>          processparameters(0.04, 1., 2.4, 4.5, 1.8, 0.1 );
     //ProcessParameters1D<T,CGMYe>          processparameters(0.04, 1., 7.4, 8.5, 1.1, 0.1 );
     //ProcessParameters1D<T,CGMYe>          processparameters(0.04, 1., 5., 5., 1.5, 0.1 );
-
     cout << processparameters << endl;
 
+    ///  Note: We exclude explicit schemes.
     if (theta < 0.5) {
         cout << "theta should be larger than 0.5!" << endl;
         exit(1);
     }
 
+    ///  Number of employed time steps
     T                       timestep = optionparameters.maturity/T(timesteps);
-    //Basis1D                 basis(d,d_,j0);
-    Basis1D                 basis(d,j0);
+
+    ///  Basis initialization
+    Basis1D   basis(d,d_,j0); // for Dijkema basis
+    //Basis1D   basis(d,j0);  // for $L_2$-orth. basis
     basis.enforceBoundaryCondition<DirichletBC>();
 
     int                             order=20;
@@ -147,24 +170,35 @@ main(int argc, char *argv[])
 
         Timer time;
         time.start();
+
+        ///  Wavelet basis coefficients for the solution and the initial condition.
         DenseVectorT u(basis.mra.rangeI(J)), u0(basis.mra.rangeI(J));
 
+        ///  If we are not using excess-to-payoff formulation, we need to compute an approximation
+        ///  of the initial condition
         if (!excessToPayoff) {
             cout << "Not using excess to payoff!" << endl;
             getPu0(basis, u0, option, R1, R2, J);
         }
 
+        ///  Initialization of the operator associated to the financial model
         FinanceOp                         finance_op(basis, processparameters, R1, R2, order, J);
+
+        ///  Initialization of the right-hand side vector for the excess-to-payoff approach.
         OptionRhs                         rhs(optionparameters, processparameters, basis,
                                               R1, R2, excessToPayoff);
+
+        ///  Initialization of the solver for each time step
         ThetaStepScalarProduct1D          scheme(theta, basis, finance_op, rhs,
                                                  true, false, 0., 1e-12);
 
         //spyStiffnessMatrix(basis, R1, R2, finance_op, J, (T)0., processparameters, false);
         //continue;
 
-
+        ///  Initialization of the solver for the whole time stepping
         TimeStepperScalarProduct1D        timestepmethod(scheme, timestep, timesteps, J);
+
+        ///  Solving the fully discretized system
         u = timestepmethod.solve(u0, false);
 
         time.stop();

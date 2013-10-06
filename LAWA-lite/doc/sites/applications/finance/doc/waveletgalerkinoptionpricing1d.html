@@ -1,0 +1,292 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../../../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../../../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../../../index.html">home</a></li>
+<li><a href="../../../doc/license.html">license</a></li>
+<li><a href="../../../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../../../doc/features.html">lawa features</a></li>
+<li><a href="../../../doc/highperformance.html">high performance</a></li>
+<li><a href="../../../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../../../doc/download.html">download</a></li>
+<li><a href="../../../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../../../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../../../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../../../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+<p >
+     <a href="../../applications.html">PhD thesis by S.K.</a> - <a href="../../finance.html">Wavelet Galerkin methods in numerical finance</a> - <a href="waveletgalerkinoptionpricing1d.html">Wavelet Galerkin option pricing in the 1d CGMY model</a></p>
+
+<h3 class="doc">
+Wavelet Galerkin option pricing in the 1d CGMY model</h3>
+
+<p >
+     Source file <tt>finance/finance/waveletgalerkinoptionpricer1d.cpp</tt></p><p >
+     We describe the program that was used to obtain the results for wavelet Galerkin option pricing in univariate CGMY models (see Section 8.5). In particular, we compare the barrier option approach with the excess-to-payoff formulation.</p><p >
+     For the setup of the algebraic system, we refer to the Section 8.5.2. There, in particular, the employed wavelet compression scheme is described.</p><p >
+     Typedefs for precision. Important: <tt>long double</tt> is only available for \(L_2\)- orthonormal constructions!</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;<span style="color:#8080ff">/*</span><span style="color:#8080ff">long</span><span style="color:#8080ff">*/</span>&nbsp;<span style="color:#008000">double</span>&nbsp;T;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Typedefs for Flens data types:</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;flens::GeMatrix&lt;flens::FullStorage&lt;T, cxxblas::ColMajor&gt; &gt;&nbsp;&nbsp;FullColMatrixT;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;flens::SparseGeMatrix&lt;flens::CRS&lt;T,flens::CRS_General&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;SparseMatrixT;<br>
+<!-- CodeLine     3 --><span style="color:#008000">typedef</span>&nbsp;flens::DiagonalMatrix&lt;T&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DiagonalMatrixT;<br>
+<!-- CodeLine     4 --><span style="color:#008000">typedef</span>&nbsp;flens::DenseVector&lt;flens::Array&lt;T&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Set up of the option parameters</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">const</span>&nbsp;OptionType1D optiontype = Put;<br>
+<!-- CodeLine     2 -->T strike =&nbsp;<span style="color:#c00000">100.</span>;<br>
+<!-- CodeLine     3 -->T maturity =&nbsp;<span style="color:#c00000">1.</span>;<br>
+<!-- CodeLine     4 -->T S0 =&nbsp;<span style="color:#c00000">100.</span>;<br>
+<!-- CodeLine     5 -->OptionParameters1D&lt;T,Put&gt; optionparameters(strike, maturity,&nbsp;<span style="color:#c00000">false</span>);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Definition of the process type</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">const</span>&nbsp;ProcessType1D&nbsp;&nbsp;processtype&nbsp;&nbsp;= CGMYe;<br>
+<!-- CodeLine     2 --><span style="color:#8080ff">//const ProcessType1D&nbsp;&nbsp;processtype&nbsp;&nbsp;= BlackScholes;</span><br>
+<!-- CodeLine     3 --><span style="color:#8080ff">//const ProcessType1D&nbsp;&nbsp;processtype&nbsp;&nbsp;= CGMY;</span><br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Typedefs for basis construction:</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;Basis&lt;T,Primal,Interval,Dijkema&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Basis1D;<br>
+<!-- CodeLine     2 --><span style="color:#8080ff">//typedef Basis&lt;T,Orthogonal,Interval,Multi&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Basis1D;</span><br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Integral definitions:</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;Integral&lt;Gauss,Basis1D,Basis1D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IntegralBasis1DBasis1D;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;IntegralF&lt;Gauss,Basis1D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IntegralFBasis1D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Operator definitions. The first one is required for the implementation of the \(\theta\)-scheme, the second one is the realization of the CGMY (or, as a special case, the Black-Scholes) operator.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;IdentityOperator1D&lt;T, Basis1D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ScalarProduct1D;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;FinanceOperator1D&lt;T, processtype, Basis1D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FinanceOp;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Definition for the right-hand side required for the barrier option approach.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;OptionRHS1D&lt;T, optiontype, processtype, Basis1D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OptionRhs;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Definition of the time stepping method</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;ThetaScheme1D_LTI&lt;T, Basis1D, FinanceOp, OptionRhs&gt;&nbsp;&nbsp;&nbsp;&nbsp; ThetaStepScalarProduct1D;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;TimeStepping&lt;T, ThetaStepScalarProduct1D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TimeStepperScalarProduct1D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Routine for the computation of the option pricing error arising from localization and discretization in space and time.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">template</span>&lt;<span style="color:#008000">typename</span>&nbsp;T, OptionType1D OType, ProcessType1D PType,&nbsp;<span style="color:#008000">typename</span>&nbsp;Basis&gt;<br>
+<!-- CodeLine     2 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     3 -->ComputeL2ErrorAndPlotSolution(Option1D&lt;T,OType&gt; &amp;option,<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ProcessParameters1D&lt;T,PType&gt; &amp;processparameters,<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">const</span>&nbsp;Basis &amp;basis,&nbsp;<span style="color:#008000">int</span>&nbsp;J,&nbsp;<span style="color:#008000">const</span>&nbsp;DenseVectorT &amp;u,<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">const</span>&nbsp;DenseVectorT &amp;u0, T R1, T R2,&nbsp;<span style="color:#008000">bool</span>&nbsp;excessToPayoff,<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T &amp;L2error, T &amp;Linftyerror);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Computation of the wavelet basis coefficients of the approximation of the initial condition (only required for barrier option approach).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->getPu0(<span style="color:#008000">const</span>&nbsp;Basis1D &amp;basis, DenseVectorT &amp;Pu0,&nbsp;&nbsp;<span style="color:#008000">const</span>&nbsp;Option1D&lt;T,Put&gt; &amp;option, T R1, T R2,&nbsp;<span style="color:#008000">int</span>&nbsp;J);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Wavelet basis parameters</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;d=<span style="color:#c00000">2</span>, d_=<span style="color:#c00000">2</span>;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;j0&nbsp;&nbsp;&nbsp;&nbsp;= atoi(argv[<span style="color:#c00000">1</span>]);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;j_max = atoi(argv[<span style="color:#c00000">2</span>]);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Localization parameters: Considered interval is \([-R_1,R_2]\) and the localization approach <tt>etp = 0</tt> (barrier option approach) and <tt>etp = 1</tt> (excess-to-payoff formulation).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;&nbsp; R1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = T(atof(argv[<span style="color:#c00000">3</span>]));<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;&nbsp; R2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = T(atof(argv[<span style="color:#c00000">4</span>]));<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;etp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= atoi(argv[<span style="color:#c00000">5</span>]);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Parameters for the \(\theta\)-time stepping method.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;T theta&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= T(atof(argv[<span style="color:#c00000">6</span>]));<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;timesteps&nbsp;&nbsp;= atoi(argv[<span style="color:#c00000">7</span>]);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Parameters for the CGMY financial model</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;&nbsp; r&nbsp;&nbsp;&nbsp;&nbsp; = T(atof(argv[<span style="color:#c00000">8</span>]));<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;&nbsp; sigma = T(atof(argv[<span style="color:#c00000">9</span>]));<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;&nbsp; G&nbsp;&nbsp;&nbsp;&nbsp; = T(atof(argv[<span style="color:#c00000">10</span>]));<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;&nbsp; M&nbsp;&nbsp;&nbsp;&nbsp; = T(atof(argv[<span style="color:#c00000">11</span>]));<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;&nbsp; Y&nbsp;&nbsp;&nbsp;&nbsp; = T(atof(argv[<span style="color:#c00000">12</span>]));<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of the CGMY model (here, extended with an additional diffusion term)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;ProcessParameters1D&lt;T,CGMYe&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;processparameters(r,&nbsp;<span style="color:#c00000">1.</span>, G, M, Y, sigma);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//ProcessParameters1D&lt;T,CGMYe&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;processparameters(0.04, 1., 2.4, 4.5, 1.8, 0.1 );</span><br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//ProcessParameters1D&lt;T,CGMYe&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;processparameters(0.04, 1., 7.4, 8.5, 1.1, 0.1 );</span><br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//ProcessParameters1D&lt;T,CGMYe&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;processparameters(0.04, 1., 5., 5., 1.5, 0.1 );</span><br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt; processparameters &lt;&lt; endl;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Note: We exclude explicit schemes.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>&nbsp;(theta &lt;&nbsp;<span style="color:#c00000">0.5</span>) {<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt;&nbsp;<span style="color:#c00000">&quot;theta should be larger than 0.5!&quot;</span>&nbsp;&lt;&lt; endl;<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(<span style="color:#c00000">1</span>);<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Number of employed time steps</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; timestep = optionparameters.maturity/T(timesteps);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Basis initialization</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;Basis1D&nbsp;&nbsp; basis(d,d_,j0);&nbsp;<span style="color:#8080ff">// for Dijkema basis</span><br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//Basis1D&nbsp;&nbsp; basis(d,j0);&nbsp;&nbsp;// for $L_2$-orth. basis</span><br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;basis.enforceBoundaryCondition&lt;DirichletBC&gt;();<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Wavelet basis coefficients for the solution and the initial condition.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT u(basis.mra.rangeI(J)), u0(basis.mra.rangeI(J));<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     If we are not using excess-to-payoff formulation, we need to compute an approximation of the initial condition</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>&nbsp;(!excessToPayoff) {<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt;&nbsp;<span style="color:#c00000">&quot;Not using excess to payoff!&quot;</span>&nbsp;&lt;&lt; endl;<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;getPu0(basis, u0, option, R1, R2, J);<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of the operator associated to the financial model</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FinanceOp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; finance_op(basis, processparameters, R1, R2, order, J);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of the right-hand side vector for the excess-to-payoff approach.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OptionRhs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rhs(optionparameters, processparameters, basis,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R1, R2, excessToPayoff);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of the solver for each time step</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ThetaStepScalarProduct1D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scheme(theta, basis, finance_op, rhs,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c00000">true</span>,&nbsp;<span style="color:#c00000">false</span>,&nbsp;<span style="color:#c00000">0.</span>,&nbsp;<span style="color:#c00000">1e-12</span>);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of the solver for the whole time stepping</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TimeStepperScalarProduct1D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timestepmethod(scheme, timestep, timesteps, J);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Solving the fully discretized system</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;u = timestepmethod.solve(u0,&nbsp;<span style="color:#c00000">false</span>);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>

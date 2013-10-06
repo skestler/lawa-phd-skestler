@@ -1,0 +1,25 @@
+:document:    lawa::applications::finance::testcgmymatrixentry
+
+__PhD thesis by S.K.__ - __Wavelet Galerkin methods in numerical finance__ - __Computing stiffness matrix entries in the CGMY model__
+
+Computing stiffness matrix entries in the CGMY model
+----------------------------------------------------
+
+Source file `finance/finance/test_cgmy_matrixentry.cpp`
+
+For the interval $[0,1]$, we consider biorthogonal as well as $L_2$-orthonormal multiwavelet bases for the discretization of the operator associated to the CGMY model.
+
+Here, we use and compare
+- a quadrature based approach (Section B.2),
+- a direct evaluation approach (Section B.1 and B.3).
+
+For details, we refer to the corresponding sections in the thesis. Observe that the quadrature based approach applied to the formulation given in Equation (B.4).
+
+The following routines are only implemented for $d \in \{2,3\}$ and, in case of biorthogonal wavelets, $\tilde{d} \in \{2,3\}$.
+
+
+:import: applications/finance/test_cgmy_matrixentry.cpp [brief]
+
+:links:   PhD thesis by S.K. -> lawa::applications::home
+          Wavelet Galerkin methods in numerical finance -> lawa::applications::finance
+          Computing stiffness matrix entries in the CGMY model -> lawa::applications::finance::testcgmymatrixentry

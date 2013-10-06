@@ -14,7 +14,7 @@ In particular, following the contents of the thesis, we have the following topic
 - A special multiwavelet basis for unbounded product domains (Chapter 5)
 - Fast evaluation of system matrices on multitree structured index sets (Chapter 6)
 - __Efficient residual computation in the adaptive tensor product wavelet Galerkin method__ (Chapter 7)
-- Wavelet Galerkin methods for the numerical solution of PIDEs in finance (Chapter 8)
+- __Wavelet Galerkin methods for the numerical solution of PIDEs in finance__ (Chapter 8)
 
 For implementational reasons, we shall collect programs for Chapters 4 and 5 as well as for Chapters 6 and 7 in one folder each. Here, not only programs are provided, but also test cases in order to allow for
 
@@ -27,3 +27,4 @@ Please note that the documentation of the software related to this PhD thesis do
 
 :links: documentation -> lawa::documentation
         Efficient residual computation in the adaptive tensor product wavelet Galerkin method -> lawa::applications::multitrees
+        Wavelet Galerkin methods for the numerical solution of PIDEs in finance -> lawa::applications::finance

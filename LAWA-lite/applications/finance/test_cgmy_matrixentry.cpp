@@ -7,51 +7,51 @@
 using namespace std;
 using namespace lawa;
 
-typedef long double T;
+///  Typedefs for precision. Important: `long double` is only available for $L_2$-
+///  orthonormal constructions!
+typedef double T;
 
-typedef Basis<T, Orthogonal, Interval, Multi>                       PrimalBasis;
-//typedef Basis<T, Primal, Interval, Dijkema>                       PrimalBasis;
+///  Wavelet basis over the interval $[0,1]$
+//typedef Basis<T, Orthogonal, Interval, Multi>                       PrimalBasis;
+typedef Basis<T, Primal, Interval, Dijkema>                       PrimalBasis;
 
-
-struct CGMYKernel {
-
-    CGMYKernel(const Kernel<T,CGMY> &_kernel) : kernel(_kernel) { };
-
-    T
-    operator()(T x) const { return kernel.SecondTailIntegral(-x); }
-
-    const Kernel<T,CGMY> &kernel;
-};
-
+///  Implementation of the direct evaluation approach from Section B.3.
 T
 referenceValue(const PrimalBasis &basis, const Kernel<T,CGMY> &kernel,
                const Integral<Gauss, PrimalBasis, PrimalBasis> &integral,
                int j1, int k1, XType xtype1, int j2, int k2, XType xtype2);
 
-int main()
+int main(int argc, char *argv[])
 {
     cout.precision(16);
-    /// wavelet basis parameters:
-    int d = 3;          // mandatory for this test case!!!
 
-    //int j0 = 3;         // minimal level
-    //int J = 6;
-    //PrimalBasis basis(d,d, j0);
-    int j0 = 0;         // minimal level
-    int J = 4;
-    PrimalBasis basis(d, j0);
+    if (argc != 5) {
+        cerr << "usage: " << argv[0] << " d d_ j0 J" << endl;
+        exit(1);
+    }
+
+    /// wavelet basis parameters:
+    int d  = atoi(argv[1]);
+    int d_ = atoi(argv[2]);
+    int j0 = atoi(argv[3]);         // minimal level
+    int J  = atoi(argv[4]);         // maximum level for wavelet considered in this test case
+
+    /// Basis initialization, using Dirichlet boundary conditions
+    /// PrimalBasis basis(d, j0);  //for $L_2$-orth. wavelets
+    PrimalBasis basis(d, d_, j0);   //for Dijkema wavelets
     basis.enforceBoundaryCondition<DirichletBC>();
 
+    /// Integral initialization
     Integral<Gauss, PrimalBasis, PrimalBasis> integral(basis,basis);
 
-    //std::cerr << basis.psi(0.4,2,12,0) << endl;
-    //return 0;
-
+    /// Initialization of the parameters CGMY model
     ProcessParameters1D<T,CGMY> processparameters(0., 1., 7.4, 8.5, 0.8);
-    Kernel<T,CGMY> kernel(processparameters);
-    CGMYKernel cgmykernel(kernel);
 
-    //SingularIntegral<CGMYKernel,PrimalBasis,PrimalBasis> singularIntegral(cgmykernel,basis,basis);
+    /// In this class, the CGMY kernel, as well as its antiderivatives (see Section B.1) are
+    /// implemented. To this end, the upper incomplete gamma function from `boost` is used.
+    Kernel<T,CGMY> kernel(processparameters);
+
+    /// Initialization of the singular quadrature with corresponding parameters
     SingularIntegral<Kernel<T,CGMY>,PrimalBasis,PrimalBasis> singularIntegral(kernel,basis,basis);
     int order = 10, n = 40;
     T sigma = 0.1, mu = 0.3, omega = 0.01;
@@ -71,17 +71,23 @@ int main()
     cout << "Right wavelet range: " << basis.rangeJR(j0) << endl;
 
     for (int k_row=basis.mra.rangeI(j0).firstIndex(); k_row<=basis.mra.rangeI(j0).lastIndex(); ++k_row) {
+        /// For $d=3$, we need to exclude boundary wavelets as they are NOT neccessarily $C^{d-2}(\mathbb{R})$.
         if (   (d==3 && k_row<=basis.mra.rangeIL(j0).lastIndex())
             || (d==3 && k_row>=basis.mra.rangeIR(j0).firstIndex()) )  continue;
+
         j1 = j0; k1 = k_row; xtype1 = XBSpline;
         for (int k_col=basis.mra.rangeI(j0).firstIndex(); k_col<=basis.mra.rangeI(j0).lastIndex(); ++k_col) {
             if (   (d==3 && k_col<=basis.mra.rangeIL(j0).lastIndex())
                 || (d==3 && k_col>=basis.mra.rangeIR(j0).firstIndex()) ) continue;
             j2 = j0; k2 = k_col; xtype2 = XBSpline;
 
+            /// Computation of integral value by direct evaluation approach (`refVal`) and
+            /// by quadrature based approach (`approxVal`).
             T refVal    = referenceValue(basis, kernel, integral, j1, k1, xtype1, j2, k2, xtype2);
             T approxVal = singularIntegral(j1,k1,xtype1,1, j2,k2,xtype2,1);
             T error     = fabs(refVal-approxVal);
+
+
             cout << Index1D(j1,k1,xtype1) << " " << Index1D(j2,k2,xtype2) << " : "
                  << refVal << " " << approxVal << " " << error << endl;
             if (error>maxError) {
@@ -116,9 +122,11 @@ int main()
                 j2 = j0; k2 = k_col; xtype2 = XBSpline;
                 if (   (d==3 && k_col<=basis.mra.rangeIL(j0).lastIndex())
                     || (d==3 && k_col>=basis.mra.rangeIR(j0).firstIndex()) ) continue;
+
                 T refVal    = referenceValue(basis, kernel, integral, j1, k1, xtype1, j2, k2, xtype2);
                 T approxVal = singularIntegral(j1,k1,xtype1,1, j2,k2,xtype2,1);
                 T error     = fabs(refVal-approxVal);
+
                 cout << Index1D(j1,k1,xtype1) << " " << Index1D(j2,k2,xtype2) << " : "
                      << refVal << " " << approxVal << " " << refVal-approxVal << endl;
                 if (error>maxError) {

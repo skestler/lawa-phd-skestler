@@ -66,42 +66,28 @@
 <td class="main">-->
 </div><div id="main">
 
-
+<p >
+     <a href="applications.html">PhD thesis by S.K.</a> - <a href="finance.html">Wavelet Galerkin methods in numerical finance</a></p>
 
 <h2 class="doc">
-On the adaptive tensor product wavelet Galerkin method with applications in finance</h2>
+Wavelet Galerkin methods in numerical finance (Chapter 8)</h2>
 
 <p >
-     Here you find the (documented) source code for the numerical results obtained in the PhD thesis &#8220;On the adaptive wavelet Galerkin method with applications in finance&#8221 by Sebastian Kestler. </p><p >
-     In particular, following the contents of the thesis, we have the following topics</p><ul class="itemize">
+     We describe the realization of the wavelet Galerkin schemes from Chapter 8. The most important ingredient here is the numerical computation of integrals of type</p>\[   I_{\lambda,\mu} := \int_{\mathbb{R}} \Big[ \big( \psi_\lambda(x+y) - \psi_\lambda(x) - y \partial\psi_\lambda(x)   \big) k(y) dy  \Big] \psi_{\mu}(x) dx\]<p >
+     for a L\'evy kernel \(k\) that is in our case given by</p>\[   k(x) := C \cdot \Big( \frac{e^{-M|x|}}{|x|^{1+Y}} \mathbf{1}_{\{x>0\}} + \frac{e^{-G|x|}}{|x|^{1+Y}} \mathbf{1}_{\{x<0\}} \Big)\]<p >
+     from the well-known CGMY model by Carr, Geman, Madan and Yor. In the sequel, we exclude the case where \(Y=0\) and \(Y=1\).</p><p >
+     The corresponding formulas are described in Appendix B of the PhD thesis. In the following example, these formulas are implemented and tested.</p><ul class="itemize">
     <li>
         <p >
-             Adaptive wavelet methods on unbounded domains (Chapter 4)        </p>    </li>
-    <li>
-        <p >
-             A special multiwavelet basis for unbounded product domains (Chapter 5)        </p>    </li>
-    <li>
-        <p >
-             Fast evaluation of system matrices on multitree structured index sets (Chapter 6)        </p>    </li>
-    <li>
-        <p >
-             <a href="multitrees.html">Efficient residual computation in the adaptive tensor product wavelet Galerkin method</a> (Chapter 7)        </p>    </li>
-    <li>
-        <p >
-             <a href="finance.html">Wavelet Galerkin methods for the numerical solution of PIDEs in finance</a> (Chapter 8)        </p>    </li>
+             <a href="finance/doc/test_cgmy_matrixentry.html">Computing stiffness matrix entries in the CGMY model</a>: <tt>applications/finance/test_cgmy_matrixentry.cpp</tt>        </p>    </li>
 </ul>
 <p >
-     For implementational reasons, we shall collect programs for Chapters 4 and 5 as well as for Chapters 6 and 7 in one folder each. Here, not only programs are provided, but also test cases in order to allow for</p><ul class="itemize">
+     The discretization of the CGMY operator can then used directly to price European options via a Galerkin approach. This is described in Details in Section 8.5. The implementation is given here:</p><ul class="itemize">
     <li>
         <p >
-             testing and        </p>    </li>
-    <li>
-        <p >
-             extending        </p>    </li>
+             <a href="finance/doc/waveletgalerkinoptionpricing1d.html">Wavelet Galerkin option pricing in the 1d CGMY model</a>: <tt>applications/finance/waveletgalerkinoptionpricer1d.cpp</tt>        </p>    </li>
 </ul>
-<p >
-     of existing routines and algorithms.</p><p >
-     Please note that the documentation of the software related to this PhD thesis does not contain a documentation of the basic routines of LAWA. At this point, we refer to the <a href="../lawa/lawa.html">documentation</a>.</p><!--
+<!--
 </td>
 </tr>
 </table>
