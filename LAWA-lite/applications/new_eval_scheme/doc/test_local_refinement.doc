@@ -1,0 +1,27 @@
+:document:    lawa::applications::multitrees::testlocalrefinement
+
+__PhD thesis by S.K.__ - __Multitree based algorithms__ - __Refinements and neighbors__
+
+Test of local refinement and neighbor functions on the interval
+---------------------------------------------------------------
+
+Source file `applications/new_eval_scheme/test_local_refinement.cpp`
+
+For the implementation of the tree based algorithms $\textbf{EvalS}$, $\textbf{EvalU}$, $\textbf{EvalL}$, we need
+
+- refinements of scaling functions, wavelets and refinement B-Splines in terms of refinement B-Splines, as well as
+- neighbors of scaling functions, wavelets and refinement B-Splines.
+
+By the notion `neighbor` we simply mean functions that intersect the support of a given wavelet, scaling function or refinement B-Spline on a certain level. To give an example, for a fixed wavelet $\psi_{j,k}$, we might be interested in all wavelet neighbors $\psi_{j-1,m}$ satisfying
+
+___ LATEX ________________
+   |\mathrm{supp}\,\psi_{j,m} \cap \mathrm{supp}\,\psi_{j,k}| >0
+___________________________
+
+The necessity of a corresponding routine becomes clear when having a closer look at the algorithms $\textbf{EvalS}$, $\textbf{EvalU}$, $\textbf{EvalL}$.
+
+:import: applications/new_eval_scheme/test_local_refinement.cpp [brief]
+
+:links:   PhD thesis by S.K. -> lawa::applications::home
+          Multitree based algorithms -> lawa::applications::multitrees
+          Refinements and neighbors -> lawa::applications::multitrees::testlocalrefinement

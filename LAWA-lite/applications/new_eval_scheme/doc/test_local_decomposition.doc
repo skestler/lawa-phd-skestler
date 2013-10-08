@@ -1,0 +1,37 @@
+:document:    lawa::applications::multitrees::testlocaldecomposition
+
+__PhD thesis by S.K.__ - __Multitree based algorithms__ - __Local decomposition on the interval__
+
+Test of local decomposition on the interval
+-------------------------------------------
+
+Source file `applications/new_eval_scheme/test_local_decomposition.cpp`
+
+Assume we are given a function $f:[0,1] \to \mathbb{R}$ and we have computed 
+
+___ LATEX ________________
+   \mathbf{f} = <  \bar{\Phi}_{j+\bar{j}+1},f> = \big(\int_0^1  \bar{\phi}_{j+\bar{j}+1,k}(x)f(x) dx\big)_{k \in \bar{\mathcal{I}}_{j+\bar{j}+1}}
+___________________________
+
+By using the refinement matrices $\bar{\bar{\mathrm{M}}}_{j+\bar{j}+1}$, $\bar{\mathrm{M}}_{j,0}$ and $\bar{\mathrm{M}}_{j,1}$, we can compute the vectors
+
+___ LATEX ________________
+   \mathbf{g} = < \Phi_{j},f> = \big(\int_0^1  \phi_{j,k}(x) f(x) dx\big)_{k \in \mathcal{I}_{j}}, \qquad    \mathbf{h} = < \Psi_{j},f> = \big(\int_0^1  \psi_{j,k}(x) f(x) dx\big)_{k \in \mathcal{J}_{j}}.
+___________________________
+
+To this end, we use the following straightforward identities:
+
+___ LATEX ________________
+\begin{align}
+  &  \bar{\bar{\mathrm{M}}}_{j,0}^\top \mathbf{f} = \bar{\bar{\mathrm{M}}}_{j,0}^\top < \bar{\Phi}_{j+\bar{j}+1},f> = < \bar{\Phi}_{j + \bar{j}}, f> := \bar{\mathbf{g}}\\
+  & \bar{\mathrm{M}}_{j,1}^\top \mathbf{f} = \bar{\mathrm{M}}_{j,1}^\top < \bar{\Phi}_{j+\bar{j}+1},f> = < \Psi_{j}, f>  = \mathbf{h}\\
+  & \bar{\mathrm{M}}_{j,0}^\top \bar{\mathbf{g}} = \bar{\mathrm{M}}_{j,0}^\top < \bar{\Phi}_{j+\bar{j}},f> = < \Phi_{j}, f>  = \mathbf{f}
+\end{align}
+___________________________
+
+
+:import: applications/new_eval_scheme/test_local_decomposition.cpp [brief]
+
+:links:   PhD thesis by S.K. -> lawa::applications::home
+          Multitree based algorithms -> lawa::applications::multitrees
+          Local decomposition on the interval -> lawa::applications::multitrees::testlocaldecomposition

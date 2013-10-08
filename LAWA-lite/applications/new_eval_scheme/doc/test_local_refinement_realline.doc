@@ -1,0 +1,18 @@
+:document:    lawa::applications::multitrees::testlocalrefinementrealline
+
+__PhD thesis by S.K.__ - __Multitree based algorithms__ - __Refinements and neighbors on the realline__
+
+Test of local refinement and neighbor functions on the realline
+---------------------------------------------------------------
+
+Source file `applications/new_eval_scheme/test_local_refinement_realline.cpp`
+
+Local refinement and neighbors for realline bases are just the same as for __refinement and neighbors for interval bases__. The only difference is that we do not have a bound for translation indices. In order to allow for a simpler implementation,  the realline case is treated separately.
+
+
+:import: applications/new_eval_scheme/test_local_refinement_realline.cpp [brief]
+
+:links:   PhD thesis by S.K. -> lawa::applications::home
+          Multitree based algorithms -> lawa::applications::multitrees
+          refinement and neighbors for interval bases -> lawa::applications::multitrees::testlocalrefinement
+          Refinements and neighbors on the realline -> lawa::applications::multitrees::testlocalrefinementrealline

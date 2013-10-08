@@ -1,0 +1,43 @@
+:document:    lawa::applications::multitrees::testlocaloperator
+
+__PhD thesis by S.K.__ - __Multitree based algorithms__ - __Tree based evaluation of a local operator on the interval__
+
+Tree based evaluation of a local operator on the interval
+---------------------------------------------------------
+
+Source file `applications/new_eval_scheme/test_local_operator1d.cpp`
+
+We are now coming to the evaluation schemes $\textbf{EvalS}$, $\textbf{EvalU}$ and $\textbf{EvalL}$.
+For testing, we consider the bilinear forms
+
+___ LATEX ________________
+   a(v,w) := \int_0^1  v'(x) w'(x) dx, \qquad a(w,v) := \int_0^1 v(x) w(x)  dx.
+___________________________
+
+Furthermore, for a wavelet basis $\Psi$ over the interval $[0,1]$ we assume that we are given two (possibly) different trees $\Lambda$ and $\widetilde{\Lambda}$ and intend to evaluate
+
+___ LATEX ________________
+   a(\Psi|_{\widetilde{\Lambda}},\Psi|_{\Lambda}) \mathbf{v}_{\Lambda} = \mathbf{A}_{\widetilde{\Lambda} \times \Lambda} \mathbf{v}_{\Lambda},
+___________________________
+
+where $\mathbf{v}_{\Lambda}$ is a vector supported on $\Lambda$ and $\mathbf{A} := a(\Psi,\Psi)$. Moreover, we define the upper and lower triangular matrices
+
+___ LATEX ________________
+   \mathbf{U} := a(\psi_\lambda,\psi_\mu)_{|\lambda|\leq||mu|}, \qquad  \mathbf{L} := a(\psi_\lambda,\psi_\mu)_{|\lambda|>||mu|}.
+___________________________
+
+In the following, we compute $\mathbf{A}_{\widetilde{\Lambda} \times \Lambda} \mathbf{v}_{\Lambda}$, $\mathbf{U}_{\widetilde{\Lambda} \times \Lambda} \mathbf{v}_{\Lambda}$ and $\mathbf{L}_{\widetilde{\Lambda} \times \Lambda} \mathbf{v}_{\Lambda}$ by the local evaluation schemes $\textbf{EvalS}$, $\textbf{EvalU}$ and $\textbf{EvalL}$ and also by a straightforward implementation based on assembling the corresponding matrices.
+
+It is important to observe that within the routines $\textbf{EvalS}$, $\textbf{EvalU}$ and $\textbf{EvalL}$ we only need evaluations of the bilinear form $a$ of the following type
+
+___ LATEX ________________
+   a(\bar{\phi}_{j+\bar{j},k_1},\bar{\phi}_{j+\bar{j},k_2})
+___________________________
+
+where only refinement B-Splines on the same level are involved. This is realized by using a specific operator that is implement as a member function of the refinement basis (see also below).
+
+:import: applications/new_eval_scheme/test_local_operator1d.cpp [brief]
+
+:links:   PhD thesis by S.K. -> lawa::applications::home
+          Multitree based algorithms -> lawa::applications::multitrees
+          Tree based evaluation of a local operator on the interval -> lawa::applications::multitrees::testlocaloperator
