@@ -1,0 +1,21 @@
+:document:    lawa::applications::multitrees::testlocaloperatorrealline2d
+
+__PhD thesis by S.K.__ - __Multitree based algorithms__ - __Tree based evaluation of a local operator in two dimensions on the realline__
+
+Tree based evaluation of a local operator in two dimensions on the realline
+---------------------------------------------------------------------------
+
+Source file `applications/new_eval_scheme/test_local_operator_mw_realline2d.cpp`
+
+This program is very similar to the corresponding __interval case__. However, for the realline case we focus
+- on the usage of $L_2(\mathbb{R})$-orthonormal multiwavelets, and
+- on the correct implementation of the underlying algorithms passing performance tests.
+
+Observe that the usage of $L_2(\mathbb{R})$-orthonormal multiwavelets allows for simplifications concerning the wavelet representation of certain operators as described in Section 7.3.
+
+:import: applications/new_eval_scheme/test_local_operator_mw_realline2d.cpp [brief]
+
+:links:   PhD thesis by S.K. -> lawa::applications::home
+          Multitree based algorithms -> lawa::applications::multitrees
+          Tree based evaluation of a local operator in two dimensions on the realline -> lawa::applications::multitrees::testlocaloperatorrealline2d
+          interval case -> lawa::applications::multitrees::testlocaloperator2d

@@ -1,0 +1,340 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../../../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../../../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../../../index.html">home</a></li>
+<li><a href="../../../doc/license.html">license</a></li>
+<li><a href="../../../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../../../doc/features.html">lawa features</a></li>
+<li><a href="../../../doc/highperformance.html">high performance</a></li>
+<li><a href="../../../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../../../doc/download.html">download</a></li>
+<li><a href="../../../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../../../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../../../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../../../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+<p >
+     <a href="../../applications.html">PhD thesis by S.K.</a> - <a href="../../multitrees.html">Multitree based algorithms</a> - <a href="multitreeawgm2d.html">A first implementation of the multitree based AWGM in two dimensions</a></p>
+
+<h3 class="doc">
+A first implementation of the multitree based AWGM in two dimensions</h3>
+
+<p >
+     Source file <tt>applications/new_eval_scheme/multitree_awgm2d.cpp</tt></p><p >
+     This program implements the example presented in Section 6.5.5. It is important to note that it should be seen as a proof of concept. The initial goal of this program was to show that linear complexity using the multitree approach within the AWGM is possible. In forthcoming examples, the techniques presented here are implemented in a more rigorous way.</p><p >
+     As another remark, we remark that the computation times for matrix vector multiplication measured by the program are for the <tt>whole</tt> stiffness matrix (which consists of two (Kronecker) product matrices) whereas the computation times reported in Section 6.5.5 are the computation times which are required for only one part of the matrix.</p><p >
+     FLENS typedefs: only required for the set up of right-hand side vectors</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;flens::GeMatrix&lt;flens::FullStorage&lt;T, cxxblas::ColMajor&gt; &gt;&nbsp;&nbsp; DenseMatrixT;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;flens::DenseVector&lt;flens::Array&lt;T&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DenseVectorT;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Wavelet basis over an interval</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;Basis&lt;T,Primal,Interval,Dijkema&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PrimalBasis;<br>
+<!-- CodeLine     2 --><span style="color:#8080ff">//typedef Basis&lt;T,Orthogonal,Interval,Multi&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PrimalBasis;</span><br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Tensor product wavelet basis in two dimensions</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;TensorBasis2D&lt;Adaptive,PrimalBasis,PrimalBasis&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Basis2D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Underlying local operators the evaluation of \(a(v,w) := \Big(\int_0^1 p(x) v(x) w(x) dx \Big)\) or \(a(v,w) := \Big(\int_0^1 p(x) v'(x) w'(x) dx \Big)\)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;LocalOperator1D&lt;PrimalBasis,PrimalBasis,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WeightedPDEBilinearForm&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LocalWeightedPDEOp1D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Local operator in 2d: Build from the above univariate components</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;LocalOperator2D&lt;LocalWeightedPDEOp1D,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LocalWeightedPDEOp1D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LocalWeightedPDEOp2D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Aggregation of two or more local operators in one class.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;CompoundLocalOperator&lt;Index2D, LocalWeightedPDEOp2D,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LocalWeightedPDEOp2D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CompoundLocalOperator2D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Righthandsides definitions (separable)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;SeparableRHS2D&lt;T,Basis2D &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SeparableRhsIntegral2D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Routine that writes a (multitree) index set to a file (for debugging)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->writeIndexSetToFile(<span style="color:#008000">const</span>&nbsp;IndexSet&lt;Index2D&gt; &amp;Lambda,&nbsp;<span style="color:#008000">const</span>&nbsp;<span style="color:#008000">char</span>&nbsp;*name,&nbsp;<span style="color:#008000">int</span>&nbsp;example,&nbsp;<span style="color:#008000">int</span>&nbsp;d, T threshTol,&nbsp;<span style="color:#008000">int</span>&nbsp;ell,&nbsp;<span style="color:#008000">int</span>&nbsp;nr);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Routine that reads a (multitree) index set from a file (for debugging)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->readIndexSetFromFile(IndexSet&lt;Index2D&gt; &amp;Lambda,&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;example,&nbsp;<span style="color:#008000">int</span>&nbsp;d, T threshTol,&nbsp;<span style="color:#008000">int</span>&nbsp;ell,&nbsp;<span style="color:#008000">int</span>&nbsp;nr);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Routine for the set up of an initial sparse grid index set</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->getSparseGridIndexSet(<span style="color:#008000">const</span>&nbsp;PrimalBasis &amp;basis, IndexSet&lt;Index2D&gt; &amp;Lambda,&nbsp;<span style="color:#008000">int</span>&nbsp;j, T gamma=<span style="color:#c00000">0.</span>);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Routine for the extension of the right-hand side index set (for testing).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->extendRHSIndexSet(<span style="color:#008000">const</span>&nbsp;PrimalBasis &amp;basis, IndexSet&lt;Index2D&gt; &amp;Lambda,&nbsp;<span style="color:#008000">int</span>&nbsp;j);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Construct multitree extension of an existing multitree (see Section 6.5)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->simpleExtendMultiTree(<span style="color:#008000">const</span>&nbsp;Basis2D &amp;basis,&nbsp;<span style="color:#008000">const</span>&nbsp;Index2D &amp;index2d, IndexSet&lt;Index2D&gt; &amp;Lambda);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Wrapper for the matrix vector multiplication permitting the (easy) measurement of computation times.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->mv(CompoundLocalOperator2D &amp;localOperator2D,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp; Coefficients&lt;Lexicographical,T,Index2D&gt; &amp;P,<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;<span style="color:#008000">const</span>&nbsp;IndexSet&lt;Index2D&gt; &amp;Lambda, Coefficients&lt;Lexicographical,T,Index2D&gt; &amp;v,<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp; Coefficients&lt;Lexicographical,T,Index2D&gt; &amp;Av, T &amp;time);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Basis initialization</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;PrimalBasis&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; basis(d,d_,j0);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//PrimalBasis&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; basis(d,j0);</span><br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;basis.enforceBoundaryCondition&lt;DirichletBC&gt;();<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;Basis2D basis2d(basis,basis);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of operator with weighted coefficients</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;DenseVectorT p1_singPts, p2_singPts;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;Function&lt;T&gt; reaction_coeff(p1, p1_singPts);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;Function&lt;T&gt; convection_coeff(p1, p1_singPts);<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;Function&lt;T&gt; diffusion_coeff(p1, p1_singPts);<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;WeightedPDEBilinearForm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WeightedLaplaceBil( basis.refinementbasis,reaction_coeff,convection_coeff,diffusion_coeff,<span style="color:#c00000">10</span>,<span style="color:#c00000">true</span>,<span style="color:#c00000">true</span>,<span style="color:#c00000">false</span>);<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;WeightedPDEBilinearForm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WeightedIdentityBil(basis.refinementbasis,reaction_coeff,convection_coeff,diffusion_coeff,<span style="color:#c00000">10</span>,<span style="color:#c00000">false</span>,<span style="color:#c00000">true</span>,<span style="color:#c00000">true</span>);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of local operator</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;LocalWeightedPDEOp1D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;localLaplaceOp1D( basis, basis, WeightedLaplaceBil);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;LocalWeightedPDEOp1D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;localIdentityOp1D(basis, basis, WeightedIdentityBil);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;LocalWeightedPDEOp2D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;localLaplaceIdentityOp2D(localLaplaceOp1D,localIdentityOp1D);<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;LocalWeightedPDEOp2D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;localIdentityLaplaceOp2D(localIdentityOp1D,localLaplaceOp1D);<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;localLaplaceIdentityOp2D.setJ(<span style="color:#c00000">7</span>);<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;localIdentityLaplaceOp2D.setJ(<span style="color:#c00000">7</span>);<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;CompoundLocalOperator2D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; localOperator2D(localLaplaceIdentityOp2D,localIdentityLaplaceOp2D);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of preconditioner</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//HelmholtzBilinearForm2D&nbsp;&nbsp;HelmholtzBil2D(basis2d,0.);</span><br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//Preconditioner&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Prec(HelmholtzBil2D);</span><br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;Preconditioner&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Prec(basis2d,<span style="color:#c00000">1.</span>,<span style="color:#c00000">1.</span>,<span style="color:#c00000">0.</span>);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of the right-hand side exploiting the product structure</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;SeparableRhsIntegral2D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rhsintegral_x(basis2d, SepFunc1, deltas_x, no_deltas, order);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;SeparableRhsIntegral2D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rhsintegral_y(basis2d, SepFunc2, no_deltas, deltas_y, order);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;SumOfSeparableRhsIntegral2D rhsintegral2d(rhsintegral_x,rhsintegral_y);<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;SumOfSeparableRhs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; F(rhsintegral2d,Prec);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of hash map vectors: observe that the size of <tt>SIZEHASHINDEX2D</tt> has a strong effect on the computation times. These quantities are defined in <tt>lawa/methods/adaptive/datastructures/index.h</tt>. They determine the number of initial buckets in the hash map. If you choose them too small, rehashing will lead to non-optimal computation times. If you choose them too large, the algorithm is slowned down. As a rule of thumb, you may choose them 3-4 times larger then the number of degrees of freedom you want to use.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;Coefficients&lt;Lexicographical,T,Index2D&gt; u(SIZEHASHINDEX2D);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;Coefficients&lt;Lexicographical,T,Index2D&gt; f(SIZEHASHINDEX2D);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;Coefficients&lt;Lexicographical,T,Index2D&gt; r(SIZELARGEHASHINDEX2D),<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p(SIZEHASHINDEX2D),<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ap(SIZEHASHINDEX2D);<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;Coefficients&lt;Lexicographical,T,Index2D&gt; P(SIZEHASHINDEX2D);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     We precompute and store preconditioner values for better performance.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(const_set2d_it it=Lambda.begin(); it!=Lambda.end(); ++it) {<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>&nbsp;(P.find((*it))==P.end()) P[(*it)] = Prec(*it);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr &lt;&lt;&nbsp;<span style="color:#c00000">&quot;&nbsp;&nbsp; Computing matrix vector product for initial residual.&quot;</span>&nbsp;&lt;&lt; endl;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Implementation of the cg algorithm</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mv(localOperator2D, P, Lambda, u, r, dummy);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;r -= f;<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p -= r;<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rNormSquare = r*r;<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;cg_iters=<span style="color:#c00000">0</span>;<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T mv_time=<span style="color:#c00000">0.</span>;<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(cg_iters=<span style="color:#c00000">0</span>; cg_iters&lt;maxIterations; ++cg_iters) {<br>
+<!-- CodeLine     8 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>&nbsp;(sqrt(rNormSquare)&lt;=tol) {<br>
+<!-- CodeLine     9 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr &lt;&lt;&nbsp;<span style="color:#c00000">&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CG stopped with error &quot;</span>&nbsp;&lt;&lt; sqrt(rNormSquare) &lt;&lt; endl;<br>
+<!-- CodeLine    10 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">break</span>;<br>
+<!-- CodeLine    11 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    12 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T time=<span style="color:#c00000">0.</span>;<br>
+<!-- CodeLine    13 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mv(localOperator2D, P, Lambda, p, Ap, time);<br>
+<!-- CodeLine    14 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mv_time += time;<br>
+<!-- CodeLine    15 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T pAp = p * Ap;<br>
+<!-- CodeLine    16 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alpha = rNormSquare/pAp;<br>
+<!-- CodeLine    17 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;u += alpha*p;<br>
+<!-- CodeLine    18 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;r += alpha*Ap;<br>
+<!-- CodeLine    19 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rNormSquarePrev = rNormSquare;<br>
+<!-- CodeLine    20 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rNormSquare = r*r;<br>
+<!-- CodeLine    21 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cerr &lt;&lt;&nbsp;<span style="color:#c00000">&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Current error in cg: &quot;</span>&nbsp;&lt;&lt; std::sqrt(rNormSquare) &lt;&lt; endl;<br>
+<!-- CodeLine    22 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;beta = rNormSquare/rNormSquarePrev;<br>
+<!-- CodeLine    23 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p *= beta;<br>
+<!-- CodeLine    24 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p -= r;<br>
+<!-- CodeLine    25 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Computation of the multitree extension of the current Galerkin index set: Here, we provide two different possibilities where the second one adds further indices at the boundary.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IndexSet&lt;Index2D&gt; checkLambda = Lambda;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Timer time;<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>&nbsp;(example!=<span style="color:#c00000">2</span>) {<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IndexSet&lt;Index2D&gt; C_Lambda = Lambda;<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(<span style="color:#008000">int</span>&nbsp;i=<span style="color:#c00000">1</span>; i&lt;=ell; ++i) {<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C_Lambda = C(C_Lambda, (T)<span style="color:#c00000">1.</span>, basis2d,&nbsp;<span style="color:#c00000">true</span>);<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(const_set2d_it it=C_Lambda.begin(); it!=C_Lambda.end(); ++it) {<br>
+<!-- CodeLine     8 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;simpleExtendMultiTree(basis2d,(*it),checkLambda);<br>
+<!-- CodeLine     9 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    10 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    11 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    12 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">else</span>&nbsp;{<br>
+<!-- CodeLine    13 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IndexSet&lt;Index2D&gt; LambdaBoundary;<br>
+<!-- CodeLine    14 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extendRHSIndexSet(basis, LambdaBoundary, std::max(jmax_x,jmax_y)+<span style="color:#c00000">1</span>);<br>
+<!-- CodeLine    15 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//f = F(LambdaBoundary);</span><br>
+<!-- CodeLine    16 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IndexSet&lt;Index2D&gt; C_Lambda = Lambda;<br>
+<!-- CodeLine    17 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C_Lambda += LambdaBoundary;<br>
+<!-- CodeLine    18 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(<span style="color:#008000">int</span>&nbsp;i=<span style="color:#c00000">1</span>; i&lt;=ell; ++i) {<br>
+<!-- CodeLine    19 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C_Lambda = C(C_Lambda, (T)<span style="color:#c00000">1.</span>, basis2d,&nbsp;<span style="color:#c00000">true</span>);<br>
+<!-- CodeLine    20 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time.start();<br>
+<!-- CodeLine    21 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(const_set2d_it it=C_Lambda.begin(); it!=C_Lambda.end(); ++it) {<br>
+<!-- CodeLine    22 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;simpleExtendMultiTree(basis2d,(*it),checkLambda);<br>
+<!-- CodeLine    23 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    24 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time.stop();<br>
+<!-- CodeLine    25 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    26 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    27 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time.start();<br>
+<!-- CodeLine    28 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(const_set2d_it it=checkLambda.begin(); it!=checkLambda.end(); ++it) {<br>
+<!-- CodeLine    29 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>&nbsp;(P.find((*it))==P.end()) P[(*it)] = Prec(*it);<br>
+<!-- CodeLine    30 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    31 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time.stop();<br>
+<!-- CodeLine    32 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt;&nbsp;<span style="color:#c00000">&quot;&nbsp;&nbsp; Elapsed time for preconditioner: &quot;</span>&nbsp;&lt;&lt; time.elapsed() &lt;&lt; endl;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Computation of the approximate residual vector</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f = F(checkLambda);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mv(localOperator2D, P, checkLambda, u, r, time_res);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time_res=<span style="color:#c00000">0.</span>;<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mv(localOperator2D, P, checkLambda, u, r, time_res);&nbsp;<span style="color:#8080ff">// only for checking computation times!</span><br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;r-=f;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Bulk chasing with subsequent multitree completion</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;r = THRESH(r,threshTol*r.norm(<span style="color:#c00000">2.</span>));<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(const_coeff2d_it it=r.begin(); it!=r.end(); ++it) {<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;simpleExtendMultiTree(basis2d,(*it).first,Lambda);<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>

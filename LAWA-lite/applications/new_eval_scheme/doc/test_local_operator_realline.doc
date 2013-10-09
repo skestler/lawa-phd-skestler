@@ -5,7 +5,7 @@ __PhD thesis by S.K.__ - __Multitree based algorithms__ - __Tree based evaluatio
 Tree based evaluation of a local operator on the realline
 ---------------------------------------------------------
 
-Source file `applications/new_eval_scheme/test_local_operator_realline1d.cpp`
+Source file `applications/new_eval_scheme/test_local_operator_mw_realline1d.cpp`
 
 We perform the same test as we did for __local operators on the interval__ with the slight difference that we now consider $\Omega = \mathbb{R}$ instead of $\Omega = (0,1)$.
 More precisely, the bilinear forms we are using now are
@@ -16,7 +16,7 @@ ___________________________
 
 The most important difference we need to take into account is that we do not have a bound for translation indices. Therefore, we shall take an arbitrarily but fixed chosen bound for these indices.
 
-:import: applications/new_eval_scheme/test_local_operator_realline1d.cpp [brief]
+:import: applications/new_eval_scheme/test_local_operator_mw_realline1d.cpp [brief]
 
 :links:   PhD thesis by S.K. -> lawa::applications::home
           Multitree based algorithms -> lawa::applications::multitrees

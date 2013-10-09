@@ -36,7 +36,7 @@ ___ LATEX ________________
    \Psi_j = \mathrm{M}_{j,1}^\top \Phi_{j+1} , \qquad \Phi_j = \mathrm{M}_{j,0}^\top \Phi_{j+1}.
 ___________________________
 
-for refinement matrices $\mathrm{M}_{j,0}$ and $\mathrm{M}_{j,1}$.
+for refinement matrices $\mathrm{M}_{j,0}$ and $\mathrm{M}_{j,1}$ (see also Chapter 2).
 
 In order to obtain an efficient numerical scheme, the elements of $\Phi_j$ (for which we evaluate underlying bilinear forms) should be "easy to handle". For standard basis constructions, the scaling functions are B-Splines which do not impose any problems. For multiwavelet basis, however, we have multiple types of scaling functions whose distinction is computationally costly. To this end, furthermore, we also consider so-called uniformly local, piecewise polynomial `refinement bases`
 
@@ -71,6 +71,12 @@ In order to set up, test and understand the tree structure of one-dimensional in
 - __Local decomposition on the interval__: `applications/new_eval_scheme/test_local_decomposition.cpp`
 - __Tree based evaluation of a local operator on the interval__: `applications/new_eval_scheme/test_local_operator1d.cpp`
 - __Tree based evaluation of a local operator on the realline__: `applications/new_eval_scheme/test_local_operator_realline1d.cpp`
+- __Tree based evaluation of a local operator in two dimensions__: `applications/new_eval_scheme/test_local_operator2d.cpp`
+- __Tree based evaluation of a local operator in two dimensions on the realline__: `applications/new_eval_scheme/test_local_operator_realline2d.cpp`
+
+Obviously, the key point is the implementation of the multitree based adaptive wavelet Galerkin method described in Section 6.5. Here, the following programs are provided:
+
+- __A first implementation of the multitree based AWGM in two dimensions__: `applications/new_eval_scheme/multitree_awgm2d.cpp`
 
 :links:   PhD thesis by S.K. -> lawa::applications::home
           Multitree based algorithms -> lawa::applications::multitrees
@@ -81,3 +87,6 @@ In order to set up, test and understand the tree structure of one-dimensional in
           Local decomposition on the interval -> lawa::applications::multitrees::testlocaldecomposition
           Tree based evaluation of a local operator on the interval -> lawa::applications::multitrees::testlocaloperator
           Tree based evaluation of a local operator on the realline -> lawa::applications::multitrees::testlocaloperatorrealline
+          Tree based evaluation of a local operator in two dimensions -> lawa::applications::multitrees::testlocaloperator2d
+          Tree based evaluation of a local operator in two dimensions on the realline -> lawa::applications::multitrees::testlocaloperatorrealline2d
+          A first implementation of the multitree based AWGM in two dimensions -> lawa::applications::multitrees::multitreeawgm2d

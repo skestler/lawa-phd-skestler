@@ -84,7 +84,7 @@ Tree structured index sets and required routines</h3>
      and where</p>\[   \Phi_j = \{ \phi_{j,k} : k \in \mathcal{I}_j \}\]<p >
      for \(j \in \mathbb{N}\) corresponds to the collection of scaling functions on level \(j\) associated to the wavelet basis \(\Psi\).</p><p >
      The evaluation schemes \(\textbf{EvalS}\), \(\textbf{EvalU}\) and \(\textbf{EvalL}\) are (mainly) based on the refinement of scaling functions \(\phi_{j,k}\) and wavelets \(\psi_{j,k}\) in terms of scaling functions on level \(j+1\), i.e.,</p>\[   \Psi_j = \mathrm{M}_{j,1}^\top \Phi_{j+1} , \qquad \Phi_j = \mathrm{M}_{j,0}^\top \Phi_{j+1}.\]<p >
-     for refinement matrices \(\mathrm{M}_{j,0}\) and \(\mathrm{M}_{j,1}\).</p><p >
+     for refinement matrices \(\mathrm{M}_{j,0}\) and \(\mathrm{M}_{j,1}\) (see also Chapter 2).</p><p >
      In order to obtain an efficient numerical scheme, the elements of \(\Phi_j\) (for which we evaluate underlying bilinear forms) should be &#8220;easy to handle&#8221. For standard basis constructions, the scaling functions are B-Splines which do not impose any problems. For multiwavelet basis, however, we have multiple types of scaling functions whose distinction is computationally costly. To this end, furthermore, we also consider so-called uniformly local, piecewise polynomial <tt>refinement bases</tt></p>\[   \bar\Phi_{j+\bar{j}} = \{ \bar\phi_{j+\bar{j},k} : k \in \bar{\mathcal{I}}_{j+\bar{j}} \}\]<p >
      for \(j = 0,1,\ldots\) and a certain \(\bar j>0\) such that</p>\[\begin{align*}  & \bar{\Phi}_{j+\bar{j}} = \bar{\bar{\mathrm{M}}}_{j,0}^\top \bar{\Phi}_{j+\bar{j}+1 }, \\  & \Psi_j = \bar{\mathrm{M}}_{j,1}^\top \bar{\Phi}_{j+\bar j+1}, \qquad \Phi_j = \bar{\mathrm{M}}^\top_{j,0} \bar{\Phi}_{j+\bar j},\\  & \mathrm{span}\bar{\Phi}_{j+\bar j+1} \supseteq \mathrm{span} \Phi_j \cup \Psi_j,\end{align*}\]<p >
      for refinement matrices \(\bar{\mathrm{M}}_{j,0}\) and \(\bar{\mathrm{M}}_{j,1}\). For our purposes, we may always think of \(\bar{\Phi}_j\) as a collections of B-Splines to which we shall also refer to as <tt>refinement B-Splines</tt>.</p><p >
@@ -113,6 +113,18 @@ Tree structured index sets and required routines</h3>
     <li>
         <p >
              <a href="new_eval_scheme/doc/test_local_operator_realline.html">Tree based evaluation of a local operator on the realline</a>: <tt>applications/new_eval_scheme/test_local_operator_realline1d.cpp</tt>        </p>    </li>
+    <li>
+        <p >
+             <a href="new_eval_scheme/doc/test_local_operator2d.html">Tree based evaluation of a local operator in two dimensions</a>: <tt>applications/new_eval_scheme/test_local_operator2d.cpp</tt>        </p>    </li>
+    <li>
+        <p >
+             <a href="new_eval_scheme/doc/test_local_operator_realline2d.html">Tree based evaluation of a local operator in two dimensions on the realline</a>: <tt>applications/new_eval_scheme/test_local_operator_realline2d.cpp</tt>        </p>    </li>
+</ul>
+<p >
+     Obviously, the key point is the implementation of the multitree based adaptive wavelet Galerkin method described in Section 6.5. Here, the following programs are provided:</p><ul class="itemize">
+    <li>
+        <p >
+             <a href="new_eval_scheme/doc/multitreeawgm2d.html">A first implementation of the multitree based AWGM in two dimensions</a>: <tt>applications/new_eval_scheme/multitree_awgm2d.cpp</tt>        </p>    </li>
 </ul>
 <!--
 </td>

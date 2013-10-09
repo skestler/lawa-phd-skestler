@@ -1,0 +1,20 @@
+:document:    lawa::applications::multitrees::multitreeawgm2d
+
+__PhD thesis by S.K.__ - __Multitree based algorithms__ - __A first implementation of the multitree based AWGM in two dimensions__
+
+A first implementation of the multitree based AWGM in two dimensions
+--------------------------------------------------------------------
+
+Source file `applications/new_eval_scheme/multitree_awgm2d.cpp`
+
+This program implements the example presented in Section 6.5.5. It is important to note that it should be seen as a proof of concept. The initial goal of this program was to show that linear complexity using the multitree approach within the AWGM is possible. In forthcoming examples, the techniques presented here are implemented in a more rigorous way.
+
+As another remark, we remark that the computation times for matrix vector multiplication measured by the program are for the `whole` stiffness matrix (which consists of two (Kronecker) product matrices) whereas the computation times reported in Section 6.5.5 are the computation times which are required for only one part of the matrix.
+
+
+
+:import: applications/new_eval_scheme/multitree_awgm2d.cpp [brief]
+
+:links:   PhD thesis by S.K. -> lawa::applications::home
+          Multitree based algorithms -> lawa::applications::multitrees
+          A first implementation of the multitree based AWGM in two dimensions -> lawa::applications::multitrees::multitreeawgm2d

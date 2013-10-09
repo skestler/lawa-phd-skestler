@@ -7,7 +7,7 @@ LAWA has in the meanwhile been successfully used to realize several projects:
 
 
 - many examples of the book __Wavelet Methods for Elliptic Partial Differential Equations__, (Karsten Urban, OUP) have been realized with LAWA.
-- "A Wavelet Tour of Option Pricing", (__pdf__,tarball (<a href="Rometsch2011.tgz">.tgz</a>)), thesis of Mario Rometsch (<a href="mailto:mario.rometsch@googlemail.com">mario.rometsch@googlemail.com</a>)
+- "A Wavelet Tour of Option Pricing", (__pdf__, thesis of Mario Rometsch)
 - "Wavelets in der Optik", thesis of Philipp Jester
 - "__On the adaptive tensor product wavelet Galerkin method with applications in finance__", thesis of Sebastian Kestler
 

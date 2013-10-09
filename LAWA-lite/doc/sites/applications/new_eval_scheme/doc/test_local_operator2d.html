@@ -1,0 +1,288 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../../../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../../../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../../../index.html">home</a></li>
+<li><a href="../../../doc/license.html">license</a></li>
+<li><a href="../../../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../../../doc/features.html">lawa features</a></li>
+<li><a href="../../../doc/highperformance.html">high performance</a></li>
+<li><a href="../../../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../../../doc/download.html">download</a></li>
+<li><a href="../../../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../../../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../../../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../../../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+<p >
+     <a href="../../applications.html">PhD thesis by S.K.</a> - <a href="../../multitrees.html">Multitree based algorithms</a> - <a href="test_local_operator2d.html">Tree based evaluation of a local operator in two dimensions</a></p>
+
+<h3 class="doc">
+Tree based evaluation of a local operator in two dimensions</h3>
+
+<p >
+     Source file <tt>applications/new_eval_scheme/test_local_operator2d.cpp</tt></p><p >
+     We are now coming to the evaluation scheme \(\textbf{Eval}\). For testing, we consider the bilinear forms</p>\[   a(v_1 \otimes v_2,w_1 \otimes w_2) := a(v_1,w_1) \cdot a(v_2,w_2).\]<p >
+     Here, we do not only check the final result but also all intermediate steps that are described in detail in Section 6.4 and, in particular, Theorem 6.20.</p><p >
+     To test that the evaluation scheme does what it is supposed to, we start from a sparse grid index set</p>\[   {\boldsymbol \Lambda^{(j)}} = \{ (\lambda_1,\lambda_2) : |\lambda_1| + |\lambda_2| \leq j  \}\]<p >
+     and add an (arbitrary) additional index \((\lambda_1^*,\lambda_2^*)\) to this set. Afterwards, we complete the set \({\boldsymbol \Lambda^{(j)}} \cup (\lambda_1^*,\lambda_2^*)\) to a multitree.</p><p >
+     Afterwards, we compute reference solutions for intermediate results using the straightforward application of the bilinear form and compare it to the fast evaluation scheme \textbf{Eval}.</p><p >
+     We may also test the linear complexity of \textbf{Eval}. In particular, by storing the (multitree) index sets from the MTree-AWGM, we may perform performance tests on these index sets which are of particular interest. We refer to Section 6.5.</p><p >
+     Wavelet basis over an interval</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#8080ff">//typedef Basis&lt;T, Orthogonal, Interval, Multi&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PrimalBasis;</span><br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;Basis&lt;T, Primal, Interval, Dijkema&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PrimalBasis;<br>
+<!-- CodeLine     3 --><span style="color:#008000">typedef</span>&nbsp;PrimalBasis::RefinementBasis&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RefinementBasis;<br>
+<!-- CodeLine     4 --><span style="color:#008000">bool</span>&nbsp;isL2Orthonormal_x =&nbsp;<span style="color:#c00000">false</span>;<br>
+<!-- CodeLine     5 --><span style="color:#008000">bool</span>&nbsp;isL2Orthonormal_y =&nbsp;<span style="color:#c00000">false</span>;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Tensor product wavelet basis in two dimensions</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;TensorBasis2D&lt;Adaptive,PrimalBasis,PrimalBasis&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Basis2D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Underlying bilinear form for \(a(v_1 \otimes v_2,w_1 \otimes w_2) := \Big(\int_0^1 v_1(x) w_1(x) dx \Big) \Big(\int_0^1 v_2(x) w_2(x) dx \Big)\) Observe that the first definition of a corresponding operator is the standard definition and is required for the computation of reference values. The second operator is solely for refinement B-Spline bases as here, we only require evaluation of type</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;IdentityOperator1D&lt;T,PrimalBasis&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BilinearForm_x;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;RefinementBasis::IdentityOperator1D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RefinementBilinearForm_x;<br>
+<!-- CodeLine     3 --><span style="color:#008000">typedef</span>&nbsp;IdentityOperator1D&lt;T,PrimalBasis&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BilinearForm_y;<br>
+<!-- CodeLine     4 --><span style="color:#008000">typedef</span>&nbsp;RefinementBasis::IdentityOperator1D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RefinementBilinearForm_y;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Local operator in 1d: These are required as building blocks for the two-dimensional operator.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;LocalOperator1D&lt;PrimalBasis,PrimalBasis,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RefinementBilinearForm_x&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LocalOp1D_x;<br>
+<!-- CodeLine     3 --><span style="color:#008000">typedef</span>&nbsp;LocalOperator1D&lt;PrimalBasis,PrimalBasis,<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RefinementBilinearForm_y&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LocalOp1D_y;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Local operator in 2d: Build from the above univariate components</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;LocalOperator2D&lt;LocalOp1D_x, LocalOp1D_y&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LocalOp2D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Iterators: Required for the calculation of reference solutions</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;IndexSet&lt;Index1D&gt;::const_iterator&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const_set1d_it;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;IndexSet&lt;Index2D&gt;::const_iterator&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const_set2d_it;<br>
+<!-- CodeLine     3 --><span style="color:#008000">typedef</span>&nbsp;Coefficients&lt;Lexicographical,T,Index2D&gt;::iterator&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; coeff2d_it;<br>
+<!-- CodeLine     4 --><span style="color:#008000">typedef</span>&nbsp;Coefficients&lt;Lexicographical,T,Index2D&gt;::const_iterator&nbsp;&nbsp;&nbsp;&nbsp; const_coeff2d_it;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Routine for the set up of an initial sparse grid index set</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->getSparseGridIndexSet(<span style="color:#008000">const</span>&nbsp;PrimalBasis &amp;basis, IndexSet&lt;Index2D&gt; &amp;Lambda,&nbsp;<span style="color:#008000">int</span>&nbsp;j, T gamma=<span style="color:#c00000">0.</span>);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Routine that reads a (multitree) index set from a file.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->readIndexSetFromFile(IndexSet&lt;Index2D&gt; &amp;Lambda,&nbsp;<span style="color:#008000">const</span>&nbsp;<span style="color:#008000">char</span>* indexset,&nbsp;<span style="color:#008000">int</span>&nbsp;example,&nbsp;<span style="color:#008000">int</span>&nbsp;d,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; T threshTol,&nbsp;<span style="color:#008000">int</span>&nbsp;ell,&nbsp;<span style="color:#008000">int</span>&nbsp;nr);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     A given coefficient vector is filled with random numbers.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->getRandomCoefficientVector(<span style="color:#008000">const</span>&nbsp;IndexSet&lt;Index2D&gt; &amp;Lambda,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Coefficients&lt;Lexicographical,T,Index2D&gt; &amp;coeff);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Reference computation of the application of \(\vec{\textrm{Id}} \otimes \vec{A}\)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->refComputationIAv(BilinearForm_y &amp;Bil_y,&nbsp;<span style="color:#008000">const</span>&nbsp;Coefficients&lt;Lexicographical,T,Index2D&gt; &amp;v,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Coefficients&lt;Lexicographical,T,Index2D&gt; &amp;IAv);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Reference computation of the application of \((\vec{L} \otimes \vec{\textrm{Id}}) \circ (\vec{\textrm{Id}} \otimes \vec{A})\)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->refComputationLIIAv(BilinearForm_x &amp;Bil_y,&nbsp;<span style="color:#008000">const</span>&nbsp;Coefficients&lt;Lexicographical,T,Index2D&gt; &amp;IAv,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Coefficients&lt;Lexicographical,T,Index2D&gt; &amp;LIIAv);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Reference computation of the application of \(\vec{U} \otimes \vec{\textrm{Id}}\)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->refComputationUIv(BilinearForm_x &amp;Bil_x,&nbsp;<span style="color:#008000">const</span>&nbsp;Coefficients&lt;Lexicographical,T,Index2D&gt; &amp;v,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Coefficients&lt;Lexicographical,T,Index2D&gt; &amp;UIv);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Reference computation of the application of \((\vec{\textrm{Id}} \otimes \vec{A}) \circ (\vec{U} \otimes \vec{\textrm{Id}})\)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->refComputationIAUIv(BilinearForm_y &amp;Bil_y,&nbsp;<span style="color:#008000">const</span>&nbsp;Coefficients&lt;Lexicographical,T,Index2D&gt; &amp;UIv,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Coefficients&lt;Lexicographical,T,Index2D&gt; &amp;IAUIv);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Reference computation of the application of \(\vec{A} \otimes \vec{A}\)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->refComputationAAv(BilinearForm_x &amp;Bil_x, BilinearForm_y &amp;Bil_y,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">const</span>&nbsp;Coefficients&lt;Lexicographical,T,Index2D&gt; &amp;v,<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Coefficients&lt;Lexicographical,T,Index2D&gt; &amp;AAv);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Wavelet basis parameters: We do not have \(\tilde{d}\) here, as this is not yet implemented in view of tree based algorithms</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;d&nbsp;&nbsp; = atoi(argv[<span style="color:#c00000">1</span>]);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;j0&nbsp;&nbsp;= atoi(argv[<span style="color:#c00000">2</span>]);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;J&nbsp;&nbsp;= atoi(argv[<span style="color:#c00000">3</span>]);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Global parameters: If <tt>useSparseGrid</tt> is true, an (extended) sparse grid index as described above is used. Otherwise, an index set is read from a file. If <tt>calcRefSol</tt> is true, a reference solution is computed, otherwise not (recommended for performance tests).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">bool</span>&nbsp;useSparseGrid=<span style="color:#c00000">true</span>;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">bool</span>&nbsp;calcRefSol=<span style="color:#c00000">true</span>;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Basis initialization, using Dirichlet boundary conditions</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//PrimalBasis basis(d, j0);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // For L2_orthonormal and special MW bases</span><br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;PrimalBasis basis(d, d, j0);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// For biorthogonal wavelet bases</span><br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;basis.enforceBoundaryCondition&lt;DirichletBC&gt;();<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;RefinementBasis &amp;refinementbasis = basis.refinementbasis;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Tensor product basis initialization</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;Basis2D basis2d(basis,basis);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Operator initialization for univariate operators</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;BilinearForm_x&nbsp;&nbsp;&nbsp;&nbsp;Bil_x(basis);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;BilinearForm_y&nbsp;&nbsp;&nbsp;&nbsp;Bil_y(basis);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;LocalOp1D_x localOperator_x(basis,basis,refinementbasis.IdentityOp1D);<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;LocalOp1D_y localOperator_y(basis,basis,refinementbasis.IdentityOp1D);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Operator initialization for the two dimensional operator. The routine <tt>setJ</tt> influence the hash properties of the operator (please see the implementation for details).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;LocalOp2D&nbsp;&nbsp; localop2d(localOperator_x,localOperator_y);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;localop2d.setJ(<span style="color:#c00000">9</span>);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Computation of reference solutions</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt;&nbsp;<span style="color:#c00000">&quot;Reference calculation started...&quot;</span>&nbsp;&lt;&lt; endl;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;refComputationIAv(Bil_y, v, IAv_ref);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt;&nbsp;<span style="color:#c00000">&quot;IAv_ref finished.&quot;</span>&nbsp;&lt;&lt; endl;<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;refComputationLIIAv(Bil_x, IAv_ref, LIIAv_ref);<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt;&nbsp;<span style="color:#c00000">&quot;LIIAv_ref finished.&quot;</span>&nbsp;&lt;&lt; endl;<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;refComputationUIv(Bil_x, v, UIv_ref);<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt;&nbsp;<span style="color:#c00000">&quot;UIv_ref finished.&quot;</span>&nbsp;&lt;&lt; endl;<br>
+<!-- CodeLine     8 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;refComputationIAUIv(Bil_y, UIv_ref, IAUIv_ref);<br>
+<!-- CodeLine     9 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt;&nbsp;<span style="color:#c00000">&quot;IAUIv_ref finished.&quot;</span>&nbsp;&lt;&lt; endl;<br>
+<!-- CodeLine    10 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;refComputationAAv(Bil_x,Bil_y, v, AAv_ref);<br>
+<!-- CodeLine    11 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt;&nbsp;<span style="color:#c00000">&quot;AAv_ref finished.&quot;</span>&nbsp;&lt;&lt; endl;<br>
+<!-- CodeLine    12 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt;&nbsp;<span style="color:#c00000">&quot;Reference calculation finished.&quot;</span>&nbsp;&lt;&lt; endl;<br>
+<!-- CodeLine    13 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt;&nbsp;<span style="color:#c00000">&quot;New scheme started...&quot;</span>&nbsp;&lt;&lt; endl;<br>
+<!-- CodeLine    14 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time.start();<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Call of the local operator in two dimensions in debug mode. This allows as to compare intermediate results with computed reference solutions</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;localop2d.debug_eval(v, LIIAv, IAUIv, IAv_ref, LIIAv_ref, UIv_ref, IAUIv_ref, AAv_ref);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Call of the local operator in two dimensions in performance mode where we are able to measure the computation times of intermediate results.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;localop2d.eval(v, AAv, time_intermediate1, time_intermediate2,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; time_IAv1, time_IAv2, time_LIv, time_UIv);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>
