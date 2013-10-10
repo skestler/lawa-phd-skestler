@@ -1,5 +1,5 @@
-FLENS_HOME=$HOME/Programming/Lawa/workspace/Lawa_v3/FLENS-lite
-LAWA_HOME=$HOME/Programming/Lawa/workspace/Lawa_v3/LAWA-lite
+FLENS_HOME=$HOME/Programming/Lawa/workspace/Lawa_Diss/FLENS-lite
+LAWA_HOME=$HOME/Programming/Lawa/workspace/Lawa_Diss/LAWA-lite
 BOOST_HOME=$HOME/Programming/Boost/boost_1_40_0
 GMPFRXX_HOME=/Users/sebastian/Programming/gmpfrxx
 MPREC_INC_HOME=/opt/local/include

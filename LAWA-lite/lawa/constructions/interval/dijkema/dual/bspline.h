@@ -1,6 +1,7 @@
 /*
-  This file is part of LAWA - Library for Adaptive Wavelet Applications.
-  Copyright (C) 2008-2011  Mario Rometsch, Alexander Stippler.
+  LAWA - Library for Adaptive Wavelet Applications.
+  Copyright (C) 2008-2013  Sebastian Kestler, Mario Rometsch, Kristina Steih, 
+  Alexander Stippler.
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -15,7 +16,7 @@
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ */
 
 #ifndef LAWA_CONSTRUCTIONS_INTERVAL_DIJKEMA_DUAL_BSPLINE_H
 #define LAWA_CONSTRUCTIONS_INTERVAL_DIJKEMA_DUAL_BSPLINE_H 1

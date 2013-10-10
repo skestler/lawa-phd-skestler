@@ -1,6 +1,7 @@
 /*
   LAWA - Library for Adaptive Wavelet Applications.
-  Copyright (C) 2008,2009 Sebastian Kestler, Mario Rometsch, Kristina Steih, Alexander Stippler.
+  Copyright (C) 2008-2013  Sebastian Kestler, Mario Rometsch, Kristina Steih, 
+  Alexander Stippler.
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -16,7 +17,6 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 
 #ifndef LAWA_METHODS_ADAPTIVE_OPERATORS_DIAGONALPRECONDITIONERADAPTIVEOPERATOR_H
 #define LAWA_METHODS_ADAPTIVE_OPERATORS_DIAGONALPRECONDITIONERADAPTIVEOPERATOR_H 1
