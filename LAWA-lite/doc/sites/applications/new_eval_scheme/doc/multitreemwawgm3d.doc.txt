@@ -1,0 +1,24 @@
+:document:    lawa::applications::multitrees::multitreemwawgm3d
+
+__PhD thesis by S.K.__ - __Multitree based algorithms__ - __Multiwavelet based implementation of the multitree based AWGM in three dimensions__
+
+Multiwavelet based implementation of the multitree based AWGM in three dimensions
+---------------------------------------------------------------------------------
+
+Source file `applications/new_eval_scheme/multitree_mw_awgm3d.cpp`
+
+This program implements the two-dimensional multitree AWGM described in Section 6.5 and, in particular for this program, in Section 7.3 where we consider Poisson's problem on the cube $\square = (0,1)^3$ with 
+
+___ LATEX ________________
+   -\Delta u = f \text{ on } \square, \qquad u|_{\partial \square} = 0
+___________________________
+
+where we choose $f$ to be a constant function. Observe that this choice leads to a singular solution requiring an adaptive scheme in order to obtain the best possible rate (see Section 7.3).
+
+
+
+:import: applications/new_eval_scheme/multitree_mw_awgm3d.cpp [brief]
+
+:links:   PhD thesis by S.K. -> lawa::applications::home
+          Multitree based algorithms -> lawa::applications::multitrees
+          Multiwavelet based implementation of the multitree based AWGM in three dimensions -> lawa::applications::multitrees::multitreemwawgm3d

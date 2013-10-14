@@ -96,6 +96,12 @@ A first implementation of the multitree based AWGM in two dimensions</h3>
 </span></div><!--code_content-->
 </div><!-- code -->
 <p >
+     Definition of the (tensor product) wavelet preconditioner</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;OptimizedH1Preconditioner2D&lt;T,Basis2D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Preconditioner;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
      Underlying local operators the evaluation of \(a(v,w) := \Big(\int_0^1 p(x) v(x) w(x) dx \Big)\) or \(a(v,w) := \Big(\int_0^1 p(x) v'(x) w'(x) dx \Big)\)</p><div class="code">
 <div class="code_content"><span class="code_content">
 <!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;LocalOperator1D&lt;PrimalBasis,PrimalBasis,<br>

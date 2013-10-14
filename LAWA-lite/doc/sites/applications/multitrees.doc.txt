@@ -77,6 +77,10 @@ In order to set up, test and understand the tree structure of one-dimensional in
 Obviously, the key point is the implementation of the multitree based adaptive wavelet Galerkin method described in Section 6.5. Here, the following programs are provided:
 
 - __A first implementation of the multitree based AWGM in two dimensions__: `applications/new_eval_scheme/multitree_awgm2d.cpp`
+- __Multiwavelet based implementation of the multitree based AWGM in two dimensions__: `applications/new_eval_scheme/multitree_mw_awgm2d.cpp`
+- __Residual testing within the multiwavelet based implementation of the multitree based AWGM in two dimensions__: `applications/new_eval_scheme/multitree_mw_awgm2d_error.cpp`
+- __Multiwavelet based implementation of the multitree based AWGM in three dimensions__: `applications/new_eval_scheme/multitree_mw_awgm3d.cpp`
+- __Residual testing within the multiwavelet based implementation of the multitree based AWGM in three dimensions__: `applications/new_eval_scheme/multitree_mw_awgm3d_error.cpp`
 
 :links:   PhD thesis by S.K. -> lawa::applications::home
           Multitree based algorithms -> lawa::applications::multitrees
@@ -90,3 +94,7 @@ Obviously, the key point is the implementation of the multitree based adaptive w
           Tree based evaluation of a local operator in two dimensions -> lawa::applications::multitrees::testlocaloperator2d
           Tree based evaluation of a local operator in two dimensions on the realline -> lawa::applications::multitrees::testlocaloperatorrealline2d
           A first implementation of the multitree based AWGM in two dimensions -> lawa::applications::multitrees::multitreeawgm2d
+          Multiwavelet based implementation of the multitree based AWGM in two dimensions -> lawa::applications::multitrees::multitreemwawgm2d
+          Residual testing within the multiwavelet based implementation of the multitree based AWGM in two dimensions -> lawa::applications::multitrees::multitreemwawgm2derror
+          Multiwavelet based implementation of the multitree based AWGM in three dimensions -> lawa::applications::multitrees::multitreemwawgm3d
+          Residual testing within the multiwavelet based implementation of the multitree based AWGM in three dimensions -> lawa::applications::multitrees::multitreemwawgm3derror
