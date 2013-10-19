@@ -1,0 +1,19 @@
+:document:    lawa::applications::unbounded::rieszconstants
+
+__PhD thesis by S.K.__ - __AWGM on unbounded domains__ - __Computation of univariate Riesz constants__
+
+Computation of univariate Riesz constants
+-----------------------------------------
+
+Source file `applications/unbounded_domains/parameters/eigenvalues.cpp`
+
+This program can be used for the approximate computation of univariate Riesz constants for wavelet bases on unbounded domains ($\mathbb{R}$, $\mathbb{R}_+$). Examples of such constants can be found in Sections 4.4.3 and 4.6.1, Sections 5.4 and 5.5.
+
+In particular, we need to take into account the fact that wavelet bases on the real line do not necessarily have a minimal level. Apart from that, the computation of Riesz constants is realized by computing the smallest and the largest eigenvalue of mass or (generalized) stiffness matrices.
+
+
+:import: applications/unbounded_domains/parameters/eigenvalues.cpp [brief]
+
+:links:   PhD thesis by S.K. -> lawa::applications::home
+          AWGM on unbounded domains -> lawa::applications::unbounded
+          Computation of univariate Riesz constants -> lawa::applications::unbounded::rieszconstants
