@@ -1,0 +1,31 @@
+:document:    lawa::applications::unbounded
+
+__PhD thesis by S.K.__ - __AWGM on unbounded domains__
+
+AWGM on unbounded domains (Chapters 4 and 5)
+============================================
+
+We summarize the programs realizing the AWGM on unbounded domain.
+
+Please note that, as some of the programs are very similar to each other, some of them are only mentioned (and included in the package) but do not have their own documentation site.
+
+- __Computation of univariate Riesz constants__: `applications/unbounded_domains/parameters/eigenvalues.cpp`
+
+Implementations of the simplified AWGM:
+
+- __The simplified AWGM on the real line__ (Helmholtz operator): `applications/unbounded_domains/s-adwav/s-adwav-realline-helmholtz1d.cpp`
+- The simplified AWGM on the real line (constant coefficient operator): `applications/unbounded_domains/s-adwav/s-adwav-realline-pde1d.cpp`
+- The simplified AWGM on the half space (special multiwavelets only): `applications/unbounded_domains/s-adwav/s-adwav-rplus-helmholtz1d.cpp`
+- __The simplified AWGM on the real line in two dimensions__ (Helmholtz operator): `applications/unbounded_domains/s-adwav/s-adwav-realline-helmholtz2d.cpp`
+- The simplified AWGM on the real line in two dimensions (constant coefficient operator): `applications/unbounded_domains/s-adwav/s-adwav-realline-pde2d.cpp`
+- The simplified AWGM on $(0,1) \times \mathbb{R}_+$ (constant coefficient operator): `applications/unbounded_domains/s-adwav/s-adwav-interval-rplus-pde2d.cpp`
+
+Implementations of the (quasi-optimal) \textbf{APPLY}-AWGM by Gantumur, Habrecht and Stevenson (2007):
+
+
+
+:links:   PhD thesis by S.K. -> lawa::applications::home
+          AWGM on unbounded domains -> lawa::applications::unbounded
+          Computation of univariate Riesz constants -> lawa::applications::unbounded::rieszconstants
+          The simplified AWGM on the real line -> lawa::applications::unbounded::simawgmrealline1d
+          The simplified AWGM on the real line in two dimensions -> lawa::applications::unbounded::simawgmrealline2d

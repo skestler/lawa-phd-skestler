@@ -1,0 +1,338 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../../../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../../../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../../../index.html">home</a></li>
+<li><a href="../../../doc/license.html">license</a></li>
+<li><a href="../../../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../../../doc/features.html">lawa features</a></li>
+<li><a href="../../../doc/highperformance.html">high performance</a></li>
+<li><a href="../../../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../../../doc/download.html">download</a></li>
+<li><a href="../../../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../../../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../../../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../../../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+<p >
+     <a href="../../applications.html">PhD thesis by S.K.</a> - <a href="../../new_eval_scheme/doc/unbounded.html">AWGM on unbounded domains</a> - <a href="simawgmrealline2d.html">The simplified AWGM on the real line in two dimensions</a></p>
+
+<h3 class="doc">
+The simplified AWGM on the real line in two dimensions</h3>
+
+<p >
+     Source file <tt>applications/unbounded_domains/s-adwav/s-adwav-realline-helmholtz2d.cpp</tt></p><p >
+     This program implements the simplified AWGM on the real line from Section 4.6.4 using different types of wavelets (\(L_2\)-orthonormal, special multiwavelets from Chapter 5). It can in particular be used to realize the numerical experiments from the same section.</p><p >
+     Note that this program is only for the following two-dimensional problem: Find \(u \in H^1(\mathbb{R}^2)\) such that</p>\[   -\Delta u + c \cdot u = f, \qquad f \in H^{-1}(\mathbb{R}^2).\]<p >
+     As another important remark, we point out that the constant <tt>JMINOFFSET</tt> in lawa/methods/adaptive/datastructures/index.h needs to be set in a way that \(\text{JMINOFFSET}+j_0^{i} \geq 0\) for \(i \in \{1,2\}\) in order to ensure proper functionality of underlying hash maps. When you change JMINOFFSET, you need to re-compile the library liblawa!!</p><p >
+     Iterator definitions</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;IndexSet&lt;Index2D&gt;::const_iterator&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const_set2d_it;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;Coefficients&lt;Lexicographical,T,Index2D&gt;::const_iterator&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const_coeff2d_it;<br>
+<!-- CodeLine     3 --><span style="color:#008000">typedef</span>&nbsp;Coefficients&lt;AbsoluteValue,T,Index2D&gt;::const_iterator&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const_coeff2d_abs_it;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Basis definitions</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;Basis&lt;T,Primal,R,CDF&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CDF_Basis1D;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;TensorBasis2D&lt;Adaptive, CDF_Basis1D,CDF_Basis1D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDF_Basis2D;<br>
+<!-- CodeLine     3 --><span style="color:#008000">typedef</span>&nbsp;Basis&lt;T,Orthogonal,R,Multi&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MW_Basis1D;<br>
+<!-- CodeLine     4 --><span style="color:#008000">typedef</span>&nbsp;TensorBasis2D&lt;Adaptive, MW_Basis1D,MW_Basis1D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MW_Basis2D;<br>
+<!-- CodeLine     5 --><span style="color:#008000">typedef</span>&nbsp;Basis&lt;T,Primal,R,SparseMulti&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SparseMW_Basis1D;<br>
+<!-- CodeLine     6 --><span style="color:#008000">typedef</span>&nbsp;TensorBasis2D&lt;Adaptive, SparseMW_Basis1D,SparseMW_Basis1D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SparseMW_Basis2D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Operator definitions</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;HelmholtzOperator2D&lt;T, CDF_Basis2D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CDF_HelmholtzOp2D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Diagonal preconditioner (diagonal of the stiffness matrix)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;DiagonalMatrixPreconditioner2D&lt;T,CDF_Basis2D,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CDF_HelmholtzOp2D &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDF_Prec;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Adaptive operator definitions depending on the underlying tensor product basis (values are stored in hash tables)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;AdaptiveHelmholtzOperator2D&lt;T,CDF_Basis2D,CDF_Prec&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CDF_MA;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Definition of a preconditioner that re-uses computed values</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;DiagonalPreconditionerAdaptiveOperator&lt;T,Index2D,MW_MA&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MW_Prec;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;DiagonalPreconditionerAdaptiveOperator&lt;T,Index2D,SparseMW_MA&gt;&nbsp;&nbsp; SparseMW_Prec;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Righthandsides definitions (separable)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;SeparableRHS2D&lt;T,CDF_Basis2D &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDF_SeparableRhsIntegral2D;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;SeparableRHS2D&lt;T,MW_Basis2D &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MW_SeparableRhsIntegral2D;<br>
+<!-- CodeLine     3 --><span style="color:#008000">typedef</span>&nbsp;SeparableRHS2D&lt;T,SparseMW_Basis2D &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SparseMW_SeparableRhsIntegral2D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Righthandsides definitions for the case where \(f(x_1,x_2) = f(x_1)\cdot f(x_2)\) (or a sum of such functions)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;SumOfTwoRHSIntegrals&lt;T,Index2D,CDF_SeparableRhsIntegral2D,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CDF_SeparableRhsIntegral2D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDF_SumOfSeparableRhsIntegral2D;<br>
+<!-- CodeLine     3 --><span style="color:#008000">typedef</span>&nbsp;SumOfTwoRHSIntegrals&lt;T,Index2D,MW_SeparableRhsIntegral2D,<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MW_SeparableRhsIntegral2D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MW_SumOfSeparableRhsIntegral2D;<br>
+<!-- CodeLine     5 --><span style="color:#008000">typedef</span>&nbsp;SumOfTwoRHSIntegrals&lt;T,Index2D,SparseMW_SeparableRhsIntegral2D,<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SparseMW_SeparableRhsIntegral2D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SparseMW_SumOfSeparableRhsIntegral2D;<br>
+<!-- CodeLine     7 --><span style="color:#008000">typedef</span>&nbsp;RHS&lt;T,Index2D, CDF_SumOfSeparableRhsIntegral2D,<br>
+<!-- CodeLine     8 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDF_Prec&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CDF_SumOfSeparableRhs;<br>
+<!-- CodeLine     9 --><span style="color:#008000">typedef</span>&nbsp;RHS&lt;T,Index2D, MW_SumOfSeparableRhsIntegral2D,<br>
+<!-- CodeLine    10 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MW_Prec&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MW_SumOfSeparableRhs;<br>
+<!-- CodeLine    11 --><span style="color:#008000">typedef</span>&nbsp;RHS&lt;T,Index2D,SparseMW_SumOfSeparableRhsIntegral2D,<br>
+<!-- CodeLine    12 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SparseMW_Prec&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SparseMW_SumOfSeparableRhs;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Righthandsides definitions for the case where \(f(x_1,x_2)\) is not separable as above but has aligned (axis parallel) singularities. Here, we use either sparse grid or full grid quadrature rules to compute \(\int_{\square} f {\boldsymbol \psi} d(x_1,x_2)\) where \(\square\) is a rectangle on which \({\boldsymbol \psi}\) is smooth. Obviously, the union of the closure of these rectangles cover the support of \({\boldsymbol \psi}\).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;SmoothRHSWithAlignedSing2D&lt;T, CDF_Basis2D, SparseGridGP&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDF_NonSeparableRhsIntegralSG2D;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;SmoothRHSWithAlignedSing2D&lt;T, MW_Basis2D, SparseGridGP&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MW_NonSeparableRhsIntegralSG2D;<br>
+<!-- CodeLine     3 --><span style="color:#008000">typedef</span>&nbsp;SmoothRHSWithAlignedSing2D&lt;T, SparseMW_Basis2D, SparseGridGP&gt;&nbsp;&nbsp; SparseMW_NonSeparableRhsIntegralSG2D;<br>
+<!-- CodeLine     4 --><span style="color:#008000">typedef</span>&nbsp;SmoothRHSWithAlignedSing2D&lt;T, CDF_Basis2D, FullGridGL&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDF_NonSeparableRhsIntegralFG2D;<br>
+<!-- CodeLine     5 --><span style="color:#008000">typedef</span>&nbsp;SmoothRHSWithAlignedSing2D&lt;T, MW_Basis2D, FullGridGL&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MW_NonSeparableRhsIntegralFG2D;<br>
+<!-- CodeLine     6 --><span style="color:#008000">typedef</span>&nbsp;SmoothRHSWithAlignedSing2D&lt;T, SparseMW_Basis2D, FullGridGL&gt;&nbsp;&nbsp;&nbsp;&nbsp; SparseMW_NonSeparableRhsIntegralFG2D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Aggregation of the above defined right-hand side objects in one class.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;SumOfThreeRHSIntegrals&lt;T, Index2D,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CDF_NonSeparableRhsIntegralFG2D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CDF_SumOfNonSeparableRhsIntegral2D;<br>
+<!-- CodeLine     3 --><span style="color:#008000">typedef</span>&nbsp;SumOfThreeRHSIntegrals&lt;T, Index2D,<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MW_NonSeparableRhsIntegralFG2D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MW_SumOfNonSeparableRhsIntegral2D;<br>
+<!-- CodeLine     5 --><span style="color:#008000">typedef</span>&nbsp;SumOfThreeRHSIntegrals&lt;T, Index2D,<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SparseMW_NonSeparableRhsIntegralFG2D&gt;&nbsp;&nbsp;&nbsp;&nbsp;SparseMW_SumOfNonSeparableRhsIntegral2D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Definition of the solver algorithms depending on bases and right-hand side definitions</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;S_ADWAV&lt;T,Index2D,CDF_Basis2D,CDF_MA,CDF_SumOfSeparableRhs&gt;&nbsp;&nbsp;&nbsp;&nbsp; CDF_S_ADWAV_SOLVER_SeparableRhs;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;S_ADWAV&lt;T,Index2D,MW_Basis2D, MW_MA,MW_SumOfSeparableRhs&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MW_S_ADWAV_SOLVER_SeparableRhs;<br>
+<!-- CodeLine     3 --><span style="color:#008000">typedef</span>&nbsp;S_ADWAV&lt;T,Index2D,SparseMW_Basis2D,SparseMW_MA,<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SparseMW_SumOfSeparableRhs&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SparseMW_S_ADWAV_SOLVER_SeparableRhs;<br>
+<!-- CodeLine     5 --><span style="color:#008000">typedef</span>&nbsp;S_ADWAV&lt;T,Index2D,CDF_Basis2D,CDF_MA,<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDF_NonSeparableRhs2D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDF_S_ADWAV_SOLVER_NonSeparableRhs;<br>
+<!-- CodeLine     7 --><span style="color:#008000">typedef</span>&nbsp;S_ADWAV&lt;T,Index2D,MW_Basis2D,MW_MA,<br>
+<!-- CodeLine     8 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MW_NonSeparableRhs2D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MW_S_ADWAV_SOLVER_NonSeparableRhs;<br>
+<!-- CodeLine     9 --><span style="color:#008000">typedef</span>&nbsp;S_ADWAV&lt;T,Index2D,CDF_Basis2D,CDF_MA,<br>
+<!-- CodeLine    10 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDF_SumOfNonSeparableRhs2D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CDF_S_ADWAV_SOLVER_SumNonSeparableRhs;<br>
+<!-- CodeLine    11 --><span style="color:#008000">typedef</span>&nbsp;S_ADWAV&lt;T,Index2D,MW_Basis2D,MW_MA,<br>
+<!-- CodeLine    12 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MW_SumOfNonSeparableRhs2D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MW_S_ADWAV_SOLVER_SumNonSeparableRhs;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Wavelet basis parameters</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;d=atoi(argv[<span style="color:#c00000">2</span>]);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;d_=atoi(argv[<span style="color:#c00000">3</span>]);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Minimal level for the two coordinate directions</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;j0_x=atoi(argv[<span style="color:#c00000">4</span>]);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;j0_y=atoi(argv[<span style="color:#c00000">5</span>]);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Number of the reference example to be considered</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;example=atoi(argv[<span style="color:#c00000">6</span>]);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Maximum number of iterations of the Sim-AWGM.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;NumOfIterations=atoi(argv[<span style="color:#c00000">7</span>]);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Constant appearing the operator \(-\Delta + c\cdot \textrm{Id}\).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;T c=<span style="color:#c00000">1.</span>;&nbsp;<span style="color:#8080ff">//for other values of c, on the fly error computation does not work!!</span><br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Tuning parameter for the routine \(\textbf{C}\) (p. 83)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;T contraction =&nbsp;<span style="color:#c00000">0.125</span>;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Tuning parameter for the Sim-AWGM (p. 72).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;T threshTol =&nbsp;<span style="color:#c00000">0.4</span>;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;T cgTol =&nbsp;<span style="color:#c00000">0.1</span>*threshTol;<span style="color:#8080ff">//1e-12;</span><br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;T resTol=<span style="color:#c00000">1e-4</span>;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of wavelet bases and operators.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MW_Basis1D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MW_basis_x(d,j0_x);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MW_Basis1D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MW_basis_y(d,j0_y);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MW_Basis2D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MW_basis2d(MW_basis_x,MW_basis_y);<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MW_MA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MW_A(MW_basis2d, c);<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MW_Prec&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MW_P(MW_A);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     We need to distinguish the type of the right-hand side (separable or non-separable).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>&nbsp;(example==<span style="color:#c00000">1</span>&nbsp;|| example==<span style="color:#c00000">2</span>&nbsp;|| example==<span style="color:#c00000">3</span>) {<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of a reference solution</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TensorRefSols_PDE_Realline2D&lt;T&gt; refsol;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;refsol.setExample(example,&nbsp;<span style="color:#c00000">1.</span>,&nbsp;<span style="color:#c00000">0.</span>,&nbsp;<span style="color:#c00000">0.</span>,&nbsp;<span style="color:#c00000">1.</span>);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of the corresponding right-hand side</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SeparableFunction2D&lt;T&gt; SepFunc1(refsol.rhs_x, refsol.sing_pts_x,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;refsol.exact_y, refsol.sing_pts_y);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SeparableFunction2D&lt;T&gt; SepFunc2(refsol.exact_x, refsol.sing_pts_x,<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;refsol.rhs_y, refsol.sing_pts_y);<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GeMatrix&lt;flens::FullStorage&lt;T, cxxblas::ColMajor&gt; &gt; no_deltas;<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MW_SeparableRhsIntegral2D MW_rhsintegral_x(MW_basis2d, SepFunc1, refsol.deltas_x,<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; no_deltas, order);<br>
+<!-- CodeLine     8 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MW_SeparableRhsIntegral2D MW_rhsintegral_y(MW_basis2d, SepFunc2, no_deltas,<br>
+<!-- CodeLine     9 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; refsol.deltas_y, order);<br>
+<!-- CodeLine    10 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MW_SumOfSeparableRhsIntegral2D MW_rhsintegral2d(MW_rhsintegral_x,MW_rhsintegral_y);<br>
+<!-- CodeLine    11 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MW_SumOfSeparableRhs MW_F(MW_rhsintegral2d,MW_P);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of the simplified AWGM solver</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MW_S_ADWAV_SOLVER_SeparableRhs MW_s_adwav_solver(MW_basis2d, MW_A, MW_F, contraction,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; threshTol, cgTol, resTol, NumOfIterations,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c00000">1</span>,&nbsp;<span style="color:#c00000">1e-2</span>,<span style="color:#c00000">1000000</span>);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Calling the solver</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MW_s_adwav_solver.solve(InitialLambda,&nbsp;<span style="color:#c00000">&quot;cg&quot;</span>, convfilename.str().c_str(),&nbsp;<span style="color:#c00000">2</span>,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;refsol.H1norm());<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     The following procedure allows for the computation of right-hand side approximation that can be used for the \(\textbf{APPLY}\)-AWGM within the \(\textbf{RHS}\) routine.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IndexSet&lt;Index2D&gt; Extension;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Extension = C(Lambda,(T)<span style="color:#c00000">1.</span>,MW_basis2d);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lambda = Lambda + Extension;<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f = MW_F(Lambda);<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Coefficients&lt;AbsoluteValue,T,Index2D&gt; f_abs;<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f_abs = f;<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt; f.norm(<span style="color:#c00000">2.</span>) &lt;&lt;&nbsp;<span style="color:#c00000">&quot; &quot;</span>&nbsp;&lt;&lt; f_abs.norm(<span style="color:#c00000">2.</span>) &lt;&lt; endl;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Writing the results for a \(\textbf{RHS}\) routine to text file</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ofstream rhsfile(rhsfilename.str().c_str());<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rhsfile &lt;&lt; f.norm(<span style="color:#c00000">2.</span>) &lt;&lt; endl;<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(<span style="color:#008000">int</span>&nbsp;k=<span style="color:#c00000">0</span>; k&lt;=<span style="color:#c00000">30</span>; ++k) {<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T eta=pow((T)<span style="color:#c00000">2.</span>,(T)-k);<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f = MW_F(eta);<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt;&nbsp;<span style="color:#c00000">&quot;Size of index set for eta = &quot;</span>&nbsp;&lt;&lt; eta&nbsp;&nbsp;&lt;&lt;&nbsp;<span style="color:#c00000">&quot;: &quot;</span>&nbsp;&lt;&lt; f.size() &lt;&lt; endl;<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IndexSet&lt;Index2D&gt; supp_f;<br>
+<!-- CodeLine     8 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;supp_f = supp(f);<br>
+<!-- CodeLine     9 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rhsfile &lt;&lt;&nbsp;<span style="color:#c00000">&quot;#,&quot;</span>&nbsp;&lt;&lt; eta &lt;&lt; endl;<br>
+<!-- CodeLine    10 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">for</span>&nbsp;(const_set2d_it it=supp_f.begin(); it!=supp_f.end(); ++it) {<br>
+<!-- CodeLine    11 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#af5f00">if</span>&nbsp;(Lambda.count(*it)&gt;<span style="color:#c00000">0</span>) {<br>
+<!-- CodeLine    12 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lambda.erase(*it);<br>
+<!-- CodeLine    13 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rhsfile &lt;&lt; *it &lt;&lt; endl;<br>
+<!-- CodeLine    14 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    15 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    16 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rhsfile &lt;&lt; endl;<br>
+<!-- CodeLine    17 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<!-- CodeLine    18 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rhsfile.close();<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>

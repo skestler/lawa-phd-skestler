@@ -1,0 +1,25 @@
+:document:    lawa::applications::unbounded::simawgmrealline1d
+
+__PhD thesis by S.K.__ - __AWGM on unbounded domains__ - __The simplified AWGM on the real line__
+
+The simplified AWGM on the real line
+------------------------------------
+
+Source file `applications/unbounded_domains/s-adwav/s-adwav-realline-helmholtz1d.cpp`
+
+This program implements the simplified AWGM on the real line from Section 4.5.4 using different types of wavelets (biorthogonal, $L_2$-orthonormal, special multiwavelets from Chapter 5). It can in particular be used to realize the numerical experiments presented in Section 4.5.5.
+
+Note that this program is only for the following one-dimensional problem: Find $u \in H^1(\mathbb{R})$ such that
+
+
+___ LATEX ________________
+   -\Delta u + c \cdot u = f, \qquad f \in H^{-1}(\mathbb{R}).
+___________________________
+
+As another important remark, we point out that the constant `JMINOFFSET` in lawa/methods/adaptive/datastructures/index.h needs to be set in a way that $\text{JMINOFFSET}+j_0 \geq 0$ in order to ensure proper functionality of underlying hash maps. When you change JMINOFFSET, you need to re-compile the library liblawa!!
+
+:import: applications/unbounded_domains/s-adwav/s-adwav-realline-helmholtz1d.cpp [brief]
+
+:links:   PhD thesis by S.K. -> lawa::applications::home
+          AWGM on unbounded domains -> lawa::applications::unbounded
+          The simplified AWGM on the real line -> lawa::applications::unbounded::simawgmrealline1d
