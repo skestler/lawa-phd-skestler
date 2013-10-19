@@ -1,7 +1,6 @@
 /*
   LAWA - Library for Adaptive Wavelet Applications.
-  Copyright (C) 2008-2013  Sebastian Kestler, Mario Rometsch, Kristina Steih, 
-  Alexander Stippler.
+  Copyright (C) 2008,2009  Mario Rometsch, Kristina Steih, Alexander Stippler.
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -30,8 +29,8 @@ namespace lawa {
 
 static boost::hash<long int> hash_long;
 
-//#define JMINOFFSET                 10
-#define JMINOFFSET                  0
+//#define JMINOFFSET                 6
+#define JMINOFFSET                  6
 #define JMAX                       40
 #define SIZEHASHINDEX1D         12869//196613
 #define SIZELARGEHASHINDEX1D    72869//1572869
