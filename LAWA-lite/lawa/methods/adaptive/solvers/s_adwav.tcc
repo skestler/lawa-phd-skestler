@@ -106,9 +106,9 @@ S_ADWAV<T,Index,Basis,MA,RHS>::solve(const IndexSet<Index> &InitialLambda, const
 
         std::stringstream coeff_filename;
         coeff_filename << "s_adwav_coeff_" << u.size();
-        Coefficients<AbsoluteValue,T,Index1D> u_abs;
-        u_abs = u;
-        plotCoeff(u_abs, basis, coeff_filename.str().c_str());
+        //Coefficients<AbsoluteValue,T,Index1D> u_abs;
+        //u_abs = u;
+        //plotCoeff(u_abs, basis, coeff_filename.str().c_str());
 
         std::cout << "Computing error..." << std::endl;
         T time1 = timer.elapsed();
