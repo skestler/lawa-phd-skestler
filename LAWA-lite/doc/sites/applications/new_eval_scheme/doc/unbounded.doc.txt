@@ -20,8 +20,16 @@ Implementations of the simplified AWGM:
 - The simplified AWGM on the real line in two dimensions (constant coefficient operator): `applications/unbounded_domains/s-adwav/s-adwav-realline-pde2d.cpp`
 - The simplified AWGM on $(0,1) \times \mathbb{R}_+$ (constant coefficient operator): `applications/unbounded_domains/s-adwav/s-adwav-interval-rplus-pde2d.cpp`
 
-Implementations of the (quasi-optimal) \textbf{APPLY}-AWGM by Gantumur, Habrecht and Stevenson (2007):
+Implementations of the (quasi-optimal) \textbf{APPLY}-AWGM by Gantumur, Habrecht and Stevenson (2007) for the symmetric case:
 
+- __The APPLY-AWGM on the real line__ (Helmholtz operator): `applications/unbounded_domains/adwav/ghs-adwav-realline-helmholtz1d.cpp`
+- __The APPLY-AWGM on the real line in two dimensions__ (Helmholtz operator): `applications/unbounded_domains/adwav/ghs-adwav-realline-helmholtz2d.cpp`
+
+Implementations of the (quasi-optimal) \textbf{APPLY}-AWGM by Gantumur, Habrecht and Stevenson (2007) for the non-symmetric case:
+
+- The non-symmetric APPLY-AWGM on the real line (constant coefficient operator): `applications/unbounded_domains/adwav/ghs-adwav-realline-pde1d.cpp`
+- __The non-symmetric APPLY-AWGM on the real line in two dimensions__ (constant coefficient operator): `applications/unbounded_domains/adwav/ghs-adwav-realline-pde2d.cpp`
+- The non-symmetric APPLY-AWGM on $(0,1) \times \mathbb{R}_+$ (constant coefficient operator): `applications/unbounded_domains/adwav/ghs-adwav-interval-rplus-pde2d.cpp`
 
 
 :links:   PhD thesis by S.K. -> lawa::applications::home
@@ -29,3 +37,6 @@ Implementations of the (quasi-optimal) \textbf{APPLY}-AWGM by Gantumur, Habrecht
           Computation of univariate Riesz constants -> lawa::applications::unbounded::rieszconstants
           The simplified AWGM on the real line -> lawa::applications::unbounded::simawgmrealline1d
           The simplified AWGM on the real line in two dimensions -> lawa::applications::unbounded::simawgmrealline2d
+          The APPLY-AWGM on the real line -> lawa::applications::unbounded::applyawgmrealline1d
+          The APPLY-AWGM on the real line in two dimensions -> lawa::applications::unbounded::applyawgmrealline2d
+          The non-symmetric APPLY-AWGM on the real line in two dimensions -> lawa::applications::unbounded::nonsymmetricapplyawgmrealline2d
