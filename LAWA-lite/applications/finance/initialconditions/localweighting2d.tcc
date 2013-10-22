@@ -79,7 +79,7 @@ LocalWeighting2D<T,Basis>::weight(const Index2D &index)
         center_x *= RightmLeft_x1; center_x += left_x1;
         center_y *= RightmLeft_x1; center_y += left_x1;
     }
-    std::cerr << index << " " << supp_x << " " << supp_y << ":  (" << center_x << ", " << center_y << ")" << std::endl;
+    //std::cerr << index << " " << supp_x << " " << supp_y << ":  (" << center_x << ", " << center_y << ")" << std::endl;
 
     if (weight_type == 1) {
         return std::exp(-3.*(center_x*center_x + center_y*center_y));
