@@ -203,12 +203,14 @@ int main (int argc, char *argv[]) {
     /// Initialization of integrals for initial condition and rhs
     Option2D<T,optiontype>         option2d(optionparameters);
 
-    //TruncatedBasketPutOption2D<T> truncatedoption2d;
+    ///   Initialization of the truncated payoff function (see, e.g., p. 183 for a visualization)
     TruncatedSumOfPutsOption2D<T> truncatedoption2d;
+    //TruncatedBasketPutOption2D<T> truncatedoption2d;
     truncatedoption2d.setOption(option2d);
     truncatedoption2d.setTruncation(left_x1, right_x1, left_x2, right_x2, 0, 0.1, 100.);
     truncatedoption2d.setCriticalLine_x1(critical_line_x1, critical_above_x1);
 
+    ///  Initialization of the integral for approximating the truncated payoff function
     PayoffIntegral payoffIntegral(basis2d, truncatedoption2d,
                                   0., 1., 0., 1., true, 0.2, order);
     PayoffIntegralRHS payoffIntegralRHS(payoffIntegral, NoPrec);
@@ -231,39 +233,52 @@ int main (int argc, char *argv[]) {
     }
     std::ofstream convfile(filename.str().c_str());
 
+
     for (int j=0; j<=J; ++j) {
         u.clear();
         std::cerr << "Computation of initial index set." << std::endl;
         getSparseGridIndexSet(basis2d, left_x1, right_x1, left_x2, right_x2, u, j);
         std::cerr << "Computation of adopted sparse grid index set finished. Size: " << u.size() << std::endl;
 
+        ///  Initialization of the local weighting of the residual defined in Eq. (8.126). Here, a
+        ///  value of zero refers to no weighting. However, for experimental purposes also other
+        ///  values may be used.
         LocalWeightingInitCond2D localWeightingInitCond2D;
         localWeightingInitCond2D.setDomain(left_x1,right_x1,left_x2,right_x2);
         localWeightingInitCond2D.setBasis(&basis2d);
         localWeightingInitCond2D.setWeightType(0);
 
+        ///  Setting the compression level for the two-dimensional CGMY operator (see Eq. (8.132))
         cgmyeOp2D.setCompressionLevel(j, j);
 
+        ///  Initializing and calling the AWGM solver for approximating the initial condition
         ApproxL2AWGM2D approxL2_solver(basis2d, localThetaTimeStepOp2D, payoffIntegralRHS, NoPrec);
         approxL2_solver.setParameters(alpha, gamma, residualType, treeType, IsMW, false);
         approxL2_solver.approxL2(u, timestep_eps, localWeightingInitCond2D.weight, maxL2Iterations);
         cout << "Approximation of initial condition finished." << endl;
 
         T maxError = 0., innerMaxError = 0.;
-        PlotInitialCondition(basis2d, left_x1, right_x1, left_x2, right_x2, u, truncatedoption2d, maxError, innerMaxError);
+        //PlotInitialCondition(basis2d, left_x1, right_x1, left_x2, right_x2, u, truncatedoption2d, maxError, innerMaxError);
         cout << "Size of u: " << u.size() << " : " << maxError << " " << innerMaxError << endl;
 
+        ///  Initializing the AWGM solver for each time-step
         ThetaTimeStepMultiTreeAWGM2D thetatimestep_solver(basis2d, localThetaTimeStepOp2D,
                                                           thetatimestep_F, Prec);
         thetatimestep_solver.setParameters(alpha, gamma, residualType, treeType, IsMW, false,
                                            hashMapSize);
 
+        ///  For an adaptive strategy, i.e., an AWGM solve in each time-step (or, as an optimization only
+        ///  only in certain time-steps), stratey should be set to 1. For using a fixed index set
+        ///  that has a sparse grid structure but that remains fixed throughout the $\theta$-scheme,
+        ///  strategy should be set to 0. For more details, please see the implementation of
+        ///  the $\theta$-scheme in lawa/application/adaptive/solver/thetaschemeawgm.tcc.
         int strategy = 0;
+
+        ///  Initializing and calling the $\theta$-scheme
         ThetaSchemeMultiTreeAWGM2D thetascheme(thetatimestep_solver);
         thetascheme.setParameters(theta, timestep, numOfTimesteps, timestep_eps, maxiterations,
                                   init_cgtol, strategy);
 
-        int threshold_j = 0;
         int avDof = 0, maxDof = 0., terminalDof;
         thetascheme.solve(u, avDof, maxDof, terminalDof, 4);
         cerr << "Computation of u has finished." << endl;

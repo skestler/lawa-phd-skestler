@@ -329,10 +329,11 @@ int main (int argc, char *argv[]) {
         //int maxL2Iterations = 12+j; u.clear();
         //int maxL2Iterations = 15; u.clear();
         getSparseGridVector(basis2d, u, j, (T)0.);
-    //for (timestep_eps=0.1; timestep_eps>=1e-6; timestep_eps*=0.5) {
-        //int maxL2Iterations = 100; u.clear();
-        //getSparseGridVector(basis2d, u, 0, (T)0.);
 
+
+        ///  Initialization of the local weighting of residuals defined in Eq. (8.126). Unfortunately,
+        ///  the parameter $c$ appearing in this equation is hard-coded in this class. Currently,
+        ///  parameters are for the case $d=2$ (Eq. (8.128))
         LocalWeightingInitCond2D localWeightingInitCond2D;
         localWeightingInitCond2D.setDomain(left_x1,right_x1,left_x2,right_x2);
         localWeightingInitCond2D.setBasis(&basis2d);
@@ -354,8 +355,9 @@ int main (int argc, char *argv[]) {
         thetatimestep_solver.setParameters(alpha, gamma, residualType, treeType, IsMW, false,
                                            hashMapSize);
 
-
+        ///  Means that only thresholding is applied in each iteration
         int strategy = 2;
+
         ThetaSchemeMultiTreeAWGM2D thetascheme(thetatimestep_solver);
         thetascheme.setParameters(theta, timestep, numOfTimesteps, timestep_eps, maxiterations,
                                   init_cgtol, strategy);

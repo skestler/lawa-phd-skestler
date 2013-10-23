@@ -194,10 +194,11 @@ cg_solve(Coefficients<Lexicographical,T,Index> &u, T _eps, int NumOfIterations, 
         */
 
 
-        bool useSupportCenter=true;
-        std::stringstream coefffilename;
-        coefffilename << "u_coeff_mw_awgm_poisson3d_" << iter << ".dat";
-        plotScatterCoeff(u, basis, coefffilename.str().c_str(), useSupportCenter);
+        //bool useSupportCenter=true;
+        //std::stringstream coefffilename;
+        //coefffilename << "u_coeff_mw_awgm_poisson3d_" << iter << ".dat";
+        //plotScatterCoeff(u, basis, coefffilename.str().c_str(), useSupportCenter);
+
         //std::cerr << "Please hit enter." << std::endl;
         //getchar();
 
