@@ -5,7 +5,7 @@ __PhD thesis by S.K.__ - __Wavelet Galerkin methods in numerical finance__ - __W
 Wavelet Galerkin option pricing in the 1d CGMY model
 ----------------------------------------------------
 
-Source file `finance/finance/waveletgalerkinoptionpricer1d.cpp`
+Source file `applications/finance/waveletgalerkinoptionpricer1d.cpp`
 
 We describe the program that was used to obtain the results for wavelet Galerkin option pricing in univariate CGMY models (see Section 8.5). In particular, we compare the barrier option approach with the excess-to-payoff formulation.
 
