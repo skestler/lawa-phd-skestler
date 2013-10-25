@@ -1,0 +1,378 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../../../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../../../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../../../index.html">home</a></li>
+<li><a href="../../../doc/license.html">license</a></li>
+<li><a href="../../../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../../../doc/features.html">lawa features</a></li>
+<li><a href="../../../doc/highperformance.html">high performance</a></li>
+<li><a href="../../../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../../../doc/download.html">download</a></li>
+<li><a href="../../../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../../../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../../../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../../../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+<p >
+     <a href="../../applications.html">PhD thesis by S.K.</a> - <a href="../../finance.html">Wavelet Galerkin methods in numerical finance</a> - <a href="sparsegridcgmye2d.html">Sparse grid discretization of the two-dimensional CGMY problem</a></p>
+
+<h3 class="doc">
+Sparse grid discretization of the two-dimensional CGMY problem</h3>
+
+<p >
+     Source file <tt>applications/finance/cgmye2d_multitree_mw_sg.cpp</tt></p><p >
+     For the domain \([-R_1,R_1] \times [-R_2,R_2]\), we consider the discretization of the two-dimensional CGMYe problem by \(L_2\)-orthonormal multiwavelets (see Section 8.7). As described there, the usage of this basis has certain advantages compared to biorthogonal wavelets. This is why this program only works for this construction.</p><p >
+     Basis definitions</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;Basis&lt;T,Orthogonal,Interval,Multi&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PrimalBasis;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;TensorBasis2D&lt;Adaptive,PrimalBasis,PrimalBasis&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Basis2D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Values for strike, maturity and weights for the assets \(S_1\), \(S_2\)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->T strike =&nbsp;<span style="color:#c00000">1.</span>;<br>
+<!-- CodeLine     2 -->T maturity =&nbsp;<span style="color:#c00000">1.</span>;<br>
+<!-- CodeLine     3 -->T weight1 =&nbsp;<span style="color:#c00000">0.5</span>, weight2 =&nbsp;<span style="color:#c00000">0.5</span>;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Definition of the option type.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">const</span>&nbsp;OptionTypenD optiontype = SumOfPuts;<br>
+<!-- CodeLine     2 -->OptionParameters2D&lt;T,SumOfPuts&gt; optionparameters(strike, strike, maturity, weight1, weight2,&nbsp;<span style="color:#c00000">false</span>);<br>
+<!-- CodeLine     3 --><span style="color:#008000">typedef</span>&nbsp;PayoffIntegral2D&lt;FullGridGL,Basis2D,TruncatedSumOfPutsOption2D&lt;T&gt; &gt; PayoffIntegral;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Definition of the process type: Here (for the moment) the two-dimensional CGMYe model (see Section 8.7.1)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">const</span>&nbsp;ProcessType2D&nbsp;&nbsp;processtype&nbsp;&nbsp;= CGMYeUnivariateJump2D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Parameters for the diffusion part</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->T r =&nbsp;<span style="color:#c00000">0.</span>;<br>
+<!-- CodeLine     2 -->T sigma1 =&nbsp;<span style="color:#c00000">0.3</span>;<br>
+<!-- CodeLine     3 -->T sigma2 =&nbsp;<span style="color:#c00000">0.2</span>;<br>
+<!-- CodeLine     4 -->T rho =&nbsp;<span style="color:#c00000">0.</span>;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Parameters for the CGMY process parts</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->T k_C1 =&nbsp;<span style="color:#c00000">1.</span>, k_G1 =&nbsp;<span style="color:#c00000">8.7</span>, k_M1 =&nbsp;<span style="color:#c00000">16.5</span>, k_Y1 =&nbsp;<span style="color:#c00000">1.25</span>;<br>
+<!-- CodeLine     2 -->T k_C2 =&nbsp;<span style="color:#c00000">1.</span>, k_G2 =&nbsp;<span style="color:#c00000">11.2</span>, k_M2 =&nbsp;<span style="color:#c00000">7.9</span>, k_Y2 =&nbsp;<span style="color:#c00000">1.55</span>;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Storing the process parameters</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->ProcessParameters2D&lt;T,CGMYeUnivariateJump2D&gt;&nbsp;&nbsp; processparameters(r, sigma1, sigma2, rho,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; k_C1,&nbsp;&nbsp;k_G1, k_M1, k_Y1,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; k_C2,&nbsp;&nbsp;k_G2, k_M2, k_Y2);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Definition of the underlying operator for the two-dimensional CGMYe process</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;FinanceOperator2D&lt;CGMYeUnivariateJump2D, Basis2D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CGMYeOp2D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Local operator for the time-stepping scheme (see, e.g., Eq. (8.73))</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;ThetaTimeStepLocalOperator&lt;Index2D,CGMYeOp2D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ThetaTimeStepLocalOperator2D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Preconditioner adapted to the CGMYe operator</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;DiagonalMatrixPreconditioner2D&lt;T,Basis2D,CGMYeOp2D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Preconditioner;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Required right-hand side definitions</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;RHSWithPeaks1D&lt;T,PrimalBasis&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rhs1D;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;AdaptiveSeparableRhs&lt;T,Index2D,Rhs1D,Rhs1D &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AdaptiveSeparableRhsIntegral2D;<br>
+<!-- CodeLine     3 --><span style="color:#008000">typedef</span>&nbsp;ThetaTimeStepSeparableRHS&lt;T,Index2D,<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AdaptiveSeparableRhsIntegral2D,<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ThetaTimeStepLocalOperator2D&gt;&nbsp;&nbsp;&nbsp;&nbsp; ThetaTimeStepRhs2d;<br>
+<!-- CodeLine     6 --><span style="color:#008000">typedef</span>&nbsp;CompoundRhs&lt;T,Index2D,AdaptiveSeparableRhsIntegral2D,<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AdaptiveSeparableRhsIntegral2D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CompoundRhsIntegral2D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Definition of multitree AWGM solver for solving the linear system in each time-step. Here, we we will only perform one AWGM step which will correspond to a sparse grid scheme. Note that this proceeding can be optimized by writing a separate routine that does not rely on the multitree solver class</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;MultiTreeAWGM&lt;Index2D,Basis2D,ThetaTimeStepLocalOperator2D,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ThetaTimeStepRhs2d,Preconditioner&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ThetaTimeStepMultiTreeAWGM2D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Definition of multitree AWGM solver for approximating the initial condition. Here, we we will only perform one AWGM step which will correspond to a sparse grid scheme. Note that this proceeding can be optimized by writing a separate routine that does not rely on the multitree solver class</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;MultiTreeAWGM&lt;Index2D,Basis2D,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ThetaTimeStepLocalOperator2D,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CompoundRhsIntegral2D,<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NoPreconditioner&lt;T,Index2D&gt; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ApproxL2AWGM2D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Definition of the \(\theta\)-scheme AWGM sovler</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;ThetaSchemeAWGM&lt;Index2D, ThetaTimeStepMultiTreeAWGM2D&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ThetaSchemeMultiTreeAWGM2D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Iterators for post-processing</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;IndexSet&lt;Index1D&gt;::const_iterator&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const_set1d_it;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;IndexSet&lt;Index2D&gt;::const_iterator&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const_set2d_it;<br>
+<!-- CodeLine     3 --><span style="color:#008000">typedef</span>&nbsp;Coefficients&lt;Lexicographical,T,Index1D&gt;::iterator&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; coeff1d_it;<br>
+<!-- CodeLine     4 --><span style="color:#008000">typedef</span>&nbsp;Coefficients&lt;Lexicographical,T,Index2D&gt;::iterator&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; coeff2d_it;<br>
+<!-- CodeLine     5 --><span style="color:#008000">typedef</span>&nbsp;Coefficients&lt;Lexicographical,T,Index1D&gt;::const_iterator&nbsp;&nbsp;&nbsp;&nbsp; const_coeff1d_it;<br>
+<!-- CodeLine     6 --><span style="color:#008000">typedef</span>&nbsp;Coefficients&lt;Lexicographical,T,Index2D&gt;::const_iterator&nbsp;&nbsp;&nbsp;&nbsp; const_coeff2d_it;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     A simple routine to evaluate a wavelet basis expansion on the domain \([-R_1,R_1] \times [-R_2,R_2]\)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->T<br>
+<!-- CodeLine     2 -->evaluate(<span style="color:#008000">const</span>&nbsp;Basis2D &amp;basis2d, T left_x1, T right_x1, T left_x2, T right_x2,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">const</span>&nbsp;Coefficients&lt;Lexicographical,T,Index2D&gt; &amp;v, T x1, T x2);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Computing the \(L_\infty\) error as described in Eq. (8.125). There, you also find the definition of \(\delta\).</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->T<br>
+<!-- CodeLine     2 -->computeLinftyError(<span style="color:#008000">const</span>&nbsp;Basis2D &amp;basis2d, T left_x1, T right_x1, T left_x2, T right_x2,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">const</span>&nbsp;Coefficients&lt;Lexicographical,T,Index2D&gt; &amp;u,T delta,&nbsp;<span style="color:#008000">int</span>&nbsp;j,<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Option2D&lt;T,optiontype&gt; &amp;option2d,<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ProcessParameters2D&lt;T,CGMYeUnivariateJump2D&gt; &amp;processparameters);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     For scatter plots (=patterns) of the stiffness matrix</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">void</span><br>
+<!-- CodeLine     2 -->spyStiffnessMatrix(<span style="color:#008000">const</span>&nbsp;Basis2D &amp;basis2d, CGMYeOp2D &amp; cgmyeop2d,&nbsp;<span style="color:#008000">int</span>&nbsp;j,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">const</span>&nbsp;ProcessParameters2D&lt;T,CGMYeUnivariateJump2D&gt; &amp;processparameters);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Wavelet basis parameters</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;d&nbsp;&nbsp; = atoi(argv[<span style="color:#c00000">1</span>]);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;j0&nbsp;&nbsp;= atoi(argv[<span style="color:#c00000">2</span>]);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;J&nbsp;&nbsp; = atoi(argv[<span style="color:#c00000">3</span>]);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Parameters for AWGM: here only dummy variables</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;T alpha =&nbsp;<span style="color:#c00000">0.7</span>;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;T gamma =&nbsp;<span style="color:#c00000">0.025</span>;<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">const</span>&nbsp;<span style="color:#008000">char</span>* residualType =&nbsp;<span style="color:#c00000">&quot;standard&quot;</span>;<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">const</span>&nbsp;<span style="color:#008000">char</span>* treeType =&nbsp;<span style="color:#c00000">&quot;sparsetree&quot;</span>;&nbsp;<span style="color:#8080ff">//&quot;gradedtree&quot;;</span><br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     We focus on \(L_2\)-orthonormal wavelets here</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">bool</span>&nbsp;IsMW =&nbsp;<span style="color:#c00000">true</span>;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Size of the underlying domain: \([-R_1,R_1] \times [-R_2,R_2]\)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;T R1_1 = atof(argv[<span style="color:#c00000">4</span>]);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;T R2_1 = atof(argv[<span style="color:#c00000">5</span>]);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;T left_x1 = -R1_1, right_x1 = R2_1;<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;T R1_2 = atof(argv[<span style="color:#c00000">6</span>]);<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;T R2_2 = atof(argv[<span style="color:#c00000">7</span>]);<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;T left_x2 = -R1_2, right_x2 = R2_2;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Parameter \(\delta\) for error measurement (e.g., Eq. (8.125))</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;T delta =&nbsp;<span style="color:#c00000">0.05</span>;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Parameters for the \(\theta\)-scheme</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;T theta =&nbsp;<span style="color:#c00000">0.5</span>;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;T timestep_eps =&nbsp;<span style="color:#c00000">1e-6</span>;<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;maxiterations =&nbsp;&nbsp;<span style="color:#c00000">1</span>;&nbsp;&nbsp;T init_cgtol =&nbsp;<span style="color:#c00000">1e-9</span>;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">// use maxiterations = 1 for &quot;pure&quot; sparse grid computation</span><br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;numOfTimesteps =&nbsp;<span style="color:#c00000">128</span>;<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;T timestep = maturity/numOfTimesteps;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Integration order for approximating the initial condition</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;order =&nbsp;<span style="color:#c00000">4</span>;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Read reference prices from file (true) or not (false)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">bool</span>&nbsp;useRefPrices =&nbsp;<span style="color:#c00000">false</span>;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Basis initialization</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;PrimalBasis&nbsp;&nbsp;&nbsp;&nbsp; basis(d,j0);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;basis.enforceBoundaryCondition&lt;DirichletBC&gt;();<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;Basis2D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; basis2d(basis,basis);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of the CGMY operator. Observe that we need to pass the parameters of the underlying domain as parameters for a domain transformation!</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;CGMYeOp2D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgmyeOp2D(basis2d, processparameters,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; R1_1, R2_1, R1_2, R2_2,&nbsp;<span style="color:#c00000">10</span>);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of the time-step oerator</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;ThetaTimeStepLocalOperator2D localThetaTimeStepOp2D(theta,timestep,cgmyeOp2D);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of preconditioner</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;NoPreconditioner&lt;T, Index2D&gt; NoPrec;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//Preconditioner&nbsp;&nbsp;Prec(basis2d, sigma1*sigma1, sigma2*sigma2, 1.);</span><br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;Preconditioner&nbsp;&nbsp;Prec(cgmyeOp2D);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of integrals for initial condition and rhs</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;Option2D&lt;T,optiontype&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; option2d(optionparameters);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     This is required for approximating the initial condition with zero boundary conditions (see, e.g., p. 183)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8080ff">//TruncatedBasketPutOption2D&lt;T&gt; truncatedoption2d;</span><br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;TruncatedSumOfPutsOption2D&lt;T&gt; truncatedoption2d;<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;truncatedoption2d.setOption(option2d);<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;truncatedoption2d.setTruncation(left_x1, right_x1, left_x2, right_x2,&nbsp;<span style="color:#c00000">0</span>,&nbsp;<span style="color:#c00000">0.1</span>,&nbsp;<span style="color:#c00000">100.</span>);<br>
+<!-- CodeLine     5 -->&nbsp;&nbsp;&nbsp;&nbsp;truncatedoption2d.setCriticalLine_x1(critical_line_x1, critical_above_x1);<br>
+<!-- CodeLine     6 -->&nbsp;&nbsp;&nbsp;&nbsp;PayoffIntegral payoffIntegral(basis2d, truncatedoption2d,<br>
+<!-- CodeLine     7 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;left_x1, right_x1, left_x2, right_x2,&nbsp;<span style="color:#c00000">true</span>,&nbsp;<span style="color:#c00000">0.05</span>, order);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     This required for the correct initialization of the compression for CGMY operator (see p. 186)</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgmyeOp2D.setCompressionLevel(j, j);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of multi tree based adaptive wavelet Galerkin method</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ThetaTimeStepMultiTreeAWGM2D thetatimestep_solver(basis2d, localThetaTimeStepOp2D,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;thetatimestep_F, Prec);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;thetatimestep_solver.setParameters(alpha, gamma, residualType, treeType, IsMW,&nbsp;<span style="color:#c00000">false</span>,<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hashMapSize);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of \(\theta\)-scheme solver. The value of &#8220;zero&#8221 (last argument) refers to a sparse grid like realization of AWGM used in each time-step. More precisely, if we set this option, the initial index set associated to the wavelet basis expansion of the initial condition is fixed and not changed in the course of the time-stepping.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ThetaSchemeMultiTreeAWGM2D thetascheme(thetatimestep_solver);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;thetascheme.setParameters(theta, timestep, numOfTimesteps, timestep_eps, maxiterations,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;init_cgtol,&nbsp;<span style="color:#c00000">0</span>);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Dummy variables: these are only needed for adaptive computations. In this program, we only use sparse grid index sets</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;avDof =&nbsp;<span style="color:#c00000">0</span>, maxDof =&nbsp;<span style="color:#c00000">0.</span>, terminalDof;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Calling the \(\theta\)-scheme solver</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;thetascheme.solve(u, avDof, maxDof, terminalDof, j);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>

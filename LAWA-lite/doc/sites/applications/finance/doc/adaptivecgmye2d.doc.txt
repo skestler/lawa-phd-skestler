@@ -1,0 +1,21 @@
+:document:    lawa::applications::finance::adaptivecgmye2d
+
+__PhD thesis by S.K.__ - __Wavelet Galerkin methods in numerical finance__ - __Adaptive discretization of the two-dimensional CGMY problem__
+
+Adaptive discretization of the two-dimensional CGMY problem
+-----------------------------------------------------------
+
+Source file `applications/finance/cgmye2d_multitree_mw_awgm.cpp`
+
+For the domain $\mathbb{R}^2$, we consider the discretization of the two-dimensional CGMYe problem by $L_2$-orthonormal multiwavelets as described in Section 8.7.3. Note that this program only works for $L_2$-orthonormal wavelets.
+
+Moreover, we only comment on the significant changes of this program compared to the __sparse grid case__.
+
+
+
+:import: applications/finance/cgmye2d_multitree_mw_awgm.cpp [brief]
+
+:links:   PhD thesis by S.K. -> lawa::applications::home
+          Wavelet Galerkin methods in numerical finance -> lawa::applications::finance
+          Adaptive discretization of the two-dimensional CGMY problem -> lawa::applications::finance::adaptivecgmye2d
+          sparse grid case -> lawa::applications::finance::sparsegridcgmye2d

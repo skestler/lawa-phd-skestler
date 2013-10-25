@@ -1,0 +1,18 @@
+:document:    lawa::applications::finance::sparsegridcgmye2d
+
+__PhD thesis by S.K.__ - __Wavelet Galerkin methods in numerical finance__ - __Sparse grid discretization of the two-dimensional CGMY problem__
+
+Sparse grid discretization of the two-dimensional CGMY problem
+--------------------------------------------------------------
+
+Source file `applications/finance/cgmye2d_multitree_mw_sg.cpp`
+
+For the domain $[-R_1,R_1] \times [-R_2,R_2]$, we consider the discretization of the two-dimensional CGMYe problem by $L_2$-orthonormal multiwavelets (see Section 8.7). As described there, the usage of this basis has certain advantages compared to biorthogonal wavelets. This is why this program only works for this construction.
+
+
+
+:import: applications/finance/cgmye2d_multitree_mw_sg.cpp [brief]
+
+:links:   PhD thesis by S.K. -> lawa::applications::home
+          Wavelet Galerkin methods in numerical finance -> lawa::applications::finance
+          Sparse grid discretization of the two-dimensional CGMY problem -> lawa::applications::finance::sparsegridcgmye2d

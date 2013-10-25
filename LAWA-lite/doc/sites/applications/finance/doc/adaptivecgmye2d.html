@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
+<html>
+<head>
+<title>LAWA - Library for Adaptive Wavelet Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="../../../default.css" rel=stylesheet>
+
+<script type="text/javascript">
+  MathJax.Hub.Config({
+     extensions: ["tex2jax.js"],
+     tex2jax: {
+         inlineMath: [ ['$','$']/*, ["\\(","\\)"]*/ ],
+         displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+         processEscapes: true
+     },
+     "HTML-CSS": { scale: 100 }
+  });
+</script>
+
+<script type="text/javascript"
+ src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+<body>
+<script type="text/javascript" src="../../../wz_tooltip.js"></script>
+
+<div id="body">
+<div id="header">
+    <div id="slogan">LAWA <br> L<span class="fade">ibrary for </span>
+                               A<span class="fade">daptive </span>
+                               W<span class="fade">avelet </span>
+                               A<span class="fade">pplications </span>
+    <div id="wavelet"><img src="../../../../images/wavelet.png" 
+         style="float:right" height="160px" alt="wavelet.png"></div></div>
+</div>
+
+<div id="content">
+<!--<table width="100%">
+<tr>
+<td valign="top" id="leftmenu">-->
+<div id="leftmenu">
+<ul id="menu">
+<li class="subtitle">lawa</li>
+<li><a href="../../../index.html">home</a></li>
+<li><a href="../../../doc/license.html">license</a></li>
+<li><a href="../../../doc/roadmap.html">roadmap</a></li>
+
+<li class="subtitle">features</li>
+<li><a href="../../../doc/features.html">lawa features</a></li>
+<li><a href="../../../doc/highperformance.html">high performance</a></li>
+<li><a href="../../../doc/convenientusage.html">convenient usage</a></li>
+
+<li class="subtitle">using lawa</li>
+<li><a href="../../../doc/download.html">download</a></li>
+<li><a href="../../../lawa/lawa.html">documentation</a></li>
+<!--<li><a href="/doc/contributingcode.html">contributing code</a></li>-->
+<li><a href="../../../doc/mailinglist.html">mailing list</a></li>
+<li><a href="../../../doc/reportingbugs.html">reporting bugs</a></li>
+
+    <li class="subtitle">projects</li>
+    <li><a href="../../../doc/projects.html">based on / using lawa</a></li>
+</ul>
+<!--</td>
+<td class="main">-->
+</div><div id="main">
+
+<p >
+     <a href="../../applications.html">PhD thesis by S.K.</a> - <a href="../../finance.html">Wavelet Galerkin methods in numerical finance</a> - <a href="adaptivecgmye2d.html">Adaptive discretization of the two-dimensional CGMY problem</a></p>
+
+<h3 class="doc">
+Adaptive discretization of the two-dimensional CGMY problem</h3>
+
+<p >
+     Source file <tt>applications/finance/cgmye2d_multitree_mw_awgm.cpp</tt></p><p >
+     For the domain \(\mathbb{R}^2\), we consider the discretization of the two-dimensional CGMYe problem by \(L_2\)-orthonormal multiwavelets as described in Section 8.7.3. Note that this program only works for \(L_2\)-orthonormal wavelets.</p><p >
+     Moreover, we only comment on the significant changes of this program compared to the <a href="sparsegridcgmye2d.html">sparse grid case</a>.</p><p >
+     Definition of \(L_2(\mathbb{R})\)-orthonormal multiwavelets.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 --><span style="color:#008000">typedef</span>&nbsp;Basis&lt;T,Orthogonal,R,Multi&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PrimalBasis;<br>
+<!-- CodeLine     2 --><span style="color:#008000">typedef</span>&nbsp;TensorBasis2D&lt;Adaptive,PrimalBasis,PrimalBasis&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Basis2D;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of the CGMY operator. Note that here we are using \([0,1]\) as a reference interval because real line wavelets do not need to be adapted to the underlying which is \(\mathbb{R}\) here.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;CGMYeOp2D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgmyeOp2D(basis2d, processparameters,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c00000">0.</span>,&nbsp;<span style="color:#c00000">1.</span>,&nbsp;<span style="color:#c00000">0.</span>,&nbsp;<span style="color:#c00000">1.</span>,&nbsp;<span style="color:#c00000">10</span>);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of the integral for approximating the truncated payoff function. Note that here we are using \([0,1]\) as a reference interval because real line wavelets do not need to be adapted to the underlying which is \(\mathbb{R}\) here.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;PayoffIntegral payoffIntegral(basis2d, truncatedoption2d,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c00000">0.</span>,&nbsp;<span style="color:#c00000">1.</span>,&nbsp;<span style="color:#c00000">0.</span>,&nbsp;<span style="color:#c00000">1.</span>,&nbsp;<span style="color:#c00000">true</span>,&nbsp;<span style="color:#c00000">0.2</span>, order);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;PayoffIntegralRHS payoffIntegralRHS(payoffIntegral, NoPrec);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initialization of the local weighting of the residual defined in Eq. (8.126). Here, a value of zero refers to no weighting. However, for experimental purposes also other values may be used.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LocalWeightingInitCond2D localWeightingInitCond2D;<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;localWeightingInitCond2D.setDomain(left_x1,right_x1,left_x2,right_x2);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;localWeightingInitCond2D.setBasis(&amp;basis2d);<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;localWeightingInitCond2D.setWeightType(<span style="color:#c00000">0</span>);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Setting the compression level for the two-dimensional CGMY operator (see Eq. (8.132))</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgmyeOp2D.setCompressionLevel(j, j);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initializing and calling the AWGM solver for approximating the initial condition</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ApproxL2AWGM2D approxL2_solver(basis2d, localThetaTimeStepOp2D, payoffIntegralRHS, NoPrec);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;approxL2_solver.setParameters(alpha, gamma, residualType, treeType, IsMW,&nbsp;<span style="color:#c00000">false</span>);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;approxL2_solver.approxL2(u, timestep_eps, localWeightingInitCond2D.weight, maxL2Iterations);<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt;&nbsp;<span style="color:#c00000">&quot;Approximation of initial condition finished.&quot;</span>&nbsp;&lt;&lt; endl;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initializing the AWGM solver for each time-step</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ThetaTimeStepMultiTreeAWGM2D thetatimestep_solver(basis2d, localThetaTimeStepOp2D,<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;thetatimestep_F, Prec);<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;thetatimestep_solver.setParameters(alpha, gamma, residualType, treeType, IsMW,&nbsp;<span style="color:#c00000">false</span>,<br>
+<!-- CodeLine     4 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hashMapSize);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     For an adaptive strategy, i.e., an AWGM solve in each time-step (or, as an optimization only only in certain time-steps), stratey should be set to 1. For using a fixed index set that has a sparse grid structure but that remains fixed throughout the \(\theta\)-scheme, strategy should be set to 0. For more details, please see the implementation of the \(\theta\)-scheme in lawa/application/adaptive/solver/thetaschemeawgm.tcc. Observe that within getSparseGridIndexSet, the range for translation indices can be set manually.</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;strategy =&nbsp;<span style="color:#c00000">0</span>;<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<p >
+     Initializing and calling the \(\theta\)-scheme</p><div class="code">
+<div class="code_content"><span class="code_content">
+<!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ThetaSchemeMultiTreeAWGM2D thetascheme(thetatimestep_solver);<br>
+<!-- CodeLine     2 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;thetascheme.setParameters(theta, timestep, numOfTimesteps, timestep_eps, maxiterations,<br>
+<!-- CodeLine     3 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;init_cgtol, strategy);<br>
+</span></div><!--code_content-->
+</div><!-- code -->
+<!--
+</td>
+</tr>
+</table>
+-->
+</div>
+
+</div>
+<div id="page_footer"></div>
+</div>
+
+<div id="footer">
+Copyright &copy; 2011 <a href="http://lawa.sf.net">Alexander Stippler</a>
+</div>
+</body>
+</html>

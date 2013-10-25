@@ -1,0 +1,20 @@
+:document:    lawa::applications::finance::sparsegridbs2d
+
+__PhD thesis by S.K.__ - __Wavelet Galerkin methods in numerical finance__ - __Sparse grid discretization of the two-dimensional Black-Scholes problem__
+
+Sparse grid discretization of the two-dimensional Black-Scholes problem
+-----------------------------------------------------------------------
+
+Source file `applications/finance/bs2d_multitree_mw_sg.cpp`
+
+For the domain $[-R,R]^2$, we consider the discretization of the two-dimensional Black-Scholes problem Eq. (8.124) by $L_2$-orthonormal multiwavelets. As described in Section 8.6.1, the usage of this basis has certain advantages compared to biorthogonal wavelets. This is why this program only works for this construction.
+
+Moreover, we make specific use of the multitree algorithms described in Chapters 6 and 7.
+
+
+
+:import: applications/finance/bs2d_multitree_mw_sg.cpp [brief]
+
+:links:   PhD thesis by S.K. -> lawa::applications::home
+          Wavelet Galerkin methods in numerical finance -> lawa::applications::finance
+          Sparse grid discretization of the two-dimensional Black-Scholes problem -> lawa::applications::finance::sparsegridbs2d
