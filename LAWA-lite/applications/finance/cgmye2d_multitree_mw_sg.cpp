@@ -14,6 +14,7 @@ typedef long double T;
 typedef flens::GeMatrix<flens::FullStorage<T, cxxblas::ColMajor> >  DenseMatrixT;
 typedef flens::DenseVector<flens::Array<T> >                        DenseVectorT;
 
+///  Basis definitions
 typedef Basis<T,Orthogonal,Interval,Multi>                          PrimalBasis;
 typedef TensorBasis2D<Adaptive,PrimalBasis,PrimalBasis>             Basis2D;
 
@@ -21,7 +22,7 @@ typedef TensorBasis2D<Adaptive,PrimalBasis,PrimalBasis>             Basis2D;
 /* *** Typedefs for financial model *** */
 /* ************************************ */
 
-
+///  Values for strike, maturity and weights for the assets $S_1$, $S_2$
 T strike = 1.;
 T maturity = 1.;
 T weight1 = 0.5, weight2 = 0.5;
@@ -32,19 +33,27 @@ OptionParameters2D<T,BasketPut> optionparameters(strike, maturity, weight1, weig
 typedef PayoffIntegral2D<FullGridGL,Basis2D,TruncatedBasketPutOption2D<T> > PayoffIntegral;
 */
 
+///  Definition of the option type.
 const OptionTypenD optiontype = SumOfPuts;
 OptionParameters2D<T,SumOfPuts> optionparameters(strike, strike, maturity, weight1, weight2, false);
 typedef PayoffIntegral2D<FullGridGL,Basis2D,TruncatedSumOfPutsOption2D<T> > PayoffIntegral;
 
+///  Definition of the process type: Here (for the moment) the two-dimensional CGMYe model (see Section 8.7.1)
 const ProcessType2D  processtype  = CGMYeUnivariateJump2D;
+
 //T r = 0.04; T sigma1 = 0.3, sigma2 = 0.2, rho = 0.;
 //T u11 = 1., u12 = 0., u21 = 0., u22 = 1.;
+
+///  Parameters for the diffusion part
 T r = 0.;
 T sigma1 = 0.3;
 T sigma2 = 0.2;
 T rho = 0.;
+
 //T k_C1 = 1., k_G1 = 7.4, k_M1 = 8.5, k_Y1 = 0.8;
 //T k_C2 = 1., k_G2 = 6.5, k_M2 = 9.5, k_Y2 = 1.1;
+
+///  Parameters for the CGMY process parts
 T k_C1 = 1., k_G1 = 8.7, k_M1 = 16.5, k_Y1 = 1.25;
 T k_C2 = 1., k_G2 = 11.2, k_M2 = 7.9, k_Y2 = 1.55;
 
@@ -53,10 +62,12 @@ T k_C2 = 1., k_G2 = 11.2, k_M2 = 7.9, k_Y2 = 1.55;
 //T k_C1 = 1., k_G1 = 8.7, k_M1 = 16.5, k_Y1 = 1.55;
 //T k_C2 = 1., k_G2 = 11.2, k_M2 = 7.9, k_Y2 = 1.55;
 
+// These parameters are required later on for computing wavelet integrals against the payoff function
+// in order to determine when the payoff function is zero
 T    critical_line_x1 = 0.6;
 bool critical_above_x1 = true;
 
-
+///  Storing the process parameters
 ProcessParameters2D<T,CGMYeUnivariateJump2D>   processparameters(r, sigma1, sigma2, rho,
                                                                  k_C1,  k_G1, k_M1, k_Y1,
                                                                  k_C2,  k_G2, k_M2, k_Y2);
@@ -66,11 +77,17 @@ ProcessParameters2D<T,CGMYeUnivariateJump2D>   processparameters(r, sigma1, sigm
 /* ********************************************* */
 
 //typedef OptimizedH1Preconditioner2D<T,Basis2D>                      Preconditioner;
+
+///  Definition of the underlying operator for the two-dimensional CGMYe process
 typedef FinanceOperator2D<CGMYeUnivariateJump2D, Basis2D>           CGMYeOp2D;
+
+///  Local operator for the time-stepping scheme (see, e.g., Eq. (8.73))
 typedef ThetaTimeStepLocalOperator<Index2D,CGMYeOp2D>               ThetaTimeStepLocalOperator2D;
+
+///  Preconditioner adapted to the CGMYe operator
 typedef DiagonalMatrixPreconditioner2D<T,Basis2D,CGMYeOp2D>         Preconditioner;
 
-//Righthandsides definitions (separable)
+///  Required right-hand side definitions
 typedef RHSWithPeaks1D<T,PrimalBasis>                               Rhs1D;
 typedef AdaptiveSeparableRhs<T,Index2D,Rhs1D,Rhs1D >                AdaptiveSeparableRhsIntegral2D;
 typedef ThetaTimeStepSeparableRHS<T,Index2D,
@@ -79,16 +96,26 @@ typedef ThetaTimeStepSeparableRHS<T,Index2D,
 typedef CompoundRhs<T,Index2D,AdaptiveSeparableRhsIntegral2D,
                     AdaptiveSeparableRhsIntegral2D>                 CompoundRhsIntegral2D;
 
+///  Definition of multitree AWGM solver for solving the linear system in each time-step. Here, we
+///  we will only perform one AWGM step which will correspond to a sparse grid scheme. Note that
+///  this proceeding can be optimized by writing a separate routine that does not rely on the
+///  multitree solver class
 typedef MultiTreeAWGM<Index2D,Basis2D,ThetaTimeStepLocalOperator2D,
                       ThetaTimeStepRhs2d,Preconditioner>            ThetaTimeStepMultiTreeAWGM2D;
 
+///  Definition of multitree AWGM solver for approximating the initial condition. Here, we
+///  we will only perform one AWGM step which will correspond to a sparse grid scheme. Note that
+///  this proceeding can be optimized by writing a separate routine that does not rely on the
+///  multitree solver class
 typedef MultiTreeAWGM<Index2D,Basis2D,
                       ThetaTimeStepLocalOperator2D,
                       CompoundRhsIntegral2D,
                       NoPreconditioner<T,Index2D> >                 ApproxL2AWGM2D;
 
+///  Definition of the $\theta$-scheme AWGM sovler
 typedef ThetaSchemeAWGM<Index2D, ThetaTimeStepMultiTreeAWGM2D>      ThetaSchemeMultiTreeAWGM2D;
 
+///  Iterators for post-processing
 typedef IndexSet<Index1D>::const_iterator                           const_set1d_it;
 typedef IndexSet<Index2D>::const_iterator                           const_set2d_it;
 typedef Coefficients<Lexicographical,T,Index1D>::iterator           coeff1d_it;
@@ -101,12 +128,20 @@ T f_t(T t)       {  return 0.; }
 T f_x(T x)       {  return 0.; }
 T f_y(T y)       {  return 0.; }
 
+/// A simple routine to evaluate a wavelet basis expansion on the domain $[-R_1,R_1] \times [-R_2,R_2]$
+T
+evaluate(const Basis2D &basis2d, T left_x1, T right_x1, T left_x2, T right_x2,
+         const Coefficients<Lexicographical,T,Index2D> &v, T x1, T x2);
+
+///  Computing the $L_\infty$ error as described in Eq. (8.125). There, you also find the definition
+///  of $\delta$.
 T
 computeLinftyError(const Basis2D &basis2d, T left_x1, T right_x1, T left_x2, T right_x2,
                    const Coefficients<Lexicographical,T,Index2D> &u,T delta, int j,
                    Option2D<T,optiontype> &option2d,
                    ProcessParameters2D<T,CGMYeUnivariateJump2D> &processparameters);
 
+///  For scatter plots (=patterns) of the stiffness matrix
 void
 spyStiffnessMatrix(const Basis2D &basis2d, CGMYeOp2D & cgmyeop2d, int j,
                    const ProcessParameters2D<T,CGMYeUnivariateJump2D> &processparameters);
@@ -119,33 +154,44 @@ int main (int argc, char *argv[]) {
         return 0;
     }
 
+    ///  Wavelet basis parameters
     int d   = atoi(argv[1]);
     int j0  = atoi(argv[2]);
     int J   = atoi(argv[3]);
+
+    ///  Parameters for AWGM: here only dummy variables
     T alpha = 0.7;
     T gamma = 0.025;
     const char* residualType = "standard";
     const char* treeType = "sparsetree"; //"gradedtree";
+
+    ///  We focus on $L_2$-orthonormal wavelets here
     bool IsMW = true;
+
     size_t hashMapSize = 196613;
+
+    ///  Size of the underlying domain: $[-R_1,R_1] \times [-R_2,R_2]$
     T R1_1 = atof(argv[4]);
     T R2_1 = atof(argv[5]);
     T left_x1 = -R1_1, right_x1 = R2_1;
     T R1_2 = atof(argv[6]);
     T R2_2 = atof(argv[7]);
     T left_x2 = -R1_2, right_x2 = R2_2;
+
+    ///  Parameter $\delta$ for error measurement (e.g., Eq. (8.125))
     T delta = 0.05;
 
+    ///  Parameters for the $\theta$-scheme
     T theta = 0.5;
     T timestep_eps = 1e-6;
     int maxiterations =  1;  T init_cgtol = 1e-9;   // use maxiterations = 1 for "pure" sparse grid computation
     int numOfTimesteps = 128;
     T timestep = maturity/numOfTimesteps;
 
-    int numOfMCRuns = 100000;
-
+    ///  Integration order for approximating the initial condition
     int order = 4;
 
+    ///  Read reference prices from file (true) or not (false)
     bool useRefPrices = false;
 
     Timer time;
@@ -156,8 +202,13 @@ int main (int argc, char *argv[]) {
     Basis2D         basis2d(basis,basis);
 
     cout << "Process parameters: " << processparameters << endl;
+
+    ///  Initialization of the CGMY operator. Observe that we need to pass the parameters of the
+    ///  underlying domain as parameters for a domain transformation!
     CGMYeOp2D                    cgmyeOp2D(basis2d, processparameters,
                                            R1_1, R2_1, R1_2, R2_2, 10);
+
+    ///  Initialization of the time-step oerator
     ThetaTimeStepLocalOperator2D localThetaTimeStepOp2D(theta,timestep,cgmyeOp2D);
 
     /// Initialization of preconditioner
@@ -166,31 +217,33 @@ int main (int argc, char *argv[]) {
     Preconditioner  Prec(cgmyeOp2D);
 
 
-    /// Initialization of integrals for initial condition and rhs
-    DenseVectorT sing_pts_t, sing_pts_x(5), sing_pts_y(5);
-    sing_pts_x = 0.1, 0.2, 0.3, 0.4, 0.5;
-    sing_pts_y =  0.1, 0.2, 0.3, 0.4, 0.5;
+    // Initialization of integrals for the rhs which is, for our example, zero. The example below
+    // however shows how to use singular points for a refinement of the integration domain when
+    // the function to be integrated against is not smooth at or near the origin. Please note that
+    // such a rhs object is required for the implementation of the $\theta$-scheme which also applies
+    // to more general problems
+    DenseVectorT sing_pts_t, sing_pts_x, sing_pts_y;
+    //sing_pts_x = 0.1, 0.2, 0.3, 0.4, 0.5;
+    //sing_pts_y =  0.1, 0.2, 0.3, 0.4, 0.5;
     DenseMatrixT no_deltas, deltas_x, deltas_y;
     Function<T>                    fct_f_t(f_t,sing_pts_t);
     Function<T>                    fct_f_x(f_x,sing_pts_x), fct_f_y(f_y,sing_pts_y);
     RHSWithPeaks1D<T,PrimalBasis>  rhs_f_x(basis, fct_f_x, no_deltas, order);
     RHSWithPeaks1D<T,PrimalBasis>  rhs_f_y(basis, fct_f_y, no_deltas, order);
-
     Coefficients<Lexicographical,T,Index1D> rhs_f_x_data(SIZEHASHINDEX1D),
                                             rhs_f_y_data(SIZEHASHINDEX1D);
-
     AdaptiveSeparableRhsIntegral2D F_rhs(rhs_f_x, rhs_f_x_data, rhs_f_y, rhs_f_y_data);
     ThetaTimeStepRhs2d thetatimestep_F(fct_f_t,F_rhs,localThetaTimeStepOp2D);
 
     /// Initialization of integrals for initial condition and rhs
     Option2D<T,optiontype>         option2d(optionparameters);
 
+    ///  This is required for approximating the initial condition with zero boundary conditions (see, e.g., p. 183)
     //TruncatedBasketPutOption2D<T> truncatedoption2d;
     TruncatedSumOfPutsOption2D<T> truncatedoption2d;
     truncatedoption2d.setOption(option2d);
     truncatedoption2d.setTruncation(left_x1, right_x1, left_x2, right_x2, 0, 0.1, 100.);
     truncatedoption2d.setCriticalLine_x1(critical_line_x1, critical_above_x1);
-
     PayoffIntegral payoffIntegral(basis2d, truncatedoption2d,
                                   left_x1, right_x1, left_x2, right_x2, true, 0.05, order);
 
@@ -214,7 +267,10 @@ int main (int argc, char *argv[]) {
 
     for (int j=0; j<=J; ++j) {
         getSparseGridVector(basis2d, u, j, (T)0.);
+
+        ///  This required for the correct initialization of the compression for CGMY operator (see p. 186)
         cgmyeOp2D.setCompressionLevel(j, j);
+
         //spyStiffnessMatrix(basis2d, cgmyeOp2D, j, processparameters);
         cerr << "Computation of initial condition started." << endl;
         time.start();
@@ -240,11 +296,21 @@ int main (int argc, char *argv[]) {
         thetatimestep_solver.setParameters(alpha, gamma, residualType, treeType, IsMW, false,
                                            hashMapSize);
 
+        /// Initialization of $\theta$-scheme solver. The value of "zero" (last argument) refers
+        /// to a sparse grid like realization of AWGM used in each time-step. More precisely, if
+        /// we set this option, the initial index set associated to the wavelet basis expansion of
+        /// the initial condition is fixed and not changed in the course of the time-stepping.
         ThetaSchemeMultiTreeAWGM2D thetascheme(thetatimestep_solver);
         thetascheme.setParameters(theta, timestep, numOfTimesteps, timestep_eps, maxiterations,
                                   init_cgtol, 0);
+
+        ///  Dummy variables: these are only needed for adaptive computations. In this program,
+        ///  we only use sparse grid index sets
         int avDof = 0, maxDof = 0., terminalDof;
+
+        ///  Calling the $\theta$-scheme solver
         thetascheme.solve(u, avDof, maxDof, terminalDof, j);
+
         cerr << "Computation of u has finished." << endl;
         T maxerror = 0., maxerror1 = 0., maxerror2 = 0.;
         maxerror = computeLinftyError(basis2d, left_x1, right_x1, left_x2, right_x2, u, delta, j, option2d,

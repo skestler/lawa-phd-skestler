@@ -14,6 +14,7 @@ typedef long double T;
 typedef flens::GeMatrix<flens::FullStorage<T, cxxblas::ColMajor> >  DenseMatrixT;
 typedef flens::DenseVector<flens::Array<T> >                        DenseVectorT;
 
+///  Definition of $L_2(\mathbb{R})$-orthonormal multiwavelets.
 typedef Basis<T,Orthogonal,R,Multi>                                 PrimalBasis;
 typedef TensorBasis2D<Adaptive,PrimalBasis,PrimalBasis>             Basis2D;
 
@@ -169,25 +170,30 @@ int main (int argc, char *argv[]) {
 
     Timer time;
 
-    /// Basis initialization
+    // Basis initialization
     PrimalBasis     basis(d,j0);
     Basis2D         basis2d(basis,basis);
 
     cout << "Process parameters: " << processparameters << endl;
+
+    ///  Initialization of the CGMY operator. Note that here we are using $[0,1]$ as a reference
+    ///  interval because real line wavelets do not need to be adapted to the underlying which is $\mathbb{R}$ here.
     CGMYeOp2D                    cgmyeOp2D(basis2d, processparameters,
                                            0., 1., 0., 1., 10);
+
+
     ThetaTimeStepLocalOperator2D localThetaTimeStepOp2D(theta,timestep,cgmyeOp2D);
 
-    /// Initialization of preconditioner
+    // Initialization of preconditioner
     NoPreconditioner<T, Index2D> NoPrec;
     //Preconditioner  Prec(basis2d, sigma1*sigma1, sigma2*sigma2, 1.);
     Preconditioner  Prec(cgmyeOp2D);
 
 
-    /// Initialization of integrals for initial condition and rhs
-    DenseVectorT sing_pts_t, sing_pts_x(5), sing_pts_y(5);
-    sing_pts_x = 0.1, 0.2, 0.3, 0.4, 0.5;
-    sing_pts_y =  0.1, 0.2, 0.3, 0.4, 0.5;
+    // Initialization of integrals for initial condition and rhs
+    DenseVectorT sing_pts_t, sing_pts_x, sing_pts_y;
+    //sing_pts_x = 0.1, 0.2, 0.3, 0.4, 0.5;
+    //sing_pts_y =  0.1, 0.2, 0.3, 0.4, 0.5;
     DenseMatrixT no_deltas, deltas_x, deltas_y;
     Function<T>                    fct_f_t(f_t,sing_pts_t);
     Function<T>                    fct_f_x(f_x,sing_pts_x), fct_f_y(f_y,sing_pts_y);
@@ -200,17 +206,19 @@ int main (int argc, char *argv[]) {
     AdaptiveSeparableRhsIntegral2D F_rhs(rhs_f_x, rhs_f_x_data, rhs_f_y, rhs_f_y_data);
     ThetaTimeStepRhs2d thetatimestep_F(fct_f_t,F_rhs,localThetaTimeStepOp2D);
 
-    /// Initialization of integrals for initial condition and rhs
+    //  Initialization of integrals for initial condition and rhs
     Option2D<T,optiontype>         option2d(optionparameters);
 
-    ///   Initialization of the truncated payoff function (see, e.g., p. 183 for a visualization)
+    //  Initialization of the truncated payoff function (see, e.g., p. 183 for a visualization)
     TruncatedSumOfPutsOption2D<T> truncatedoption2d;
     //TruncatedBasketPutOption2D<T> truncatedoption2d;
     truncatedoption2d.setOption(option2d);
     truncatedoption2d.setTruncation(left_x1, right_x1, left_x2, right_x2, 0, 0.1, 100.);
     truncatedoption2d.setCriticalLine_x1(critical_line_x1, critical_above_x1);
 
-    ///  Initialization of the integral for approximating the truncated payoff function
+    ///  Initialization of the integral for approximating the truncated payoff function. Note that
+    ///  here we are using $[0,1]$ as a reference interval because real line wavelets do not need
+    ///  to be adapted to the underlying which is $\mathbb{R}$ here.
     PayoffIntegral payoffIntegral(basis2d, truncatedoption2d,
                                   0., 1., 0., 1., true, 0.2, order);
     PayoffIntegralRHS payoffIntegralRHS(payoffIntegral, NoPrec);
@@ -268,10 +276,12 @@ int main (int argc, char *argv[]) {
                                            hashMapSize);
 
         ///  For an adaptive strategy, i.e., an AWGM solve in each time-step (or, as an optimization only
-        ///  only in certain time-steps), stratey should be set to 1. For using a fixed index set
+        ///  only in certain time-steps), strategy should be set to 1. For using a fixed index set
         ///  that has a sparse grid structure but that remains fixed throughout the $\theta$-scheme,
         ///  strategy should be set to 0. For more details, please see the implementation of
         ///  the $\theta$-scheme in lawa/application/adaptive/solver/thetaschemeawgm.tcc.
+        ///  Observe that within getSparseGridIndexSet, the range for translation indices can be
+        ///  set manually.
         int strategy = 0;
 
         ///  Initializing and calling the $\theta$-scheme

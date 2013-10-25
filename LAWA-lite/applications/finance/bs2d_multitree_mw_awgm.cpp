@@ -14,6 +14,7 @@ typedef long double T;
 typedef flens::GeMatrix<flens::FullStorage<T, cxxblas::ColMajor> >  DenseMatrixT;
 typedef flens::DenseVector<flens::Array<T> >                        DenseVectorT;
 
+///  Basis definitions
 typedef Basis<T,Orthogonal,Interval,Multi>                          PrimalBasis;
 typedef PrimalBasis::RefinementBasis                                RefinementBasis;
 typedef TensorBasis2D<Adaptive,PrimalBasis,PrimalBasis>             Basis2D;
@@ -22,13 +23,17 @@ typedef TensorBasis2D<Adaptive,PrimalBasis,PrimalBasis>             Basis2D;
 /* *** Typedefs for financial model *** */
 /* ************************************ */
 
+///  Values for strike, maturity and weights for the assets $S_1$, $S_2$
 T strike = 1.;
 T maturity = 1.;
 T weight1 = 0.5, weight2 = 0.5;
 
-
+///  Definition of the option type
 const OptionTypenD optiontype = BasketPut;
 OptionParameters2D<T,BasketPut> optionparameters(strike, maturity, weight1, weight2, false);
+
+///  Definition of an integral type for approximating the initial condition (transformed payoff
+///  function) associated to the above defined option type using a full tensor product rule
 typedef PayoffIntegral2D<FullGridGL,Basis2D,TruncatedBasketPutOption2D<T> > PayoffIntegral;
 typedef RHS2D<T, PayoffIntegral, NoPreconditioner<T, Index2D>  >            PayoffIntegralRHS;
 
@@ -38,6 +43,7 @@ OptionParameters2D<T,SumOfPuts> optionparameters(strike, strike, maturity, weigh
 typedef PayoffIntegral2D<FullGridGL,Basis2D,TruncatedSumOfPutsOption2D<T> > PayoffIntegral;
 */
 
+///  Definition of the process type: Here (for the moment) only two-dimensional Black-Scholes model
 const ProcessType2D  processtype  = BlackScholes2D;
 //T r = 0.04; T sigma1 = 0.3, sigma2 = 0.2, rho = 0.;
 //T u11 = 1., u12 = 0., u21 = 0., u22 = 1.;
@@ -45,39 +51,47 @@ T r = 0.;
 T sigma1 = 0.3;
 T sigma2 = 0.2;
 
-T rho = 0.;
-T u11 = 1., u12 = 0., u21 = 0., u22 = 1.;
-T s1  = sigma1*sigma1, s2  = sigma2*sigma2;
-T    critical_line_x1 = 0.6;
-bool critical_above_x1 = true;
+///  Correlation and definition of the matrix $U$ from p. 178
+//T rho = 0.;
+//T u11 = 1., u12 = 0., u21 = 0., u22 = 1.;
+//T s1  = sigma1*sigma1, s2  = sigma2*sigma2;
 
-/*
+// These parameters are required later on for computing wavelet integrals against the payoff function
+// in order to determine when the payoff function is zero
+//T    critical_line_x1 = 0.6;
+//bool critical_above_x1 = true;
+
+
 T rho = 0.3;
 T u11 = 0.95171801008793943164, u12 = 0.30697366218334239729, u21 = -0.30697366218334239729, u22 = 0.95171801008793943164;
 T s1  = sqrt(13./2.*(199.+5.*sqrt(949)))/500., s2  = sqrt(13./2.*(199.-5.*sqrt(949)))/500.;
 T    critical_line_x1 = 0.6;
 bool critical_above_x1 = true;
-*/
 
+
+///  Storing the process parameters
 ProcessParameters2D<T,BlackScholes2D>   processparameters(r, sigma1, sigma2, rho, u11, u12, u21, u22);
 
 /* ********************************************* */
 /* *** Typedefs for numerical discretization *** */
 /* ********************************************* */
 
+///  Definition of (optimized) wavelet preconditioner
 typedef OptimizedH1Preconditioner2D<T,Basis2D>                      Preconditioner;
 
 ///  Underlying bilinear form
 typedef RefinementBasis::LaplaceOperator1D                          RefinementLaplaceOp1D;
 typedef RefinementBasis::IdentityOperator1D                         RefinementIdentityOp1D;
 
-
-///  Local operator in 1d
+///  Definition of the underlying bilinear form. The identity operator is solely for debugging
+///  purposes in case. In particular, when the multitree constraint on the index is violated, this
+///  can be checked by means of this operator quite easily.
 typedef LocalOperator1D<PrimalBasis,PrimalBasis,
                         RefinementLaplaceOp1D>                      LocalOp1D;
 typedef LocalOperator1D<PrimalBasis,PrimalBasis,
                         RefinementIdentityOp1D>                     LocalIdentityOp1D;
 
+///  Corresponding 2d local operators
 typedef UniDirectionalLocalOperator<Index2D,XOne,LocalOp1D,
                                             NotXOne,Index1D>        UniDirectionalLocalOpXOne2D;
 typedef UniDirectionalLocalOperator<Index2D,XTwo,LocalOp1D,
@@ -86,17 +100,17 @@ typedef UniDirectionalLocalOperator<Index2D,XOne,LocalIdentityOp1D,
                                             NotXOne,Index1D>        UniDirectionalLocalIdentityOpXOne2D;
 typedef UniDirectionalLocalOperator<Index2D,XTwo,LocalIdentityOp1D,
                                             NotXTwo,Index1D>        UniDirectionalLocalIdentityOpXTwo2D;
-
 typedef CompoundLocalOperator<Index2D, UniDirectionalLocalOpXOne2D,
                               UniDirectionalLocalOpXTwo2D>          CompoundLocalOperator2D;
 typedef CompoundLocalOperator<Index2D,
                               UniDirectionalLocalIdentityOpXOne2D,
                               UniDirectionalLocalIdentityOpXTwo2D>  CompoundLocalIdentityOperator2D;
 
+///  Local operator for the time-stepping scheme (see, e.g., Eq. (8.73))
 typedef ThetaTimeStepLocalOperator<Index2D, CompoundLocalOperator2D,
                                    CompoundLocalIdentityOperator2D> ThetaTimeStepLocalOperator2D;
 
-//Righthandsides definitions (separable)
+///  Required right-hand side definitions
 typedef RHSWithPeaks1D<T,PrimalBasis>                               Rhs1D;
 typedef AdaptiveSeparableRhs<T,Index2D,Rhs1D,Rhs1D >                AdaptiveSeparableRhsIntegral2D;
 typedef ThetaTimeStepSeparableRHS<T,Index2D,
@@ -105,16 +119,20 @@ typedef ThetaTimeStepSeparableRHS<T,Index2D,
 typedef CompoundRhs<T,Index2D,AdaptiveSeparableRhsIntegral2D,
                     AdaptiveSeparableRhsIntegral2D>                 CompoundRhsIntegral2D;
 
+///  Definition of multitree AWGM solver for solving the linear system in each time-step.
 typedef MultiTreeAWGM<Index2D,Basis2D,ThetaTimeStepLocalOperator2D,
                       ThetaTimeStepRhs2d,Preconditioner>            ThetaTimeStepMultiTreeAWGM2D;
 
+///  Definiton of a class that realizes the local weighting of residual as proposed in Eq. (8.126)
 typedef LocalWeighting2D<T, Basis2D>                                LocalWeightingInitCond2D;
 
+///  Definition of multitree AWGM solver for approximating the initial condition.
 typedef MultiTreeAWGM<Index2D,Basis2D,
                       ThetaTimeStepLocalOperator2D,
                       PayoffIntegralRHS,
                       NoPreconditioner<T,Index2D> >                 ApproxL2AWGM2D;
 
+///  Definition of the $\theta$-scheme AWGM sovler
 typedef ThetaSchemeAWGM<Index2D, ThetaTimeStepMultiTreeAWGM2D>      ThetaSchemeMultiTreeAWGM2D;
 
 typedef IndexSet<Index1D>::const_iterator                           const_set1d_it;
@@ -129,16 +147,20 @@ T f_t(T t)       {  return 0.; }
 T f_x(T x)       {  return 0.; }
 T f_y(T y)       {  return 0.; }
 
+/// A simple routine to evaluate a wavelet basis expansion on the domain $[-R_1,R_1] \times [-R_2,R_2]$
 T
 evaluate(const Basis2D &basis2d, T left_x1, T right_x1, T left_x2, T right_x2,
          const Coefficients<Lexicographical,T,Index2D> &v, T x1, T x2);
 
+///  Computing the $L_\infty$ error as described in Eq. (8.125). There, you also find the definition
+///  of $\delta$.
 T
 computeLinftyError(const Basis2D &basis2d, T left_x1, T right_x1, T left_x2, T right_x2,
                    const Coefficients<Lexicographical,T,Index2D> &u,T delta, int j,
                    Option2D<T,optiontype> &option2d,
                    ProcessParameters2D<T,BlackScholes2D> &processparameters);
 
+///  Same as above when reference prices are used and not computed by Monte-Carlo simulation
 T
 computeLinftyError(const Basis2D &basis2d, T left_x1, T right_x1, T left_x2, T right_x2,
                    const Coefficients<Lexicographical,T,Index2D> &u,T delta, int j,
@@ -146,6 +168,7 @@ computeLinftyError(const Basis2D &basis2d, T left_x1, T right_x1, T left_x2, T r
                    ProcessParameters2D<T,BlackScholes2D> &processparameters,
                    const std::map<std::pair<T,T>,T> &refprices);
 
+///   Compute reference prices (by MC simulation if no closed formula is available)
 void
 computeReferencePrice(const Basis2D &basis2d, T left_x1, T right_x1, T left_x2, T right_x2,
                       T inner_left1, T inner_right1, T inner_left2, T inner_right2, T h1, T h2,
@@ -153,8 +176,7 @@ computeReferencePrice(const Basis2D &basis2d, T left_x1, T right_x1, T left_x2, 
                       Option2D<T,optiontype> &option2d,
                       ProcessParameters2D<T,BlackScholes2D> &processparameters);
 
-
-
+///   Read reference prices from file since high-precision MC simulations can be quite costly
 void
 readReferencePrice(const Basis2D &basis2d, T left_x1, T right_x1, T left_x2, T right_x2,
                    T inner_left1, T inner_right1, T inner_left2, T inner_right2, T h1, T h2,
@@ -180,32 +202,43 @@ int main (int argc, char *argv[]) {
         cout << "Usage: " << argv[0] << " d j0 J" << endl;
         return 0;
     }
-
+    ///  Wavelet basis parameters
     int d   = atoi(argv[1]);
     int j0  = atoi(argv[2]);
     int J  = atoi(argv[3]);
+
+    ///  Parameters for AWGM: here only dummy variables
     T alpha = 0.4;
     T gamma = 0.025;
     const char* residualType = "standard";
     const char* treeType = "sparsetree"; //"gradedtree";
+
+    ///  We focus on $L_2$-orthonormal wavelets here
     bool IsMW = true;
     int weightType = 1;
     size_t hashMapSize = 196613;
 
+    ///  Size of the underlying domain: $[-2,2] \times [-2,2]$
     T left_x1 = -2., right_x1 = 2.;
     T left_x2 = -2., right_x2 = 2.;
+
+    ///  Parameter $\delta$ for error measurement (e.g., Eq. (8.125))
     T delta = 0.05;
 
+    ///  Parameters for the $\theta$-scheme
     T theta = 0.5;
     T timestep_eps = 1e-2;
     int maxiterations =  50;  T init_cgtol = 1e-9;   // use maxiterations = 1 for "pure" sparse grid computation
     int numOfTimesteps = 128;
     T timestep = maturity/numOfTimesteps;
 
+    ///  Number of MC runs
     int numOfMCRuns = 100000;
 
+    ///  Integration order for approximating the initial condition
     int order = 4;
 
+    ///  Read reference prices from file (true) or not (false)
     bool useRefPrices = true;
 
     Timer time;
@@ -216,7 +249,7 @@ int main (int argc, char *argv[]) {
     RefinementBasis  &refinementbasis = basis.refinementbasis;
     Basis2D basis2d(basis,basis);
 
-    /// Operator initialization
+    /// Operator initialization. Please see p. 178 for the meaning of $U$.
     DenseMatrixT U(2,2), tU(2,2), Q(2,2), QtU(2,2), UQtU(2,2);
     U  = u11, u12, u21, u22;
     tU = u11, u21, u12, u22;
@@ -228,9 +261,9 @@ int main (int argc, char *argv[]) {
     cout << "U Q U^T " << UQtU << endl;
     cout << "s1 = " << s1 << ", s2 = " << s2 << endl;
 
+    ///  Definition of the underlying operator (with domain transformation), see Section 8.6.1
     T a1 = 0.5*s1/((right_x1-left_x1)*(right_x1-left_x1));
     T a2 = 0.5*s2/((right_x1-left_x1)*(right_x1-left_x1));
-
     LocalOp1D                    localOp1D(basis,basis,refinementbasis.LaplaceOp1D);
     UniDirectionalLocalOpXOne2D  uniDirectionalOpXOne2D(localOp1D, a1);
     UniDirectionalLocalOpXTwo2D  uniDirectionalOpXTwo2D(localOp1D, a2);
@@ -247,7 +280,11 @@ int main (int argc, char *argv[]) {
     NoPreconditioner<T, Index2D> NoPrec;
     Preconditioner  Prec(basis2d, a1, a2, 1.);
 
-    /// Initialization of integrals for initial condition and rhs
+    // Initialization of integrals for the rhs which is, for our example, zero. The example below
+    // however shows how to use singular points for a refinement of the integration domain when
+    // the function to be integrated against is not smooth at or near the origin. Please note that
+    // such a rhs object is required for the implementation of the $\theta$-scheme which also applies
+    // to more general problems
     DenseVectorT sing_pts_t, sing_pts_x(5), sing_pts_y(5);
     sing_pts_x = 0.1, 0.2, 0.3, 0.4, 0.5;
     sing_pts_y =  0.1, 0.2, 0.3, 0.4, 0.5;
@@ -267,13 +304,13 @@ int main (int argc, char *argv[]) {
     Option2D<T,optiontype>         option2d(optionparameters);
     option2d.setNumberOfMCRuns(numOfMCRuns);
 
+    ///  This is required for approximating the initial condition with zero boundary conditions
     TruncatedBasketPutOption2D<T> truncatedoption2d;
     //TruncatedSumOfPutsOption2D<T> truncatedoption2d;
     truncatedoption2d.setOption(option2d);
     truncatedoption2d.setTransformation(u11, u21, u12, u22);
     truncatedoption2d.setTruncation(left_x1, right_x1, left_x2, right_x2, 0, 0.2, 200.);
     truncatedoption2d.setCriticalLine_x1(critical_line_x1, critical_above_x1);
-
     PayoffIntegral payoffIntegral(basis2d, truncatedoption2d,
                                   left_x1, right_x1, left_x2, right_x2, true, 0.05, order);
     PayoffIntegralRHS payoffIntegralRHS(payoffIntegral, NoPrec);
@@ -325,7 +362,13 @@ int main (int argc, char *argv[]) {
 
     for (int j=0; j<=J; ++j) {
         T timestep_eps = 1e-10;
-        int maxL2Iterations = 18; u.clear();
+
+        /// The maximum number of AWGM iterations for approximating the initial condition (parameter
+        /// $K$ on p. 182.
+        int maxL2Iterations = 18;
+
+        u.clear();
+
         //int maxL2Iterations = 12+j; u.clear();
         //int maxL2Iterations = 15; u.clear();
         getSparseGridVector(basis2d, u, j, (T)0.);
@@ -339,6 +382,7 @@ int main (int argc, char *argv[]) {
         localWeightingInitCond2D.setBasis(&basis2d);
         localWeightingInitCond2D.setWeightType(weightType);
 
+        ///  Initializing the solver for approximating the initial condition
         ApproxL2AWGM2D approxL2_solver(basis2d, localThetaTimeStepOp2D, payoffIntegralRHS, NoPrec);
         approxL2_solver.setParameters(alpha, gamma, residualType, treeType, IsMW, false);
         approxL2_solver.approxL2(u, timestep_eps, localWeightingInitCond2D.weight, maxL2Iterations);
@@ -355,15 +399,19 @@ int main (int argc, char *argv[]) {
         thetatimestep_solver.setParameters(alpha, gamma, residualType, treeType, IsMW, false,
                                            hashMapSize);
 
-        ///  Means that only thresholding is applied in each iteration
+        ///  Means that only thresholding is applied in each iteration. Please the implementation of
+        ///  the thetascheme.solve below.
         int strategy = 2;
 
+        ///  Initializing the $\theta$-scheme.
         ThetaSchemeMultiTreeAWGM2D thetascheme(thetatimestep_solver);
         thetascheme.setParameters(theta, timestep, numOfTimesteps, timestep_eps, maxiterations,
                                   init_cgtol, strategy);
 
+        ///  Calling the $\theta$-scheme solver. Here, $j$ refer to parameter in Eq. (8.128).
         int avDof = 0, maxDof = 0., terminalDof;
         thetascheme.solve(u, avDof, maxDof, terminalDof, j);
+
         cerr << "Computation of u has finished." << endl;
 
         plotComputedSolution(basis2d, left_x1, right_x1, left_x2, right_x2, u);

@@ -138,16 +138,20 @@ T f_t(T t)       {  return 0.; }
 T f_x(T x)       {  return 0.; }
 T f_y(T y)       {  return 0.; }
 
+/// A simple routine to evaluate a wavelet basis expansion on the domain $[-R_1,R_1] \times [-R_2,R_2]$
 T
 evaluate(const Basis2D &basis2d, T left_x1, T right_x1, T left_x2, T right_x2,
          const Coefficients<Lexicographical,T,Index2D> &v, T x1, T x2);
 
+///  Computing the $L_\infty$ error as described in Eq. (8.125). There, you also find the definition
+///  of $\delta$.
 T
 computeLinftyError(const Basis2D &basis2d, T left_x1, T right_x1, T left_x2, T right_x2,
                    const Coefficients<Lexicographical,T,Index2D> &u,T delta, int j,
                    Option2D<T,optiontype> &option2d,
                    ProcessParameters2D<T,BlackScholes2D> &processparameters);
 
+///  Same as above when reference prices are used and not computed by Monte-Carlo simulation
 T
 computeLinftyError(const Basis2D &basis2d, T left_x1, T right_x1, T left_x2, T right_x2,
                    const Coefficients<Lexicographical,T,Index2D> &u,T delta, int j,
@@ -228,7 +232,7 @@ int main (int argc, char *argv[]) {
     Basis2D basis2d(basis,basis);
 
 
-    /// Operator initialization
+    /// Operator initialization. Please see p. 178 for the meaning of $U$.
     DenseMatrixT U(2,2), tU(2,2), Q(2,2), QtU(2,2), UQtU(2,2);
     U  = u11, u12, u21, u22;
     tU = u11, u21, u12, u22;
@@ -256,8 +260,11 @@ int main (int argc, char *argv[]) {
     Preconditioner  Prec(basis2d, a1, a2, 1.);
 
 
-    /// Initialization of integrals and rhs class for the initial condition. Here, we use singular points
-    /// to allow for a refinement around the strike. Note that the payoff function is not smooth!
+    // Initialization of integrals for the rhs which is, for our example, zero. The example below
+    // however shows how to use singular points for a refinement of the integration domain when
+    // the function to be integrated against is not smooth at or near the origin. Please note that
+    // such a rhs object is required for the implementation of the $\theta$-scheme which also applies
+    // to more general problems
     DenseVectorT sing_pts_t, sing_pts_x(5), sing_pts_y(5);
     sing_pts_x = 0.1, 0.2, 0.3, 0.4, 0.5;
     sing_pts_y =  0.1, 0.2, 0.3, 0.4, 0.5;
@@ -275,7 +282,7 @@ int main (int argc, char *argv[]) {
     Option2D<T,optiontype>         option2d(optionparameters);
     option2d.setNumberOfMCRuns(numOfMCRuns);
 
-    ///  This required for approximating the initial condition with zero boundary conditions
+    ///  This is required for approximating the initial condition with zero boundary conditions
     TruncatedBasketPutOption2D<T> truncatedoption2d;
     //TruncatedSumOfPutsOption2D<T> truncatedoption2d;
     truncatedoption2d.setOption(option2d);
@@ -367,7 +374,10 @@ int main (int argc, char *argv[]) {
         thetatimestep_solver.setParameters(alpha, gamma, residualType, treeType, IsMW, false,
                                            hashMapSize);
 
-        /// Initialization of $\theta$-scheme solver
+        /// Initialization of $\theta$-scheme solver. The value of "zero" (last argument) refers
+        /// to a sparse grid like realization of AWGM used in each time-step. More precisely, if
+        /// we set this option, the initial index set associated to the wavelet basis expansion of
+        /// the initial condition is fixed and not changed in the course of the time-stepping.
         ThetaSchemeMultiTreeAWGM2D thetascheme(thetatimestep_solver);
         thetascheme.setParameters(theta, timestep, numOfTimesteps, timestep_eps, maxiterations,
                                   init_cgtol, 0);

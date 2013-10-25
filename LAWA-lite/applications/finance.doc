@@ -23,12 +23,35 @@ The corresponding formulas are described in Appendix B of the PhD thesis. In the
 
 - __Computing stiffness matrix entries in the CGMY model__: `applications/finance/test_cgmy_matrixentry.cpp`
 
-The discretization of the CGMY operator can then used directly to price European options via a Galerkin approach. This is described in Details in Section 8.5. The implementation is given here:
+An important remark before we come to program that actually realize the computation of option prices: Our focus was on the measurement of convergence and none of the algorithms claims that is implemented in view of high performance. When going through the implementation, you will surely recognize possibilities for quantitative improvements which, unfortunately, could not be realized within this thesis due to lack of time. One particular point is that within each program, we use an instance of an AWGM solver class. However, by using a certain parameter, only one step of the AWGM will be performed on a fixed index set which is, in most cases, a sparse grid index set.
+
+Please do also note that within the above mentioned AWGM solver class, we have two routines for solving linear systems, namely cg and bi-cg. For problems in finance, we only use the last one for the following reason: The implementation of the $\theta$-scheme requires to compute the propagation of the solution of the last time-step to the current time-step for the set up of a right-hand side vector (see, e.g., Eq. (8.71)). However, this collides with our implementation of the multitree AWGM from Chapter 7 (elliptic problem). Therefore, we use this workaround (you will also notice that within cgsolve() in the multitreeawgm.tcc, there is a function F.initializePropagation(u) that is not active (in comments)).
+
+The discretization of the CGMY operator can then used directly to price European options via a Galerkin approach. This is described in Details in Section 8.5. The implementation is given in the program below. Please take into account that the implementation of these formulas is for the reference domain $[0,1]$.
 
 - __Wavelet Galerkin option pricing in the 1d CGMY model__: `applications/finance/waveletgalerkinoptionpricer1d.cpp`
 
+In order to realize the results for the convergence of a sparse grid scheme applied to the two-dimensional Black-Scholes problem (Sections 8.6.1 and 8.6.2), we have the following program:
+
+- __Sparse grid discretization of the two-dimensional Black-Scholes problem__: `applications/finance/bs2d_multitree_mw_sg.cpp`
+
+The results concerning the benefit of the spatially adaptive (sparse grid based) discretization of the two-dimensional Black-Scholes problem are described in Section 8.6.3. Here, we have the following problem realizing this strategy:
+
+- __Adaptive discretization of the two-dimensional Black-Scholes problem__: `applications/finance/bs2d_multitree_mw_awgm.cpp`
+
+In Section 8.6, the discretization of a two-dimensional CGMY problem is discussed. For the discretization of this problem by a sparse grid approach, we have the following program that can also be used to realize the numerical experiments reported in Section 8.7.2:
+
+- __Sparse grid discretization of the two-dimensional CGMY problem__: `applications/finance/cgmye2d_multitree_mw_sg.cpp`
+
+The examples from Section 8.7.2 were then extended in Section 8.7.3 in order to realize the truncated payoff approach:
+
+- __Adaptive discretization of the two-dimensional CGMY problem__: `applications/finance/cgmye2d_multitree_mw_awgm.cpp`
 
 :links:   PhD thesis by S.K. -> lawa::applications::home
           Wavelet Galerkin methods in numerical finance -> lawa::applications::finance
           Computing stiffness matrix entries in the CGMY model -> lawa::applications::finance::testcgmymatrixentry
           Wavelet Galerkin option pricing in the 1d CGMY model -> lawa::applications::finance::waveletgalerkinoptionpricing1d
+          Sparse grid discretization of the two-dimensional Black-Scholes problem -> lawa::applications::finance::sparsegridbs2d
+          Adaptive discretization of the two-dimensional Black-Scholes problem -> lawa::applications::finance::adaptivebs2d
+          Sparse grid discretization of the two-dimensional CGMY problem -> lawa::applications::finance::sparsegridcgmye2d
+          Adaptive discretization of the two-dimensional CGMY problem -> lawa::applications::finance::adaptivecgmye2d
