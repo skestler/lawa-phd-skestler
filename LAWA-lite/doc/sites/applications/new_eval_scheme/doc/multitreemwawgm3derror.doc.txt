@@ -17,7 +17,8 @@ where we choose $f$ to be a constant function.
 
 Here, we take the wavelet coefficients of approximate solution being computed by the __multitree AWGM in three dimensions__ and computed $\textbf{APPLY}$-based residuals for comparison.
 
-Please note that for running this program, the above mentioned coefficients are required. For few degrees of freedom, some coefficient sets are provided. As the size of these files can get quite large, we cannot provide all of them.
+Please note that for running this program, the above mentioned coefficients are required. For few degrees of freedom, some coefficient sets are provided. As the size of these files can get quite large, we cannot provide all of them. However, they can be computed very easily by the __multitree AWGM in three dimensions__. To this end, one only needs to active the plotting of coefficients in lawa/methods/adaptive/solver/multitreeawgm.tcc (routine plotScatterCoeff).
+
 
 For proper working of this program, please make sure that you use the `same` parameters you used within the __multitree AWGM in three dimensions__!
 

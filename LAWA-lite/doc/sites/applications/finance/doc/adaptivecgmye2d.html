@@ -131,7 +131,7 @@ Adaptive discretization of the two-dimensional CGMY problem</h3>
 </span></div><!--code_content-->
 </div><!-- code -->
 <p >
-     For an adaptive strategy, i.e., an AWGM solve in each time-step (or, as an optimization only only in certain time-steps), stratey should be set to 1. For using a fixed index set that has a sparse grid structure but that remains fixed throughout the \(\theta\)-scheme, strategy should be set to 0. For more details, please see the implementation of the \(\theta\)-scheme in lawa/application/adaptive/solver/thetaschemeawgm.tcc. Observe that within getSparseGridIndexSet, the range for translation indices can be set manually.</p><div class="code">
+     For an adaptive strategy, i.e., an AWGM solve in each time-step (or, as an optimization only only in certain time-steps), strategy should be set to 1. For using a fixed index set that has a sparse grid structure but that remains fixed throughout the \(\theta\)-scheme, strategy should be set to 0. For more details, please see the implementation of the \(\theta\)-scheme in lawa/application/adaptive/solver/thetaschemeawgm.tcc. Observe that within getSparseGridIndexSet, the range for translation indices can be set manually.</p><div class="code">
 <div class="code_content"><span class="code_content">
 <!-- CodeLine     1 -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000">int</span>&nbsp;strategy =&nbsp;<span style="color:#c00000">0</span>;<br>
 </span></div><!--code_content-->

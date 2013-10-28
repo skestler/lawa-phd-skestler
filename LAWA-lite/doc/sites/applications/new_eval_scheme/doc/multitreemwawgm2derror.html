@@ -77,7 +77,7 @@ Residual testing within the multiwavelet based implementation of the multitree b
      This program implements the testing of the multitree-based residual defined in Section 7.3 applied to Poisson's problem on the square \(\square = (0,1)^2\) with </p>\[   -\Delta u = f \text{ on } \square, \qquad u|_{\partial \square} = 0\]<p >
      where we choose \(f\) to be a constant function.</p><p >
      Here, we take the wavelet coefficients of approximate solution being computed by the <a href="multitreemwawgm2d.html">multitree AWGM in two dimensions</a> and computed \(\textbf{APPLY}\)-based residuals for comparison.</p><p >
-     Please note that for running this program, the above mentioned coefficients are required. For few degrees of freedom, some coefficient sets are provided. As the size of these files can get quite large, we cannot provide all of them.</p><p >
+     Please note that for running this program, the above mentioned coefficients are required. For few degrees of freedom, some coefficient sets are provided. As the size of these files can get quite large, we cannot provide all of them. However, they can be computed very easily by the <a href="multitreemwawgm2d.html">multitree AWGM in two dimensions</a>. To this end, one only needs to active the plotting of coefficients in lawa/methods/adaptive/solver/multitreeawgm.tcc (routine plotScatterCoeff).</p><p >
      For proper working of this program, please make sure that you use the <tt>same</tt> parameters you used within the <a href="multitreemwawgm2d.html">multitree AWGM in two dimensions</a>!</p><p >
      FLENS typedefs: only required for the set up of right-hand side vectors</p><div class="code">
 <div class="code_content"><span class="code_content">
